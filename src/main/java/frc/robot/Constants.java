@@ -80,6 +80,12 @@ public class Constants {
         public static final double trackWidth = Units.inchesToMeters(100.0);
         public static final double wheelBase = Units.inchesToMeters(100.0);
 
+        //**NEED TO CHANGE**
+        //Sets max speed for the drive motor, and max speed and acceleration for the rotation motor
+        public static final double maxDriveSpeed = 14.0; //meters per a second
+        public static final double maxRotationSpeed = 1.0; //radians per second
+        public static final double maxRotationAcceleration = 1.0; //radians per second per second
+        
         /*
         creating the kinematics object, which will take in the movements we want in terms of dx, dy, and
         rotation and will convert them into states (speed and angle) for each of our swerve modules
