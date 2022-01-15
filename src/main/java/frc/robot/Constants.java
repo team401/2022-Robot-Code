@@ -13,7 +13,7 @@ public class Constants {
 
     public static final class CANDevices {
 
-        //drive motor IDs grouped by swerve module
+        //drive motor IDs grouped by swerve module (Falcon 500s)
         public static final int frontLeftRotationMotorID = 0;
         public static final int frontLeftDriveMotorID = 1;
 
@@ -26,11 +26,29 @@ public class Constants {
         public static final int backRightRotationMotorID = 6;
         public static final int backRightDriveMotorID = 7;
 
+        //PREP
+        //IDs for shooter motors (Falcon 500s)
+        public static final int leftShooterMotorID = 8;
+        public static final int rightShooterMotorID = 9;
+
+        //PREP
+        //IDs for each of the climbing motors (775 Pros + TalonSRX)
+        public static final int firstStageLeftMotorID = 10;
+        public static final int firstStageRightMotorID = 11;
+        public static final int secondStageLeftMotorID = 12;
+        public static final int secondStageRightMotorID = 13;
+
         //CANcoder IDs for the Swerve Modules
-        public static final int frontLeftRotationEncoderID = 13;
-        public static final int frontRightRotationEncoderID = 14;
-        public static final int backLeftRotationEncoderID = 15;
-        public static final int backRightRotationEncoderID = 16;
+        public static final int frontLeftRotationEncoderID = 14;
+        public static final int frontRightRotationEncoderID = 15;
+        public static final int backLeftRotationEncoderID = 16;
+        public static final int backRightRotationEncoderID = 17;
+
+        //PREP
+        //IDs for turret 
+        public static final int turretMotorID = 18; //Neo
+        public static final int hoodMotorID = 19; //Neo 550
+        public static final int feederMotorID = 10; //775 Pro
 
         //ID for Pigeon
         public static final int imuID = 18;
