@@ -55,6 +55,17 @@ public class Constants {
 
     }
 
+    public static final class InputDevices {
+
+        //Joystick ports (will be top 2 on the drive station, make sure the order is right!)
+        public static final int leftJoystickPort = 0;
+        public static final int rightJoystickPort = 1;
+
+        //gamepad port (3rd on the drive station list)
+        public static final int gamepadPort = 2;
+
+    }
+
     public static final class DriveConstants {
 
         //**NEED TO CHANGE**
@@ -100,9 +111,10 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //Sets max speed for the drive motor, and max speed and acceleration for the rotation motor
-        public static final double maxDriveSpeed = 14.0; //meters per a second
+        public static final double maxDriveSpeed = Units.feetToMeters(14.0); //meters per a second
         public static final double maxRotationSpeed = 1.0; //radians per second
         public static final double maxRotationAcceleration = 1.0; //radians per second per second
+        public static final double teleopTurnRateDegPerSec = 360.0; //degrees per second
         
         /*
         creating the kinematics object, which will take in the movements we want in terms of dx, dy, and
@@ -125,5 +137,7 @@ public class Constants {
         //creates Feed Forward calculator from the characterization values for our drive motors
         public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(kS, kV);
     }
+
+
 
 }
