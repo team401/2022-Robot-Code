@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 
 public class Constants {
 
+    //put all of our CAN IDs in here
     public static final class CANDevices {
 
         //drive motor IDs grouped by swerve module (Falcon 500s)
@@ -55,6 +56,7 @@ public class Constants {
 
     }
 
+    //put all of the port IDs in here
     public static final class InputDevices {
 
         //Joystick ports (will be top 2 on the drive station, make sure the order is right!)
@@ -66,6 +68,7 @@ public class Constants {
 
     }
 
+    //put any values we access for the drivetrain and/or teleop in here
     public static final class DriveConstants {
 
         //**NEED TO CHANGE**
@@ -138,6 +141,14 @@ public class Constants {
         public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(kS, kV);
     }
 
+    //put any exclusive auto constants in here
+    public static final class AutoConstants{
 
+        //**NEED TO CHANGE
+        //values for our max speed/accleration in auto
+        public static final double maxVelocityMetersPerSec = 2.0;
+        public static final double maxAccelerationMetersPerSecondPerSecond = 1.0;
+
+    }
 
 }
