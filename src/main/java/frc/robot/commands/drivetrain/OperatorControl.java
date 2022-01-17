@@ -27,12 +27,17 @@ public class OperatorControl extends CommandBase {
     //tolerance for deadbanding inputs
     private final double toleranceDeadband = 0.035;
 
+    /**
+     * Constructor that takes in the subsytem, the three double suppliers of the values we want to 
+     * send to the drive, and whether or not those values are relative to the field
+     */
     public OperatorControl(
         DriveSubsystem subsystem, 
         DoubleSupplier fwdX, 
         DoubleSupplier fwdY, 
         DoubleSupplier rot,
-        boolean fieldRelative) 
+        boolean fieldRelative
+        ) 
     {
         //initializes values of our subsystem and Double Suppliers
         drive = subsystem;
@@ -49,8 +54,7 @@ public class OperatorControl extends CommandBase {
         addRequirements(subsystem);
     }
 
-
-    //body of the command, runs every 20 ms until the end condition is met
+	//body of the command, runs every 20 ms until the end condition is met
     @Override
     public void execute() {
 

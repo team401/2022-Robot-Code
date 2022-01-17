@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,12 +24,14 @@ public class RobotContainer {
 
   public RobotContainer() {
 
+    //sets the default command of the drive to Operator Control (normal teleop driving) 
+    //for more info, go to the command
     drive.setDefaultCommand(
-      new OperatorControl(
+     new OperatorControl(
         drive, 
-        () -> leftJoystick.getY(GenericHID.Hand.kLeft), 
-        () -> leftJoystick.getX(GenericHID.Hand.kLeft), 
-        () -> rightJoystick.getX(GenericHID.Hand.kRight), 
+        () -> leftJoystick.getY(), //Does not work if we put the hand
+        () -> leftJoystick.getX(), //Does not work if we put the hand
+        () -> rightJoystick.getX(), //Does not work if we put the hand
         true
       )
     );
