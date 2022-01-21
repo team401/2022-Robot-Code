@@ -49,10 +49,23 @@ public class Constants {
         //IDs for turret 
         public static final int turretMotorID = 18; //Neo
         public static final int hoodMotorID = 19; //Neo 550
-        public static final int feederMotorID = 10; //775 Pro
+        public static final int feederMotorID = 20; //775 Pro
+
+        //PREP
+        //IDs for Intake
+        public static final int intakeMotorID = 21; //775 Pro
 
         //ID for Pigeon
         public static final int imuID = 18;
+
+    }
+
+    //sensors that plug into DIO
+    public static final class DIOChannels {
+
+        //For the encoders on each of the swinging arms
+        public static final int leftSwingEncoder = 0;
+        public static final int rightSwingEncoder = 1;
 
     }
 
@@ -141,10 +154,18 @@ public class Constants {
         public static final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(kS, kV);
     }
 
+    //holds our values for our overall manipulator subsystems (intake, index, shooter)
+    public static final class SuperstructureConstants {
+
+        //**NEED TO CHANGE**
+        public static final double intakingPower = 0.5;
+
+    }
+
     //put any exclusive auto constants in here
     public static final class AutoConstants{
 
-        //**NEED TO CHANGE
+        //**NEED TO CHANGE**
         //values for our max speed/accleration in auto
         public static final double maxVelocityMetersPerSec = 2.0;
         public static final double maxAccelerationMetersPerSecondPerSecond = 1.0;
