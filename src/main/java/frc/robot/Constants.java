@@ -167,6 +167,9 @@ public class Constants {
         //**NEED TO CHANGE**
         //Gear reduction/increase in resolution from the gearing on the turret Neo
         public static final double turretGearReduction = 900 * 70; 
+
+        //Gear reduction/increase in resoltuion from the gearing on the hood Neo 550 and Versa Planetarys
+        public static final double hoodGearReduction = 80 * 5;
     }
 
     //put any exclusive auto constants in here

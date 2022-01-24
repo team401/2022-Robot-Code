@@ -66,12 +66,29 @@ public class ShooterSubsystem extends SubsystemBase {
         turretController.setI(turretkI);
         turretController.setD(turretkD);
 
-        //sets the turretEncoder position and veloctiy to be based off of radians and radians per sec
+        //sets up hood PID Controller
+        hoodController.setP(hoodkP);
+        hoodController.setI(hoodkI);
+        hoodController.setD(hoodkD);
+
+        /**
+         * sets the turretEncoder position and velocity to be based off of radians and 
+         * radians per sec of the structure
+         */
         turretEncoder.setPositionConversionFactor(
             2.0 * Math.PI / SuperstructureConstants.turretGearReduction);
         turretEncoder.setVelocityConversionFactor(
             2.0 * Math.PI / (SuperstructureConstants.turretGearReduction * 60.0));
-        
+
+        /**
+         * sets the turretEncoder position and velocity to be based off of radians and 
+         * radians per sec of the structure
+         */        
+        hoodEncoder.setPositionConversionFactor(
+            2.0 * Math.PI / SuperstructureConstants.hoodGearReduction);
+        hoodEncoder.setVelocityConversionFactor(
+            2.0 * Math.PI / (SuperstructureConstants.hoodGearReduction * 60.0));
+
     }
 
     @Override 
@@ -98,15 +115,31 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public void runTurretPercent() {
+    //runs turret at given percent
+    public void runTurretPercent(double speed) {
 
-
+        turretMotor.set(speed);
+        
     }
 
     public double getTurretPositionRadians() {
 
         //no change is needed in the gear ratio since we set the conversion factor above
         return turretEncoder.getPosition(); 
+
+    }
+
+    //returns velocity in rad per sec
+    public double getTurretVelocityCurrent() {
+
+        return turretEncoder.getVelocity();
+
+    }
+
+    //sets value of turret encoder to what is passed in
+    public void setTurretEncoder(double desiredPosition){
+
+        turretEncoder.setPosition(desiredPosition);
 
     }
 
@@ -122,7 +155,46 @@ public class ShooterSubsystem extends SubsystemBase {
 
         turretController.setReference(
             getTurretPositionRadians(), 
-            ControlType.kPosition);
+            ControlType.kPosition
+        );
+
+    }
+
+    //sets value of hood encoder to what is passed in
+    public void setHoodEncoder(double desiredPosition){
+
+        hoodEncoder.setPosition(desiredPosition);
+
+    }
+
+    //sets value of hood encoder to 0
+    public void resetHoodEncoder() {
+
+        hoodEncoder.setPosition(0.0);
+
+    }
+
+    //returns position of the hood in radians (with 0 being at the bottom)
+    public double getHoodPositionRadians() {
+
+        return hoodEncoder.getPosition();
+
+    }
+
+    //returns the velocity of the hood motor in radians per sec
+    public double getHoodVelocity() {
+
+        return hoodEncoder.getVelocity();
+
+    }
+
+    //PID controller to set desired position of the hood in radians
+    public void hoodSetDesiredClosedState(double desiredPosition) {
+
+        hoodController.setReference(
+            getHoodPositionRadians(),
+            ControlType.kPosition
+        );
 
     }
 
