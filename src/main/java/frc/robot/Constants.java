@@ -160,9 +160,13 @@ public class Constants {
         //**NEED TO CHANGE**
         public static final double intakingPower = 0.5;
 
+        //Turret Angle Offsets
         public static final double leftTurretOffset = Units.degreesToRadians(90);  //angle offset from front center of robot, if intake is front
         public static final double rightTurretOffset = Units.degreesToRadians(-90); //negative in order to match odometry and unit circle
 
+        //**NEED TO CHANGE**
+        //Gear reduction/increase in resolution from the gearing on the turret Neo
+        public static final double turretGearReduction = 900 * 70; 
     }
 
     //put any exclusive auto constants in here
