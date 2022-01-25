@@ -1,6 +1,10 @@
 package frc.robot.commands.turret.LimelightBased;
 
+import java.lang.annotation.Inherited;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**TO DO
  * Searching is a command for the turret which uses the limelight and drive subsytem to spin the turret
@@ -10,5 +14,32 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 
 public class Searching extends CommandBase {
+
+    VisionSubsystem visionSubsystem;
+    ShooterSubsystem shooterSubsystem;
     
+    public Searching(VisionSubsystem vision, ShooterSubsystem shooter) {
+        visionSubsystem = vision;
+        shooterSubsystem = shooter;
+    }
+
+    @Override
+    public void initialize() {
+        
+    }
+
+    @Override
+    public void execute() {
+
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public void end(boolean in) {
+
+    }
 }

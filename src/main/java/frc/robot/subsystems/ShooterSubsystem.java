@@ -96,7 +96,6 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override 
     public void periodic() {
 
-
     }    
 
     public void runShooterPercent(double percent) {
@@ -122,6 +121,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
         turretMotor.set(speed);
         
+    }
+
+    //runs turret based on given voltage for the motor
+    public void runTurretVoltage(double volts) {
+
+        turretMotor.setVoltage(volts);
+
     }
 
     public double getTurretPositionRadians() {
@@ -203,7 +209,7 @@ public class ShooterSubsystem extends SubsystemBase {
     //is it within the bounds?
     public boolean isWithinEdges() {
 
-        return(
+        return (
             SuperstructureConstants.leftTurretExtrema - getTurretPositionRadians() < tolerance && 
             SuperstructureConstants.rightTurretExtrema - getTurretPositionRadians() > tolerance);
 
