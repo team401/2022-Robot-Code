@@ -55,6 +55,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private final double hoodkI = 0.0;
     private final double hoodkD = 0.0;
 
+    private final double tolerance = 0.01; //radians
+
     //TO DO
     //zero the turret
     //set tolerance
@@ -195,6 +197,15 @@ public class ShooterSubsystem extends SubsystemBase {
             getHoodPositionRadians(),
             ControlType.kPosition
         );
+
+    }
+
+    //is it within the bounds?
+    public boolean isWithinEdges() {
+
+        return(
+            SuperstructureConstants.leftTurretExtrema - getTurretPositionRadians() < tolerance && 
+            SuperstructureConstants.rightTurretExtrema - getTurretPositionRadians() > tolerance);
 
     }
 
