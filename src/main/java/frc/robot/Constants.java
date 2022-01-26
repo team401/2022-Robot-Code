@@ -161,6 +161,7 @@ public class Constants {
         public static final double intakingPower = 0.5;
 
         //Turret Angle Offsets
+        public static final double turretEdge = Units.degreesToRadians(132.5); //what we designate as the edge of the turrret
         public static final double leftTurretExtrema = Units.degreesToRadians(135);  //angle offset from front center of robot, if intake is front
         public static final double rightTurretExtrema = Units.degreesToRadians(-135); //negative in order to match odometry and unit circle
 

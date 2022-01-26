@@ -1,4 +1,4 @@
-package frc.robot.commands.turret.LimelightBased;
+package frc.robot.commands.turret.limelight;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;

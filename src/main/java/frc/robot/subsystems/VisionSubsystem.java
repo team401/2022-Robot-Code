@@ -88,8 +88,8 @@ public class VisionSubsystem extends SubsystemBase {
 
      }
 
-     //returns whether the turret is centered within the tolerance 
-     public boolean isCenteredOnTarget() {
+     //returns whether the turret is locked on within the tolerance 
+     public boolean withinTolerance() {
 
         return Math.abs(gettX()) < centeredTolerance;
 
