@@ -28,6 +28,8 @@ public class VisionSubsystem extends SubsystemBase {
      private double ty;
      private double ta;
 
+     private double centeredTolerance = Units.degreesToRadians(5);
+
      //Constructor
      public VisionSubsystem() {
 
@@ -83,6 +85,13 @@ public class VisionSubsystem extends SubsystemBase {
      public void setLedMode(int ledMode) {
 
         table.getEntry("ledMode").forceSetDouble(ledMode);
+
+     }
+
+     //returns whether the turret is centered within the tolerance 
+     public boolean isCenteredOnTarget() {
+
+        return Math.abs(gettX()) < centeredTolerance;
 
      }
 
