@@ -4,12 +4,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-//lil command to run the drive at a percent in order to test
+//lil command to run the drive at a given percent in order to test
 
 public class RunAtPercent extends CommandBase {
 
     private final DriveSubsystem drive;
 
+    //constructor
     public RunAtPercent(DriveSubsystem subsystem) {
 
         drive = subsystem;
@@ -20,14 +21,16 @@ public class RunAtPercent extends CommandBase {
     @Override
     public void execute() {
 
-        drive.runTestatPercentSpin();
-        drive.runTestatPercent();
+        //runs both the drive motors and rotation motors
+        drive.runTestatPercentSpin(0.2);
+        drive.runTestatPercent(0.2);
 
     }
     
     @Override
     public void end(boolean in) {
 
+        //stops them at the end
         drive.stopDriving();
 
     }

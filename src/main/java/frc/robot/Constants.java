@@ -92,7 +92,8 @@ public class Constants {
        
         //**NEED TO CHANGE**
         //PID values for rotation motor in the Swerve Module class
-        public static final double rotationkP = 1.0;
+        //Currently tuned down for testing using set voltage control?
+        public static final double rotationkP = 0.5;
         public static final double rotationkI = 0.0;
         public static final double rotationkD = 0.5;
 

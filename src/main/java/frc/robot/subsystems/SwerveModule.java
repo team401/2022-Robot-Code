@@ -163,6 +163,7 @@ public class SwerveModule extends SubsystemBase {
         //takes in the state
         SwerveModuleState state = desiredState;
 
+        //optimize method (don't need to do it again this year)
         state = SwerveModuleState.optimize(desiredState, getCanEncoderAngle());
         
         /*
@@ -176,14 +177,14 @@ public class SwerveModule extends SubsystemBase {
         );
 
         //sends the calculated position value to the rotation motor
-        rotationMotor.set(ControlMode.Position, 
-            rotationPosition / DriveConstants.FalconSensorConversionFactor);
+        rotationMotor.setVoltage(rotationPosition);
 
         SmartDashboard.putNumber("current angle of internal", getCanEncoderAngle().getRadians());
         SmartDashboard.putNumber("adjusted angle", state.angle.getRadians());
         SmartDashboard.putNumber("Commanded Rotation", 
             rotationPosition);
-        SmartDashboard.putNumber("commanded rotation in ticks", rotationPosition / DriveConstants.FalconSensorConversionFactor);
+        SmartDashboard.putNumber("commanded rotation in ticks", 
+            rotationPosition / DriveConstants.FalconSensorConversionFactor);
 
         //calculates drive speed of the modules
         double speedRadPerSec = state.speedMetersPerSecond / (DriveConstants.wheelDiameterMeters / 2);

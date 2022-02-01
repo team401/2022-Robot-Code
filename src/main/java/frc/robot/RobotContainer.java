@@ -28,16 +28,30 @@ public class RobotContainer {
   public RobotContainer() {
 
     //sets the default command of the drive to Operator Control (normal teleop driving) 
+    //this set uses the gamepad as input for easy testing on field
     //for more info, go to the command
     drive.setDefaultCommand(
      new OperatorControl(
         drive, 
-        () -> gamepad.getLeftY(),//.getY(), //Does not work if we put the hand
-        () -> leftJoystick.getX(), //Does not work if we put the hand
-        () -> gamepad.getRightX(), //rightJoystick.getX(), //Does not work if we put the hand
+        () -> gamepad.getLeftY(), //Left up & down
+        () -> gamepad.getLeftX(), //Left side-to-side
+        () -> gamepad.getRightX(), //Right side-to-side
         true
       )
     );
+
+    /*
+    //uncomment this to use the competition control set-up (with two joysticks rather than the gamepad)
+    drive.setDefaultCommand(
+     new OperatorControl(
+        drive, 
+        () -> leftJoystick.getY(), //Left up & down
+        () -> leftJoystick.getX(), //Left side-to-side
+        () -> rightJoystick.getX(), //Right side-to-side
+        true
+      )
+    );
+    */
 
     configureButtonBindings();
 
@@ -46,15 +60,9 @@ public class RobotContainer {
   //where we put all of our button bindings
   private void configureButtonBindings() {
 
-    new JoystickButton(gamepad, Button.kB.value) 
-      .whileHeld(new InstantCommand(drive::runTestatPercent))
-      .whenReleased(new InstantCommand(drive::stopDriving));
-
-    new JoystickButton(gamepad, Button.kA.value)
-      .whileHeld(new InstantCommand(drive::runTestatPercentSpin))
-      .whenReleased(new InstantCommand(drive::stopDriving));
-
-      new JoystickButton(gamepad, Button.kX.value)
+    //for testing
+    //runs both the drive and rotation motors at a set speed to make sure they are all working
+    new JoystickButton(gamepad, Button.kX.value)
       .whileHeld(new RunAtPercent(drive));
 
   }

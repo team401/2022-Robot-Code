@@ -143,27 +143,27 @@ public class DriveSubsystem extends SubsystemBase{
 
     }
 
-    //testing percent
-    public void runTestatPercent() {
+    //testing driving with a passed in desired speed in percent
+    public void runTestatPercent(double speed) {
 
-        frontRight.setDrivePercent(0.1);
-        frontLeft.setDrivePercent(0.1);
-        backLeft.setDrivePercent(0.1);
-        backRight.setDrivePercent(0.1);
-
-    }
-
-    //testing rotation
-    public void runTestatPercentSpin() {
-
-        frontRight.setRotationPercent(0.1);
-        frontLeft.setRotationPercent(0.1);
-        backLeft.setRotationPercent(0.1);
-        backRight.setRotationPercent(0.1);
+        frontRight.setDrivePercent(speed);
+        frontLeft.setDrivePercent(speed);
+        backLeft.setDrivePercent(speed);
+        backRight.setDrivePercent(speed);
 
     }
 
-    //stops the motors
+    //testing rotation with a passed in desired speed in percent
+    public void runTestatPercentSpin(double speed) {
+
+        frontRight.setRotationPercent(speed);
+        frontLeft.setRotationPercent(speed);
+        backLeft.setRotationPercent(speed);
+        backRight.setRotationPercent(speed);
+
+    }
+
+    //stops all of the motors on the drivetrain
     public void stopDriving() {
 
         frontRight.setDrivePercent(0.0);
