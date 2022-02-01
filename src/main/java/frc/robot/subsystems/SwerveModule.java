@@ -1,8 +1,12 @@
 package frc.robot.subsystems;
 
 
+import javax.sql.rowset.RowSetFactory;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -11,6 +15,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
@@ -47,8 +52,8 @@ public class SwerveModule extends SubsystemBase {
         offset = new Rotation2d(measuredOffsetRadians);
 
         //setting idle modes of the two motors
-        driveMotor.setNeutralMode(NeutralMode.Brake);
-        rotationMotor.setNeutralMode(NeutralMode.Coast);
+        driveMotor.setNeutralMode(NeutralMode.Coast);
+        rotationMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     //sets traveled distance in internal encoder to 0
@@ -65,6 +70,20 @@ public class SwerveModule extends SubsystemBase {
 
     }
 
+    //sets drive motor to run at a percent for basic testing/control
+    public void setDrivePercent(double percent) {
+
+        driveMotor.set(percent);
+
+    }
+
+    //sets rotation motor to run at a percent for basic testing/control
+    public void setRotationPercent(double percent){
+
+        rotationMotor.set(percent);
+
+    }
+
     //sends rotation with position of CanCoder angle pointing (note - if returns negative, add in if case)
     public Rotation2d getCanCoderAngle() {
 
@@ -77,7 +96,8 @@ public class SwerveModule extends SubsystemBase {
     public Rotation2d getCanEncoderAngle() {
 
         double unsignedAngle = 
-            (rotationMotor.getSelectedSensorPosition() * DriveConstants.FalconSensorConversionFactor) % (2 * Math.PI);
+            (rotationMotor.getSelectedSensorPosition() 
+            * DriveConstants.FalconSensorConversionFactor) % (2 * Math.PI);
         
         //fail-safe just in case the unsigned angle is negative
         if (unsignedAngle < 0) unsignedAngle += 2 * Math.PI;
@@ -142,6 +162,8 @@ public class SwerveModule extends SubsystemBase {
 
         //takes in the state
         SwerveModuleState state = desiredState;
+
+        state = SwerveModuleState.optimize(desiredState, getCanEncoderAngle());
         
         /*
         finds the position we need to send to the rotation motor using our PID controller
@@ -149,14 +171,19 @@ public class SwerveModule extends SubsystemBase {
         all in radians
         */
         double rotationPosition = rotationController.calculate(
-            rotationMotor.getSelectedSensorPosition() * DriveConstants.FalconSensorConversionFactor,
-            calculateAdjustedAngle(
-                state.angle.getRadians(), 
-                getCanEncoderAngle().getRadians())
+            getCanEncoderAngle().getRadians(),
+            state.angle.getRadians()
         );
 
         //sends the calculated position value to the rotation motor
-        rotationMotor.set(ControlMode.Position, rotationPosition/DriveConstants.FalconSensorConversionFactor);
+        rotationMotor.set(ControlMode.Position, 
+            rotationPosition / DriveConstants.FalconSensorConversionFactor);
+
+        SmartDashboard.putNumber("current angle of internal", getCanEncoderAngle().getRadians());
+        SmartDashboard.putNumber("adjusted angle", state.angle.getRadians());
+        SmartDashboard.putNumber("Commanded Rotation", 
+            rotationPosition);
+        SmartDashboard.putNumber("commanded rotation in ticks", rotationPosition / DriveConstants.FalconSensorConversionFactor);
 
         //calculates drive speed of the modules
         double speedRadPerSec = state.speedMetersPerSecond / (DriveConstants.wheelDiameterMeters / 2);
@@ -172,7 +199,7 @@ public class SwerveModule extends SubsystemBase {
             );
 
         //sends the sum of the two calculated velocities to the drive motor
-        driveMotor.set(ControlMode.Velocity, driveVelocityFFCalculated + driveVelocityPIDCalculated);
+        driveMotor.setVoltage(driveVelocityFFCalculated + driveVelocityPIDCalculated);
         
     }
 

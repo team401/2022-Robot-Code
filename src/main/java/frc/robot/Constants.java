@@ -15,17 +15,17 @@ public class Constants {
     public static final class CANDevices {
 
         //drive motor IDs grouped by swerve module (Falcon 500s)
-        public static final int frontLeftRotationMotorID = 0;
-        public static final int frontLeftDriveMotorID = 1;
+        public static final int frontLeftRotationMotorID = 1;
+        public static final int frontLeftDriveMotorID = 0;
 
-        public static final int frontRightRotationMotorID = 2;
-        public static final int frontRightDriveMotorID = 3;
+        public static final int frontRightRotationMotorID = 3;
+        public static final int frontRightDriveMotorID = 2;
 
-        public static final int backLeftRotationMotorID = 4;
-        public static final int backLeftDriveMotorID = 5;
+        public static final int backLeftRotationMotorID = 5;
+        public static final int backLeftDriveMotorID = 4;
 
-        public static final int backRightRotationMotorID = 6;
-        public static final int backRightDriveMotorID = 7;
+        public static final int backRightRotationMotorID = 7;
+        public static final int backRightDriveMotorID = 6;
 
         //PREP
         //IDs for shooter motors (Falcon 500s)
@@ -49,14 +49,14 @@ public class Constants {
         //IDs for turret 
         public static final int turretMotorID = 18; //Neo
         public static final int hoodMotorID = 19; //Neo 550
-        public static final int feederMotorID = 20; //775 Pro
+        public static final int feederMotorID = 21; //775 Pro
 
         //PREP
         //IDs for Intake
-        public static final int intakeMotorID = 21; //775 Pro
+        public static final int intakeMotorID = 22; //775 Pro
 
         //ID for Pigeon
-        public static final int imuID = 18;
+        public static final int imuID = 20;
 
     }
 
@@ -86,15 +86,15 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //PID values for drive motor in the Swerve Module class
-        public static final double drivekP = 0.0;
+        public static final double drivekP = 0.05;
         public static final double drivekI = 0.0;
         public static final double drivekD = 0.0;
        
         //**NEED TO CHANGE**
         //PID values for rotation motor in the Swerve Module class
-        public static final double rotationkP = 0.0;
+        public static final double rotationkP = 1.0;
         public static final double rotationkI = 0.0;
-        public static final double rotationkD = 0.0;
+        public static final double rotationkD = 0.5;
 
         /*
         set factor by dividing by number of units in a rotation of the Falcon500 motor(2048) 
@@ -102,8 +102,8 @@ public class Constants {
         */
         public static final double FalconSensorConversionFactor = 2 * Math.PI / 2048.0;
 
-        //wheel diameter 
-        public static final double wheelDiameterMeters = Units.inchesToMeters(4.0);
+        //wheel diameter in inches (measured accurately)
+        public static final double wheelDiameterMeters = Units.inchesToMeters(3.9028);
 
         //gear reduction for drive motor
         public static final double driveWheelGearReduction = 6.75;
@@ -115,19 +115,19 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //static offset values based on how the swerve modules were installed (gotten manually)
-        public static final double frontLeftAngleOffset = Units.degreesToRadians(0.0);
-        public static final double frontRightAngleOffset = Units.degreesToRadians(0.0);
-        public static final double backLeftAngleOffset = Units.degreesToRadians(0.0);
-        public static final double backRightAngleOffset = Units.degreesToRadians(0.0);
+        public static final double frontLeftAngleOffset = Units.degreesToRadians(232.3);
+        public static final double frontRightAngleOffset = Units.degreesToRadians(147.7);
+        public static final double backLeftAngleOffset = Units.degreesToRadians(252.4);
+        public static final double backRightAngleOffset = Units.degreesToRadians(67.5);
 
         //**NEED TO CHANGE**
         //constants based on the distance between the center of two wheels
-        public static final double trackWidth = Units.inchesToMeters(100.0);
-        public static final double wheelBase = Units.inchesToMeters(100.0);
+        public static final double trackWidth = Units.inchesToMeters(19.75);
+        public static final double wheelBase = Units.inchesToMeters(19.75);
 
         //**NEED TO CHANGE**
         //Sets max speed for the drive motor, and max speed and acceleration for the rotation motor
-        public static final double maxDriveSpeed = Units.feetToMeters(14.0); //meters per a second
+        public static final double maxDriveSpeed = Units.feetToMeters(10.0); //meters per a second
         public static final double maxRotationSpeed = 1.0; //radians per second
         public static final double maxRotationAcceleration = 1.0; //radians per second per second
         public static final double teleopTurnRateDegPerSec = 360.0; //degrees per second
@@ -146,8 +146,8 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //values for coefficient of static friction and for velocity (will calculate by characterizing)
-        private static final double kS = 0.0;
-        private static final double kV = 0.0;
+        private static final double kS = 0.6271;
+        private static final double kV = 0.7470;
 
 
         //creates Feed Forward calculator from the characterization values for our drive motors

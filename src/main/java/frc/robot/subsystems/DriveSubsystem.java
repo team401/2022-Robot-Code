@@ -98,14 +98,38 @@ public class DriveSubsystem extends SubsystemBase{
     //runs every 20 seconds, good for updating and debugging with prints
     @Override
     public void periodic() {
-
+        
         //update the odometry with the latest heading, speed, and angle (of each module)
         odometry.update(getHeading(), getModuleStates());
+
+        
+
+        SmartDashboard.putNumber("frontLeft Measured", frontLeft.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("frontRight Measured", frontRight.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("backLeft Measured", backLeft.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("backRight Measured", backRight.getCanCoderAngle().getDegrees());
+
+        SmartDashboard.putNumber("Rotation Desirec", commandedRotation);
+
+        /*SmartDashboard.putBoolean("frontLeft Within Tolerance", Math.abs(frontLeft.getCanCoderAngle().getDegrees()) < 0.5);
+        SmartDashboard.putBoolean("frontRight Within Tolerance", Math.abs(frontRight.getCanCoderAngle().getDegrees()-180) < 0.5);
+        SmartDashboard.putBoolean("backLeft Within Tolerance", Math.abs(backLeft.getCanCoderAngle().getDegrees()) < 0.5);
+        SmartDashboard.putBoolean("backRight Within Tolerance", Math.abs(backRight.getCanCoderAngle().getDegrees()-180) < 0.5);
+
+        SmartDashboard.putNumber("frontLeft Measured Drive", frontLeft.getDriveDistanceRadians() / (2 * Math.PI));
+        SmartDashboard.putNumber("frontRight Measured Drive", frontRight.getDriveDistanceRadians()/ (2 * Math.PI));
+        SmartDashboard.putNumber("backLeft Measured Drive", backLeft.getDriveDistanceRadians()/ (2 * Math.PI));
+        SmartDashboard.putNumber("backRight Measured Drive", backRight.getDriveDistanceRadians()/ (2 * Math.PI));
+
+        SmartDashboard.putNumber("Average Measured Drive", 
+            getAverageDriveDistanceRadians() / (2 * Math.PI)
+        );
 
         //some useful prints that will be added to SmartDashboard for premptive debugging
         SmartDashboard.putNumber("Heading", getHeading().getDegrees());
         SmartDashboard.putNumber("Odometry x", odometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Odometry y", odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("Odometry y", odometry.getPoseMeters().getY());*/
+        
 
     }
 
@@ -117,6 +141,39 @@ public class DriveSubsystem extends SubsystemBase{
         imu.getYawPitchRoll(ypr);
         return Rotation2d.fromDegrees(ypr[0]);
 
+    }
+
+    //testing percent
+    public void runTestatPercent() {
+
+        frontRight.setDrivePercent(0.1);
+        frontLeft.setDrivePercent(0.1);
+        backLeft.setDrivePercent(0.1);
+        backRight.setDrivePercent(0.1);
+
+    }
+
+    //testing rotation
+    public void runTestatPercentSpin() {
+
+        frontRight.setRotationPercent(0.1);
+        frontLeft.setRotationPercent(0.1);
+        backLeft.setRotationPercent(0.1);
+        backRight.setRotationPercent(0.1);
+
+    }
+
+    //stops the motors
+    public void stopDriving() {
+
+        frontRight.setDrivePercent(0.0);
+        frontLeft.setDrivePercent(0.0);
+        backLeft.setDrivePercent(0.0);
+        backRight.setDrivePercent(0.0);
+        frontRight.setRotationPercent(0.0);
+        frontLeft.setRotationPercent(0.0);
+        backLeft.setRotationPercent(0.0);
+        backRight.setRotationPercent(0.0);
     }
 
     //returns all of the states (spped and angle) of the swerve modules in an array
@@ -178,6 +235,8 @@ public class DriveSubsystem extends SubsystemBase{
 
         //ensure that we do not go over the max speed of the robot
         SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxDriveSpeed);
+
+        SmartDashboard.putNumber("front left command rot", states[0].angle.getDegrees());
 
         //sets the states of the modules to the desired, commanded ones
         setModuleStates(states);

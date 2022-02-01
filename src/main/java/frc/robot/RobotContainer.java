@@ -5,10 +5,15 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.Constants.InputDevices;
 import frc.robot.commands.drivetrain.OperatorControl;
+import frc.robot.commands.drivetrain.RunAtPercent;
 import frc.robot.subsystems.DriveSubsystem;
+import pabeles.concurrency.ConcurrencyOps.NewInstance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class RobotContainer {
 
@@ -27,9 +32,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
      new OperatorControl(
         drive, 
-        () -> leftJoystick.getY(), //Does not work if we put the hand
+        () -> gamepad.getLeftY(),//.getY(), //Does not work if we put the hand
         () -> leftJoystick.getX(), //Does not work if we put the hand
-        () -> rightJoystick.getX(), //Does not work if we put the hand
+        () -> gamepad.getRightX(), //rightJoystick.getX(), //Does not work if we put the hand
         true
       )
     );
@@ -41,7 +46,16 @@ public class RobotContainer {
   //where we put all of our button bindings
   private void configureButtonBindings() {
 
+    new JoystickButton(gamepad, Button.kB.value) 
+      .whileHeld(new InstantCommand(drive::runTestatPercent))
+      .whenReleased(new InstantCommand(drive::stopDriving));
 
+    new JoystickButton(gamepad, Button.kA.value)
+      .whileHeld(new InstantCommand(drive::runTestatPercentSpin))
+      .whenReleased(new InstantCommand(drive::stopDriving));
+
+      new JoystickButton(gamepad, Button.kX.value)
+      .whileHeld(new RunAtPercent(drive));
 
   }
 
