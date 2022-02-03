@@ -4,7 +4,9 @@ package frc.robot.subsystems;
 import javax.sql.rowset.RowSetFactory;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -53,7 +55,11 @@ public class SwerveModule extends SubsystemBase {
 
         //setting idle modes of the two motors
         driveMotor.setNeutralMode(NeutralMode.Coast);
-        rotationMotor.setNeutralMode(NeutralMode.Brake);
+        rotationMotor.setNeutralMode(NeutralMode.Coast);
+
+        rotationMotor.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
+        rotationMotor.config_kP(0, 0.1);
+
     }
 
     //sets traveled distance in internal encoder to 0
@@ -91,18 +97,28 @@ public class SwerveModule extends SubsystemBase {
             (Units.degreesToRadians(canCoder.getAbsolutePosition()) - offset.getRadians()) % (2 * Math.PI));
    
     }
-
+    
     //gets angle from the internal encoder in the rotation motor 
-    public Rotation2d getCanEncoderAngle() {
+    public Rotation2d getInternalRotationAngle() {
 
-        double unsignedAngle = 
+        /*double unsignedAngle = 
             (rotationMotor.getSelectedSensorPosition() 
             * DriveConstants.FalconSensorConversionFactor) % (2 * Math.PI);
         
         //fail-safe just in case the unsigned angle is negative
         if (unsignedAngle < 0) unsignedAngle += 2 * Math.PI;
 
-        return new Rotation2d(unsignedAngle);
+        return new Rotation2d(unsignedAngle);*/
+
+        return new Rotation2d(-(
+            rotationMotor.getSelectedSensorPosition() / 4096 * 2 * Math.PI - offset.getRadians()) 
+            % (2 * Math.PI));
+
+    }
+
+    public double getInternalRotationAngleTest() {
+
+        return (rotationMotor.getSelectedSensorPosition() / 12.8);
 
     }
 
@@ -147,7 +163,8 @@ public class SwerveModule extends SubsystemBase {
     //initializes the CANCoder to the offset measurements from its current reading
     public void initRotationOffset() {
 
-        canCoder.setPosition(getCanCoderAngle().getRadians());
+        //rotationMotor.setSelectedSensorPosition(
+            //getCanCoderAngle().getRadians() / DriveConstants.FalconSensorConversionFactor);
 
     }
 
@@ -164,7 +181,7 @@ public class SwerveModule extends SubsystemBase {
         SwerveModuleState state = desiredState;
 
         //optimize method (don't need to do it again this year)
-        state = SwerveModuleState.optimize(desiredState, getCanEncoderAngle());
+        //state = SwerveModuleState.optimize(desiredState, getCanCoderAngle());
         
         /*
         finds the position we need to send to the rotation motor using our PID controller
@@ -172,14 +189,18 @@ public class SwerveModule extends SubsystemBase {
         all in radians
         */
         double rotationPosition = rotationController.calculate(
-            getCanEncoderAngle().getRadians(),
-            state.angle.getRadians()
+            getCanCoderAngle().getRadians(),
+            calculateAdjustedAngle(state.angle.getRadians(), getCanCoderAngle().getRadians())
         );
 
         //sends the calculated position value to the rotation motor
-        rotationMotor.setVoltage(rotationPosition);
+        //rotationMotor.set(ControlMode.Position, rotationPosition);
 
-        SmartDashboard.putNumber("current angle of internal", getCanEncoderAngle().getRadians());
+        rotationMotor.set(ControlMode.Position, 
+            calculateAdjustedAngle(state.angle.getRadians(), 
+            getInternalRotationAngle().getRadians())/(2 * Math.PI) * 4096);
+
+        SmartDashboard.putNumber("current angle of internal", getInternalRotationAngle().getRadians());
         SmartDashboard.putNumber("adjusted angle", state.angle.getRadians());
         SmartDashboard.putNumber("Commanded Rotation", 
             rotationPosition);

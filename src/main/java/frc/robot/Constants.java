@@ -34,16 +34,16 @@ public class Constants {
 
         //PREP
         //IDs for each of the climbing motors (775 Pros + TalonSRX)
-        public static final int firstStageLeftMotorID = 10;
-        public static final int firstStageRightMotorID = 11;
-        public static final int secondStageLeftMotorID = 12;
-        public static final int secondStageRightMotorID = 13;
+        public static final int firstStageLeftMotorID = 14;
+        public static final int firstStageRightMotorID = 15;
+        public static final int secondStageLeftMotorID = 16;
+        public static final int secondStageRightMotorID = 17;
 
         //CANcoder IDs for the Swerve Modules
-        public static final int frontLeftRotationEncoderID = 14;
-        public static final int frontRightRotationEncoderID = 15;
-        public static final int backLeftRotationEncoderID = 16;
-        public static final int backRightRotationEncoderID = 17;
+        public static final int frontLeftRotationEncoderID = 10;
+        public static final int frontRightRotationEncoderID = 11;
+        public static final int backLeftRotationEncoderID = 12;
+        public static final int backRightRotationEncoderID = 13;
 
         //PREP
         //IDs for turret 
@@ -86,7 +86,7 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //PID values for drive motor in the Swerve Module class
-        public static final double drivekP = 0.05;
+        public static final double drivekP = 0.0;//0.05;
         public static final double drivekI = 0.0;
         public static final double drivekD = 0.0;
        
@@ -95,13 +95,15 @@ public class Constants {
         //Currently tuned down for testing using set voltage control?
         public static final double rotationkP = 0.5;
         public static final double rotationkI = 0.0;
-        public static final double rotationkD = 0.5;
+        public static final double rotationkD = 0.0;
 
         /*
         set factor by dividing by number of units in a rotation of the Falcon500 motor(2048) 
         and multiplying by number of radians in a rotation
         */
         public static final double FalconSensorConversionFactor = 2 * Math.PI / 2048.0;
+
+        public static final double rotationWheelGearReduction = 12.8;
 
         //wheel diameter in inches (measured accurately)
         public static final double wheelDiameterMeters = Units.inchesToMeters(3.9028);
@@ -147,8 +149,8 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //values for coefficient of static friction and for velocity (will calculate by characterizing)
-        private static final double kS = 0.6271;
-        private static final double kV = 0.7470;
+        private static final double kS = 0.0;//0.6271;
+        private static final double kV = 0.0;//0.7470;
 
 
         //creates Feed Forward calculator from the characterization values for our drive motors

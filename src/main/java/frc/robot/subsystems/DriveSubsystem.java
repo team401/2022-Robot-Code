@@ -104,12 +104,19 @@ public class DriveSubsystem extends SubsystemBase{
 
         
 
-        SmartDashboard.putNumber("frontLeft Measured", frontLeft.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("frontRight Measured", frontRight.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("backLeft Measured", backLeft.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("backRight Measured", backRight.getCanCoderAngle().getDegrees());
+        /*SmartDashboard.putNumber("frontLeft Measured", frontLeft.getInternalRotationAngle().getDegrees());
+        SmartDashboard.putNumber("frontRight Measured", frontRight.getInternalRotationAngle().getDegrees());
+        SmartDashboard.putNumber("backLeft Measured", backLeft.getInternalRotationAngle().getDegrees());
+        SmartDashboard.putNumber("backRight Measured", backRight.getInternalRotationAngle().getDegrees());*/
+
+        SmartDashboard.putNumber("frontLeft Measured", frontLeft.getInternalRotationAngleTest());
+        SmartDashboard.putNumber("frontRight Measured", frontRight.getInternalRotationAngleTest());
+        SmartDashboard.putNumber("backLeft Measured", backLeft.getInternalRotationAngle().getDegrees());
+        SmartDashboard.putNumber("backRight Measured", backRight.getInternalRotationAngleTest());
 
         SmartDashboard.putNumber("Rotation Desirec", commandedRotation);
+
+        SmartDashboard.putNumber("backleft cancoder :)", backLeft.getCanCoderAngle().getDegrees());
 
         /*SmartDashboard.putBoolean("frontLeft Within Tolerance", Math.abs(frontLeft.getCanCoderAngle().getDegrees()) < 0.5);
         SmartDashboard.putBoolean("frontRight Within Tolerance", Math.abs(frontRight.getCanCoderAngle().getDegrees()-180) < 0.5);
@@ -180,10 +187,10 @@ public class DriveSubsystem extends SubsystemBase{
     public SwerveModuleState[] getModuleStates() {
 
         SwerveModuleState[] states = {
-            new SwerveModuleState(frontLeft.getCurrentVelocityMetersPerSecond(), frontLeft.getCanEncoderAngle()),
-            new SwerveModuleState(frontRight.getCurrentVelocityMetersPerSecond(), frontRight.getCanEncoderAngle()),
-            new SwerveModuleState(backLeft.getCurrentVelocityMetersPerSecond(), backLeft.getCanEncoderAngle()),
-            new SwerveModuleState(backRight.getCurrentVelocityMetersPerSecond(), backRight.getCanEncoderAngle())            
+            new SwerveModuleState(frontLeft.getCurrentVelocityMetersPerSecond(), frontLeft.getInternalRotationAngle()),
+            new SwerveModuleState(frontRight.getCurrentVelocityMetersPerSecond(), frontRight.getInternalRotationAngle()),
+            new SwerveModuleState(backLeft.getCurrentVelocityMetersPerSecond(), backLeft.getInternalRotationAngle()),
+            new SwerveModuleState(backRight.getCurrentVelocityMetersPerSecond(), backRight.getInternalRotationAngle())            
         };
 
         return states;
@@ -196,10 +203,12 @@ public class DriveSubsystem extends SubsystemBase{
      */
     public void setModuleStates(SwerveModuleState[] moduleStates) {
 
-        frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
-        frontRight.setDesiredStateClosedLoop(moduleStates[1]);
+        //frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
+        //frontRight.setDesiredStateClosedLoop(moduleStates[1]);
         backLeft.setDesiredStateClosedLoop(moduleStates[2]);
-        backRight.setDesiredStateClosedLoop(moduleStates[3]);
+        //backRight.setDesiredStateClosedLoop(moduleStates[3]);
+
+        SmartDashboard.putNumber("module states[2]", moduleStates[2].angle.getDegrees());
 
     }
 
