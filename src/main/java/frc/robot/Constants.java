@@ -40,10 +40,10 @@ public class Constants {
         public static final int secondStageRightMotorID = 13;
 
         //CANcoder IDs for the Swerve Modules
-        public static final int frontLeftRotationEncoderID = 14;
-        public static final int frontRightRotationEncoderID = 15;
-        public static final int backLeftRotationEncoderID = 16;
-        public static final int backRightRotationEncoderID = 17;
+        public static final int frontLeftRotationEncoderID = 10;
+        public static final int frontRightRotationEncoderID = 11;
+        public static final int backLeftRotationEncoderID = 13;
+        public static final int backRightRotationEncoderID = 14;
 
         //PREP
         //IDs for turret 

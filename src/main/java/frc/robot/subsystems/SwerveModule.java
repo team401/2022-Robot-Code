@@ -94,7 +94,7 @@ public class SwerveModule extends SubsystemBase {
     public Rotation2d getCanCoderAngle() {
 
         return new Rotation2d(
-            (Units.degreesToRadians(canCoder.getAbsolutePosition()) - offset.getRadians()) % (2 * Math.PI));
+            (Units.degreesToRadians(canCoder.getAbsolutePosition()) % (2 * Math.PI)));
    
     }
     

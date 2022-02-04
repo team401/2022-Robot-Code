@@ -109,14 +109,10 @@ public class DriveSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("backLeft Measured", backLeft.getInternalRotationAngle().getDegrees());
         SmartDashboard.putNumber("backRight Measured", backRight.getInternalRotationAngle().getDegrees());*/
 
-        SmartDashboard.putNumber("frontLeft Measured", frontLeft.getInternalRotationAngleTest());
-        SmartDashboard.putNumber("frontRight Measured", frontRight.getInternalRotationAngleTest());
-        SmartDashboard.putNumber("backLeft Measured", backLeft.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("backRight Measured", backRight.getInternalRotationAngleTest());
-
-        SmartDashboard.putNumber("Rotation Desirec", commandedRotation);
-
-        SmartDashboard.putNumber("backleft cancoder :)", backLeft.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("frontLeft Measured", frontLeft.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("frontRight Measured", frontRight.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("backLeft Measured", backLeft.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("backRight Measured", backRight.getCanCoderAngle().getDegrees());
 
         /*SmartDashboard.putBoolean("frontLeft Within Tolerance", Math.abs(frontLeft.getCanCoderAngle().getDegrees()) < 0.5);
         SmartDashboard.putBoolean("frontRight Within Tolerance", Math.abs(frontRight.getCanCoderAngle().getDegrees()-180) < 0.5);
