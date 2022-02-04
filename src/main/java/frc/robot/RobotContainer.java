@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.Constants.InputDevices;
 import frc.robot.commands.drivetrain.OperatorControl;
-import frc.robot.commands.drivetrain.RunAtPercent;
 import frc.robot.subsystems.DriveSubsystem;
 import pabeles.concurrency.ConcurrencyOps.NewInstance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,11 +58,6 @@ public class RobotContainer {
 
   //where we put all of our button bindings
   private void configureButtonBindings() {
-
-    //for testing
-    //runs both the drive and rotation motors at a set speed to make sure they are all working
-    new JoystickButton(gamepad, Button.kX.value)
-      .whileHeld(new RunAtPercent(drive));
 
   }
 

@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
+import com.swervedrivespecialties.swervelib.SwerveModule;
+import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper.GearRatio;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -8,6 +11,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
@@ -15,39 +21,64 @@ import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase{
 
+    ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+
+    public static final double maxVolt = 12.0;
+
+    public static final double maxTurningSpeed = DriveConstants.maxDriveSpeed /
+        Math.hypot(DriveConstants.trackWidth / 2.0, DriveConstants.wheelBase / 2.0);
+
+
     /*
     initialize each swerve module using the parameters of Drive Motor ID, Rotation Motor ID, Rotation Encoder 
     ID (which is the CANCoder), and the initial offset 
     */
+
     private final SwerveModule frontLeft =
-        new SwerveModule(
+        Mk4SwerveModuleHelper.createFalcon500(
+            tab.getLayout("Front Left Module", BuiltInLayouts.kList)
+                    .withSize(2, 4)
+                    .withPosition(0, 0),
+            GearRatio.L2,
             CANDevices.frontLeftDriveMotorID,
-            CANDevices.frontLeftRotationMotorID,
-            CANDevices.frontLeftRotationEncoderID,
+            CANDevices.frontLeftRotationMotorID, 
+            CANDevices.frontLeftRotationEncoderID, 
             DriveConstants.frontLeftAngleOffset
         );
 
     private final SwerveModule frontRight =
-        new SwerveModule(
+        Mk4SwerveModuleHelper.createFalcon500(
+            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+                    .withSize(2, 4)
+                    .withPosition(2, 0),
+            GearRatio.L2,
             CANDevices.frontRightDriveMotorID,
-            CANDevices.frontRightRotationMotorID,
-            CANDevices.frontRightRotationEncoderID,
+            CANDevices.frontRightRotationMotorID, 
+            CANDevices.frontRightRotationEncoderID, 
             DriveConstants.frontRightAngleOffset
         );
 
     private final SwerveModule backLeft =
-        new SwerveModule(
+        Mk4SwerveModuleHelper.createFalcon500(
+            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+                    .withSize(2, 4)
+                    .withPosition(4, 0),
+            GearRatio.L2,
             CANDevices.backLeftDriveMotorID,
-            CANDevices.backLeftRotationMotorID,
-            CANDevices.backLeftRotationEncoderID,
+            CANDevices.backLeftRotationMotorID, 
+            CANDevices.backLeftRotationEncoderID, 
             DriveConstants.backLeftAngleOffset
-        );    
+        );
 
     private final SwerveModule backRight =
-        new SwerveModule(
+        Mk4SwerveModuleHelper.createFalcon500(
+            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+                    .withSize(2, 4)
+                    .withPosition(6, 0),
+            GearRatio.L2,
             CANDevices.backRightDriveMotorID,
-            CANDevices.backRightRotationMotorID,
-            CANDevices.backRightRotationEncoderID,
+            CANDevices.backRightRotationMotorID, 
+            CANDevices.backRightRotationEncoderID, 
             DriveConstants.backRightAngleOffset
         );
 
@@ -65,6 +96,8 @@ public class DriveSubsystem extends SubsystemBase{
     //initialize gyro
     private final PigeonIMU imu = new PigeonIMU(CANDevices.imuID);
 
+    private ChassisSpeeds chassisSpeed = new ChassisSpeeds(0.0, 0.0, 0.0);
+
     /**
      * Odometry model for our serve drive
      * Linear: in meters
@@ -80,18 +113,8 @@ public class DriveSubsystem extends SubsystemBase{
 
     //all that is done in the constructor is initialize offsets, reset imu, and set distance traveled to 0
     public DriveSubsystem() {
-        
+                
         resetIMU();
-
-        frontLeft.initRotationOffset();
-        frontRight.initRotationOffset();
-        backLeft.initRotationOffset();
-        backRight.initRotationOffset();
-
-        frontLeft.resetDistance();
-        frontRight.resetDistance();
-        backLeft.resetDistance();
-        backRight.resetDistance();
 
     }
 
@@ -101,42 +124,6 @@ public class DriveSubsystem extends SubsystemBase{
         
         //update the odometry with the latest heading, speed, and angle (of each module)
         odometry.update(getHeading(), getModuleStates());
-
-        
-
-        /*SmartDashboard.putNumber("frontLeft Measured", frontLeft.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("frontRight Measured", frontRight.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("backLeft Measured", backLeft.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("backRight Measured", backRight.getInternalRotationAngle().getDegrees());*/
-
-        SmartDashboard.putNumber("frontLeft Measured", frontLeft.getInternalRotationAngleTest());
-        SmartDashboard.putNumber("frontRight Measured", frontRight.getInternalRotationAngleTest());
-        SmartDashboard.putNumber("backLeft Measured", backLeft.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("backRight Measured", backRight.getInternalRotationAngleTest());
-
-        SmartDashboard.putNumber("Rotation Desirec", commandedRotation);
-
-        SmartDashboard.putNumber("backleft cancoder :)", backLeft.getCanCoderAngle().getDegrees());
-
-        /*SmartDashboard.putBoolean("frontLeft Within Tolerance", Math.abs(frontLeft.getCanCoderAngle().getDegrees()) < 0.5);
-        SmartDashboard.putBoolean("frontRight Within Tolerance", Math.abs(frontRight.getCanCoderAngle().getDegrees()-180) < 0.5);
-        SmartDashboard.putBoolean("backLeft Within Tolerance", Math.abs(backLeft.getCanCoderAngle().getDegrees()) < 0.5);
-        SmartDashboard.putBoolean("backRight Within Tolerance", Math.abs(backRight.getCanCoderAngle().getDegrees()-180) < 0.5);
-
-        SmartDashboard.putNumber("frontLeft Measured Drive", frontLeft.getDriveDistanceRadians() / (2 * Math.PI));
-        SmartDashboard.putNumber("frontRight Measured Drive", frontRight.getDriveDistanceRadians()/ (2 * Math.PI));
-        SmartDashboard.putNumber("backLeft Measured Drive", backLeft.getDriveDistanceRadians()/ (2 * Math.PI));
-        SmartDashboard.putNumber("backRight Measured Drive", backRight.getDriveDistanceRadians()/ (2 * Math.PI));
-
-        SmartDashboard.putNumber("Average Measured Drive", 
-            getAverageDriveDistanceRadians() / (2 * Math.PI)
-        );
-
-        //some useful prints that will be added to SmartDashboard for premptive debugging
-        SmartDashboard.putNumber("Heading", getHeading().getDegrees());
-        SmartDashboard.putNumber("Odometry x", odometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Odometry y", odometry.getPoseMeters().getY());*/
-        
 
     }
 
@@ -150,47 +137,19 @@ public class DriveSubsystem extends SubsystemBase{
 
     }
 
-    //testing driving with a passed in desired speed in percent
-    public void runTestatPercent(double speed) {
-
-        frontRight.setDrivePercent(speed);
-        frontLeft.setDrivePercent(speed);
-        backLeft.setDrivePercent(speed);
-        backRight.setDrivePercent(speed);
-
-    }
-
-    //testing rotation with a passed in desired speed in percent
-    public void runTestatPercentSpin(double speed) {
-
-        frontRight.setRotationPercent(speed);
-        frontLeft.setRotationPercent(speed);
-        backLeft.setRotationPercent(speed);
-        backRight.setRotationPercent(speed);
-
-    }
-
-    //stops all of the motors on the drivetrain
-    public void stopDriving() {
-
-        frontRight.setDrivePercent(0.0);
-        frontLeft.setDrivePercent(0.0);
-        backLeft.setDrivePercent(0.0);
-        backRight.setDrivePercent(0.0);
-        frontRight.setRotationPercent(0.0);
-        frontLeft.setRotationPercent(0.0);
-        backLeft.setRotationPercent(0.0);
-        backRight.setRotationPercent(0.0);
-    }
-
     //returns all of the states (spped and angle) of the swerve modules in an array
     public SwerveModuleState[] getModuleStates() {
 
+
         SwerveModuleState[] states = {
-            new SwerveModuleState(frontLeft.getCurrentVelocityMetersPerSecond(), frontLeft.getInternalRotationAngle()),
-            new SwerveModuleState(frontRight.getCurrentVelocityMetersPerSecond(), frontRight.getInternalRotationAngle()),
-            new SwerveModuleState(backLeft.getCurrentVelocityMetersPerSecond(), backLeft.getInternalRotationAngle()),
-            new SwerveModuleState(backRight.getCurrentVelocityMetersPerSecond(), backRight.getInternalRotationAngle())            
+            new SwerveModuleState(frontLeft.getDriveVelocity(), 
+                new Rotation2d(frontLeft.getSteerAngle())),
+            new SwerveModuleState(frontRight.getDriveVelocity(), 
+                new Rotation2d(frontRight.getSteerAngle())),
+            new SwerveModuleState(backLeft.getDriveVelocity(), 
+                new Rotation2d(backLeft.getSteerAngle())),
+            new SwerveModuleState(backRight.getDriveVelocity(), 
+                new Rotation2d(backRight.getSteerAngle()))            
         };
 
         return states;
@@ -201,14 +160,16 @@ public class DriveSubsystem extends SubsystemBase{
      * Sets the state of each of the module to the desired state (which includes a speed and an angle each
      * one should be at)
      */
-    public void setModuleStates(SwerveModuleState[] moduleStates) {
+    public void setModuleStates(SwerveModuleState[] states) {
 
-        //frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
-        //frontRight.setDesiredStateClosedLoop(moduleStates[1]);
-        backLeft.setDesiredStateClosedLoop(moduleStates[2]);
-        //backRight.setDesiredStateClosedLoop(moduleStates[3]);
-
-        SmartDashboard.putNumber("module states[2]", moduleStates[2].angle.getDegrees());
+        frontLeft.set(states[0].speedMetersPerSecond / DriveConstants.maxDriveSpeed 
+            * maxVolt, states[0].angle.getRadians());
+        frontRight.set(states[1].speedMetersPerSecond / DriveConstants.maxDriveSpeed 
+            * maxVolt, states[1].angle.getRadians());
+        backLeft.set(states[2].speedMetersPerSecond / DriveConstants.maxDriveSpeed 
+            * maxVolt, states[2].angle.getRadians());
+        backRight.set(states[3].speedMetersPerSecond / DriveConstants.maxDriveSpeed 
+            * maxVolt, states[3].angle.getRadians());
 
     }
 
@@ -239,6 +200,8 @@ public class DriveSubsystem extends SubsystemBase{
                     forward, strafe, rotation, getHeading())
                 : new ChassisSpeeds(forward, strafe, rotation);
         
+        chassisSpeed = speeds;
+        
         //based off of the kinematics, it'll convert it to Swerve Module States
         SwerveModuleState[] states = DriveConstants.kinematics.toSwerveModuleStates(speeds);
 
@@ -267,22 +230,15 @@ public class DriveSubsystem extends SubsystemBase{
 
     }
 
-    //resets the measured drive distance in each module (to 0)
-    public void resetDriveDistance() {
-
-        frontLeft.resetDistance();
-        frontRight.resetDistance();
-        backLeft.resetDistance();
-        backRight.resetDistance();
-
-    }
-
     //resets yaw/heading on gyro
     public void resetIMU(){
 
         imu.setYaw(0);
 
     }
+
+    /*
+        We can look at this later, but I don't think we need it anymore
 
     //finds the mean distance driven by each module in radians to get an estimae of the 
     //overall distance driven
@@ -308,6 +264,7 @@ public class DriveSubsystem extends SubsystemBase{
         );
 
     }
+    */
 
     //returns an array of all of the current values we are commanding to robot to drive
     public double[] getCommandedDriveValues() {

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -128,7 +130,9 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //Sets max speed for the drive motor, and max speed and acceleration for the rotation motor
-        public static final double maxDriveSpeed = Units.feetToMeters(10.0); //meters per a second
+        public static final double maxDriveSpeed = 6380.0 / 60.0 
+            / SdsModuleConfigurations.MK4_L2.getDriveReduction() * 
+            wheelDiameterMeters * Math.PI; //meters per a second
         public static final double maxRotationSpeed = 1.0; //radians per second
         public static final double maxRotationAcceleration = 1.0; //radians per second per second
         public static final double teleopTurnRateDegPerSec = 360.0; //degrees per second
