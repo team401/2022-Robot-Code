@@ -4,10 +4,12 @@ package frc.robot.subsystems;
 import javax.sql.rowset.RowSetFactory;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -56,6 +58,9 @@ public class SwerveModule extends SubsystemBase {
         //setting idle modes of the two motors
         driveMotor.setNeutralMode(NeutralMode.Coast);
         rotationMotor.setNeutralMode(NeutralMode.Coast);
+
+        rotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 10);
+        rotationMotor.selectProfileSlot(0, 0);
 
         //****CHANGE ME FOR TESTING****
         //sets the PID values for position in the rotation motor 
@@ -109,7 +114,7 @@ public class SwerveModule extends SubsystemBase {
         //gear reduction is needed, and we always have to divide by the # of tics in a rotation to get raidans
         return new Rotation2d((
             rotationMotor.getSelectedSensorPosition() / DriveConstants.rotationWheelGearReduction
-            / 2048 * 2 * Math.PI) % (2 * Math.PI));
+            / 2048.0 * 2 * Math.PI) % (2 * Math.PI));
 
     }
 
