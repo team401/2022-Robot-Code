@@ -108,6 +108,7 @@ public class Constants {
 
         //gear reduction for drive motor
         public static final double driveWheelGearReduction = 6.75;
+        public static final double rotationWheelGearReduction = 150.0 / 7.0;
 
         //overal conversion factor to get from the drive sensor 
         //(multiply to get radians, then divide for the wheel reduction)

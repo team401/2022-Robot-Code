@@ -102,36 +102,37 @@ public class DriveSubsystem extends SubsystemBase{
         //update the odometry with the latest heading, speed, and angle (of each module)
         odometry.update(getHeading(), getModuleStates());
 
+        SmartDashboard.putNumber("frontLeft Absolute (without offset)", 
+            frontLeft.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("frontRight Absolute (without offset)", 
+            frontRight.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("backLeft Absolute (without offset)", 
+            backLeft.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("backRight Absolute (without offset)",
+             backRight.getCanCoderAngle().getDegrees());
         
+        SmartDashboard.putNumber("frontLeft Rotation Motor Angle (used for position)", 
+            frontLeft.getInternalRotationAngle().getDegrees());
+        SmartDashboard.putNumber("frontRight Rotation Motor Angle (used for position)",
+            frontRight.getInternalRotationAngle().getDegrees());
+        SmartDashboard.putNumber("backLeft Rotation Motor Angle (used for position)", 
+            backLeft.getInternalRotationAngle().getDegrees());
+        SmartDashboard.putNumber("backRight Rotation Motor Angle (used for position)", 
+            backRight.getInternalRotationAngle().getDegrees());
 
-        /*SmartDashboard.putNumber("frontLeft Measured", frontLeft.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("frontRight Measured", frontRight.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("backLeft Measured", backLeft.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("backRight Measured", backRight.getInternalRotationAngle().getDegrees());*/
-
-        SmartDashboard.putNumber("frontLeft Measured", frontLeft.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("frontRight Measured", frontRight.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("backLeft Measured", backLeft.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("backRight Measured", backRight.getCanCoderAngle().getDegrees());
-
-        /*SmartDashboard.putBoolean("frontLeft Within Tolerance", Math.abs(frontLeft.getCanCoderAngle().getDegrees()) < 0.5);
-        SmartDashboard.putBoolean("frontRight Within Tolerance", Math.abs(frontRight.getCanCoderAngle().getDegrees()-180) < 0.5);
-        SmartDashboard.putBoolean("backLeft Within Tolerance", Math.abs(backLeft.getCanCoderAngle().getDegrees()) < 0.5);
-        SmartDashboard.putBoolean("backRight Within Tolerance", Math.abs(backRight.getCanCoderAngle().getDegrees()-180) < 0.5);
-
-        SmartDashboard.putNumber("frontLeft Measured Drive", frontLeft.getDriveDistanceRadians() / (2 * Math.PI));
-        SmartDashboard.putNumber("frontRight Measured Drive", frontRight.getDriveDistanceRadians()/ (2 * Math.PI));
-        SmartDashboard.putNumber("backLeft Measured Drive", backLeft.getDriveDistanceRadians()/ (2 * Math.PI));
-        SmartDashboard.putNumber("backRight Measured Drive", backRight.getDriveDistanceRadians()/ (2 * Math.PI));
-
-        SmartDashboard.putNumber("Average Measured Drive", 
-            getAverageDriveDistanceRadians() / (2 * Math.PI)
-        );
+        SmartDashboard.putNumber("frontLeft Desired Position", 
+            frontLeft.getDesiredPosition().getRadians());
+        SmartDashboard.putNumber("frontRight Desired Position", 
+            frontRight.getDesiredPosition().getRadians());
+        SmartDashboard.putNumber("backLeft Desired Position", 
+            backLeft.getDesiredPosition().getRadians());
+        SmartDashboard.putNumber("backRight Desired Position", 
+            backRight.getDesiredPosition().getRadians());
 
         //some useful prints that will be added to SmartDashboard for premptive debugging
         SmartDashboard.putNumber("Heading", getHeading().getDegrees());
         SmartDashboard.putNumber("Odometry x", odometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Odometry y", odometry.getPoseMeters().getY());*/
+        SmartDashboard.putNumber("Odometry y", odometry.getPoseMeters().getY());
         
 
     }
@@ -199,10 +200,10 @@ public class DriveSubsystem extends SubsystemBase{
      */
     public void setModuleStates(SwerveModuleState[] moduleStates) {
 
-        //frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
-        //frontRight.setDesiredStateClosedLoop(moduleStates[1]);
+        frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
+        frontRight.setDesiredStateClosedLoop(moduleStates[1]);
         backLeft.setDesiredStateClosedLoop(moduleStates[2]);
-        //backRight.setDesiredStateClosedLoop(moduleStates[3]);
+        backRight.setDesiredStateClosedLoop(moduleStates[3]);
 
         SmartDashboard.putNumber("module states[2]", moduleStates[2].angle.getDegrees());
 

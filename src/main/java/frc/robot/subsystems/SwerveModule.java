@@ -57,8 +57,12 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.setNeutralMode(NeutralMode.Coast);
         rotationMotor.setNeutralMode(NeutralMode.Coast);
 
-        rotationMotor.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
-        rotationMotor.config_kP(0, 0.1);
+        //****CHANGE ME FOR TESTING****
+        //sets the PID values for position in the rotation motor 
+        //untested, might work?
+        rotationMotor.config_kP(0, 1.5);
+        rotationMotor.config_kI(0, 0);
+        rotationMotor.config_kD(0, 0);
 
     }
 
@@ -94,31 +98,26 @@ public class SwerveModule extends SubsystemBase {
     public Rotation2d getCanCoderAngle() {
 
         return new Rotation2d(
-            (Units.degreesToRadians(canCoder.getAbsolutePosition()) % (2 * Math.PI)));
+            (Units.degreesToRadians(canCoder.getAbsolutePosition()) - offset.getRadians()) % ( 2 * Math.PI ));
    
     }
     
+    //**CHECK ME***
     //gets angle from the internal encoder in the rotation motor 
     public Rotation2d getInternalRotationAngle() {
 
-        /*double unsignedAngle = 
-            (rotationMotor.getSelectedSensorPosition() 
-            * DriveConstants.FalconSensorConversionFactor) % (2 * Math.PI);
-        
-        //fail-safe just in case the unsigned angle is negative
-        if (unsignedAngle < 0) unsignedAngle += 2 * Math.PI;
-
-        return new Rotation2d(unsignedAngle);*/
-
-        return new Rotation2d(-(
-            rotationMotor.getSelectedSensorPosition() / 4096 * 2 * Math.PI - offset.getRadians()) 
-            % (2 * Math.PI));
+        //gear reduction is needed, and we always have to divide by the # of tics in a rotation to get raidans
+        return new Rotation2d((
+            rotationMotor.getSelectedSensorPosition() / DriveConstants.rotationWheelGearReduction
+            / 2048 * 2 * Math.PI) % (2 * Math.PI));
 
     }
 
+    //***CHECK ME***
+    //just a test to make sure that the gear reduction is right
     public double getInternalRotationAngleTest() {
 
-        return (rotationMotor.getSelectedSensorPosition() / 12.8);
+        return (rotationMotor.getSelectedSensorPosition() / (150.0/7.0));
 
     }
 
@@ -163,10 +162,19 @@ public class SwerveModule extends SubsystemBase {
     //initializes the CANCoder to the offset measurements from its current reading
     public void initRotationOffset() {
 
-        //rotationMotor.setSelectedSensorPosition(
-            //getCanCoderAngle().getRadians() / DriveConstants.FalconSensorConversionFactor);
+        rotationMotor.setSelectedSensorPosition(
+            getCanCoderAngle().getRadians() / DriveConstants.FalconSensorConversionFactor);
 
     }
+
+    //**NEW** - Might not work
+    //will send the desired position off the PID loop in degrees
+    public Rotation2d getDesiredPosition() {
+
+        return new Rotation2d(rotationMotor.getClosedLoopTarget(0) / 2048.0);
+
+    }
+
 
     /**
     ***WIP***
@@ -183,29 +191,26 @@ public class SwerveModule extends SubsystemBase {
         //optimize method (don't need to do it again this year)
         //state = SwerveModuleState.optimize(desiredState, getCanCoderAngle());
         
-        /*
-        finds the position we need to send to the rotation motor using our PID controller
-        by using the current measured position and what the passed in state wants (with adjustment)
-        all in radians
-        */
+
+        /**
+         * OUTDATED: External PID WPI Controller
+         * we don't need the external PID controller (I believe?) since there is one internally in the
+         * motor to get the position
+         * Because of this, we can just input our desired position in?
+         * The reason it didn't work before is that we didn't change the PID values from 0, and that explains
+         * why the setVoltage method worked
+         */
         double rotationPosition = rotationController.calculate(
             getCanCoderAngle().getRadians(),
             calculateAdjustedAngle(state.angle.getRadians(), getCanCoderAngle().getRadians())
         );
 
-        //sends the calculated position value to the rotation motor
-        //rotationMotor.set(ControlMode.Position, rotationPosition);
-
+        //***NEW SECTION***
+        //sends the calculated position
+        //need to convert from radians to tics/sensor position
         rotationMotor.set(ControlMode.Position, 
             calculateAdjustedAngle(state.angle.getRadians(), 
-            getInternalRotationAngle().getRadians())/(2 * Math.PI) * 4096);
-
-        SmartDashboard.putNumber("current angle of internal", getInternalRotationAngle().getRadians());
-        SmartDashboard.putNumber("adjusted angle", state.angle.getRadians());
-        SmartDashboard.putNumber("Commanded Rotation", 
-            rotationPosition);
-        SmartDashboard.putNumber("commanded rotation in ticks", 
-            rotationPosition / DriveConstants.FalconSensorConversionFactor);
+            getInternalRotationAngle().getRadians())/(2 * Math.PI) * 2048);
 
         //calculates drive speed of the modules
         double speedRadPerSec = state.speedMetersPerSecond / (DriveConstants.wheelDiameterMeters / 2);
