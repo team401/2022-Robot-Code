@@ -60,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase{
 
     private final SwerveModule backLeft =
         Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+            tab.getLayout("Back Left Module", BuiltInLayouts.kList)
                     .withSize(2, 4)
                     .withPosition(4, 0),
             GearRatio.L2,
@@ -72,7 +72,7 @@ public class DriveSubsystem extends SubsystemBase{
 
     private final SwerveModule backRight =
         Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+            tab.getLayout("Back Right Module", BuiltInLayouts.kList)
                     .withSize(2, 4)
                     .withPosition(6, 0),
             GearRatio.L2,
@@ -124,6 +124,8 @@ public class DriveSubsystem extends SubsystemBase{
         
         //update the odometry with the latest heading, speed, and angle (of each module)
         odometry.update(getHeading(), getModuleStates());
+
+        SmartDashboard.putNumber("front left", frontLeft.getSteerAngle());
 
     }
 

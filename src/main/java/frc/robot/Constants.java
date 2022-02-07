@@ -36,16 +36,16 @@ public class Constants {
 
         //PREP
         //IDs for each of the climbing motors (775 Pros + TalonSRX)
-        public static final int firstStageLeftMotorID = 10;
+        /*public static final int firstStageLeftMotorID = 10;
         public static final int firstStageRightMotorID = 11;
         public static final int secondStageLeftMotorID = 12;
-        public static final int secondStageRightMotorID = 13;
+        public static final int secondStageRightMotorID = 13;*/
 
         //CANcoder IDs for the Swerve Modules
-        public static final int frontLeftRotationEncoderID = 14;
-        public static final int frontRightRotationEncoderID = 15;
-        public static final int backLeftRotationEncoderID = 16;
-        public static final int backRightRotationEncoderID = 17;
+        public static final int frontLeftRotationEncoderID = 10;
+        public static final int frontRightRotationEncoderID = 11;
+        public static final int backLeftRotationEncoderID = 12;
+        public static final int backRightRotationEncoderID = 13;
 
         //PREP
         //IDs for turret 
@@ -118,10 +118,10 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //static offset values based on how the swerve modules were installed (gotten manually)
-        public static final double frontLeftAngleOffset = Units.degreesToRadians(232.3);
-        public static final double frontRightAngleOffset = Units.degreesToRadians(147.7);
-        public static final double backLeftAngleOffset = Units.degreesToRadians(252.4);
-        public static final double backRightAngleOffset = Units.degreesToRadians(67.5);
+        public static final double frontLeftAngleOffset = Units.degreesToRadians(0);
+        public static final double frontRightAngleOffset = Units.degreesToRadians(330.38);
+        public static final double backLeftAngleOffset = Units.degreesToRadians(0);
+        public static final double backRightAngleOffset = Units.degreesToRadians(245.65);
 
         //**NEED TO CHANGE**
         //constants based on the distance between the center of two wheels
