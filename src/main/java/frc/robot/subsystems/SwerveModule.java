@@ -65,7 +65,7 @@ public class SwerveModule extends SubsystemBase {
         //****CHANGE ME FOR TESTING****
         //sets the PID values for position in the rotation motor 
         //untested, might work?
-        rotationMotor.config_kP(0, 1.5);
+        rotationMotor.config_kP(0, 0.5);
         rotationMotor.config_kI(0, 0);
         rotationMotor.config_kD(0, 0);
 
@@ -188,7 +188,7 @@ public class SwerveModule extends SubsystemBase {
     with the PID controller)
     EXPERIMENTAL
     */
-    public void setDesiredStateClosedLoop(SwerveModuleState desiredState) {
+    public void setDesiredStateClosedLoop(SwerveModuleState desiredState, int count) {
 
         //takes in the state
         SwerveModuleState state = desiredState;
@@ -213,9 +213,21 @@ public class SwerveModule extends SubsystemBase {
         //***NEW SECTION***
         //sends the calculated position
         //need to convert from radians to tics/sensor position
+        /*
+        when this code is commented out the rotation motors stop jittering,
+        output value (via smartdashboard) is always 0, so the motors are still moving even when
+        we output 0
+        rotationMotor.set(ControlMode.Position, 
+            calculateAdjustedAngle(state.angle.getRadians(), 
+            getInternalRotationAngle().getRadians())/(2 * Math.PI) * 2048);*/
+
+        //testing line
         rotationMotor.set(ControlMode.Position, 
             calculateAdjustedAngle(state.angle.getRadians(), 
             getInternalRotationAngle().getRadians())/(2 * Math.PI) * 2048);
+        
+        SmartDashboard.putNumber("Rotation Set " + count, calculateAdjustedAngle(state.angle.getRadians(), 
+        getInternalRotationAngle().getRadians())/(2 * Math.PI) * 2048);
 
         //calculates drive speed of the modules
         double speedRadPerSec = state.speedMetersPerSecond / (DriveConstants.wheelDiameterMeters / 2);
@@ -231,7 +243,9 @@ public class SwerveModule extends SubsystemBase {
             );
 
         //sends the sum of the two calculated velocities to the drive motor
-        driveMotor.setVoltage(driveVelocityFFCalculated + driveVelocityPIDCalculated);
+        //driveMotor.setVoltage(driveVelocityFFCalculated);// + driveVelocityPIDCalculated
+
+        //SmartDashboard.putNumber("Output Voltage", driveVelocityFFCalculated);
         
     }
 

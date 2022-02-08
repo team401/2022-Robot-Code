@@ -200,10 +200,10 @@ public class DriveSubsystem extends SubsystemBase{
      */
     public void setModuleStates(SwerveModuleState[] moduleStates) {
 
-        frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
-        frontRight.setDesiredStateClosedLoop(moduleStates[1]);
-        backLeft.setDesiredStateClosedLoop(moduleStates[2]);
-        backRight.setDesiredStateClosedLoop(moduleStates[3]);
+        frontLeft.setDesiredStateClosedLoop(moduleStates[0], 0);
+        frontRight.setDesiredStateClosedLoop(moduleStates[1], 1);
+        backLeft.setDesiredStateClosedLoop(moduleStates[2], 2);
+        backRight.setDesiredStateClosedLoop(moduleStates[3], 3);
 
         SmartDashboard.putNumber("module states[2]", moduleStates[2].angle.getDegrees());
 
