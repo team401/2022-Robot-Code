@@ -39,6 +39,8 @@ public class SwerveModule extends SubsystemBase {
     private final PIDController rotationController = new PIDController(
         DriveConstants.rotationkP, DriveConstants.rotationkI, DriveConstants.rotationkD);
 
+    private double desiredClosedLoopTargetAngle = 0.0;
+
     //Constructor
     public SwerveModule(
         int driveMotorID,
@@ -60,14 +62,19 @@ public class SwerveModule extends SubsystemBase {
         rotationMotor.setNeutralMode(NeutralMode.Coast);
 
         rotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 10);
+        rotationMotor.setSensorPhase(true);
         rotationMotor.selectProfileSlot(0, 0);
+        rotationMotor.setInverted(true);
 
         //****CHANGE ME FOR TESTING****
         //sets the PID values for position in the rotation motor 
         //untested, might work?
-        rotationMotor.config_kP(0, 1.5);
+        rotationMotor.configAllowableClosedloopError(0, 0, 30);
+        rotationMotor.config_kP(0, 0.5);
         rotationMotor.config_kI(0, 0);
         rotationMotor.config_kD(0, 0);
+
+        canCoder.configSensorDirection(false);
 
     }
 
@@ -176,7 +183,19 @@ public class SwerveModule extends SubsystemBase {
     //will send the desired position off the PID loop in degrees
     public Rotation2d getDesiredPosition() {
 
-        return new Rotation2d(rotationMotor.getClosedLoopTarget(0) / 2048.0);
+        return new Rotation2d(0 / 2048.0 * 2 * Math.PI);
+
+    }
+
+    public double getPositionPIDValue() {
+
+        return desiredClosedLoopTargetAngle / (2 * Math.PI) * 360;
+
+    }
+
+    public void clearCase() {
+
+        rotationMotor.setSelectedSensorPosition(rotationMotor.getSelectedSensorPosition() % 2 * Math.PI);
 
     }
 
@@ -213,9 +232,17 @@ public class SwerveModule extends SubsystemBase {
         //***NEW SECTION***
         //sends the calculated position
         //need to convert from radians to tics/sensor position
-        rotationMotor.set(ControlMode.Position, 
-            calculateAdjustedAngle(state.angle.getRadians(), 
-            getInternalRotationAngle().getRadians())/(2 * Math.PI) * 2048);
+
+        desiredClosedLoopTargetAngle = state.angle.getRadians(); /*calculateAdjustedAngle(
+            state.angle.getRadians(), 
+            getInternalRotationAngle().getRadians());*/
+
+        /*rotationMotor.set(ControlMode.Position, 
+            desiredClosedLoopTargetAngle / (2 * Math.PI) * 2048);*/
+
+        rotationMotor.set(TalonFXControlMode.Position, 
+            desiredClosedLoopTargetAngle / (2 * Math.PI) * 2048 * DriveConstants.rotationWheelGearReduction
+            );
 
         //calculates drive speed of the modules
         double speedRadPerSec = state.speedMetersPerSecond / (DriveConstants.wheelDiameterMeters / 2);

@@ -42,8 +42,8 @@ public class Constants {
         //CANcoder IDs for the Swerve Modules
         public static final int frontLeftRotationEncoderID = 10;
         public static final int frontRightRotationEncoderID = 11;
-        public static final int backLeftRotationEncoderID = 13;
-        public static final int backRightRotationEncoderID = 14;
+        public static final int backLeftRotationEncoderID = 12;
+        public static final int backRightRotationEncoderID = 13;
 
         //PREP
         //IDs for turret 
@@ -117,10 +117,10 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //static offset values based on how the swerve modules were installed (gotten manually)
-        public static final double frontLeftAngleOffset = Units.degreesToRadians(0.0);//232.3);
-        public static final double frontRightAngleOffset = Units.degreesToRadians(0.0);//147.7);
-        public static final double backLeftAngleOffset = Units.degreesToRadians(0.0);//252.4);
-        public static final double backRightAngleOffset = Units.degreesToRadians(0.0);//67.5);
+        public static final double frontLeftAngleOffset = Units.degreesToRadians(-12.3);//232.3);
+        public static final double frontRightAngleOffset = Units.degreesToRadians(330.9);//147.7);
+        public static final double backLeftAngleOffset = Units.degreesToRadians(-150.7);//252.4);
+        public static final double backRightAngleOffset = Units.degreesToRadians(244.95);//67.5);
 
         //**NEED TO CHANGE**
         //constants based on the distance between the center of two wheels

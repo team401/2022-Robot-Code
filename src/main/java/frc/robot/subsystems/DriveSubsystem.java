@@ -120,14 +120,10 @@ public class DriveSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("backRight Rotation Motor Angle (used for position)", 
             backRight.getInternalRotationAngle().getDegrees());
 
-        SmartDashboard.putNumber("frontLeft Desired Position", 
-            frontLeft.getDesiredPosition().getRadians());
-        SmartDashboard.putNumber("frontRight Desired Position", 
-            frontRight.getDesiredPosition().getRadians());
-        SmartDashboard.putNumber("backLeft Desired Position", 
-            backLeft.getDesiredPosition().getRadians());
-        SmartDashboard.putNumber("backRight Desired Position", 
-            backRight.getDesiredPosition().getRadians());
+        SmartDashboard.putNumber("frontLeft PID Setpoint", frontLeft.getPositionPIDValue());
+        SmartDashboard.putNumber("frontRight PID Setpoint", frontRight.getPositionPIDValue());
+        SmartDashboard.putNumber("backLeft PID Setpoint", backLeft.getPositionPIDValue());
+        SmartDashboard.putNumber("backRight PID Setpoint", backRight.getPositionPIDValue());    
 
         //some useful prints that will be added to SmartDashboard for premptive debugging
         SmartDashboard.putNumber("Heading", getHeading().getDegrees());
