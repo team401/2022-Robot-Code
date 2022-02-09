@@ -15,17 +15,17 @@ public class Constants {
     public static final class CANDevices {
 
         //drive motor IDs grouped by swerve module (Falcon 500s)
-        public static final int frontLeftRotationMotorID = 1;
         public static final int frontLeftDriveMotorID = 0;
+        public static final int frontLeftRotationMotorID = 1;
 
-        public static final int frontRightRotationMotorID = 3;
         public static final int frontRightDriveMotorID = 2;
+        public static final int frontRightRotationMotorID = 3;
 
-        public static final int backLeftRotationMotorID = 5;
         public static final int backLeftDriveMotorID = 4;
+        public static final int backLeftRotationMotorID = 5;
 
-        public static final int backRightRotationMotorID = 7;
         public static final int backRightDriveMotorID = 6;
+        public static final int backRightRotationMotorID = 7;
 
         //PREP
         //IDs for shooter motors (Falcon 500s)
@@ -34,10 +34,10 @@ public class Constants {
 
         //PREP
         //IDs for each of the climbing motors (775 Pros + TalonSRX)
-        public static final int firstStageLeftMotorID = 10;
-        public static final int firstStageRightMotorID = 11;
-        public static final int secondStageLeftMotorID = 12;
-        public static final int secondStageRightMotorID = 13;
+        public static final int firstStageLeftMotorID = 14;
+        public static final int firstStageRightMotorID = 15;
+        public static final int secondStageLeftMotorID = 16;
+        public static final int secondStageRightMotorID = 17;
 
         //CANcoder IDs for the Swerve Modules
         public static final int frontLeftRotationEncoderID = 10;
