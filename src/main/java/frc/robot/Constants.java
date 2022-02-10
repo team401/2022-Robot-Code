@@ -117,10 +117,10 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //static offset values based on how the swerve modules were installed (gotten manually)
-        public static final double frontLeftAngleOffset = Units.degreesToRadians(-12.3);//232.3);
-        public static final double frontRightAngleOffset = Units.degreesToRadians(330.9);//147.7);
-        public static final double backLeftAngleOffset = Units.degreesToRadians(-150.7);//252.4);
-        public static final double backRightAngleOffset = Units.degreesToRadians(244.95);//67.5);
+        public static final double frontLeftAngleOffset = Units.degreesToRadians(50.4);//232.3);
+        public static final double frontRightAngleOffset = Units.degreesToRadians(329.7);//147.7);
+        public static final double backLeftAngleOffset = Units.degreesToRadians(73.5);//252.4);
+        public static final double backRightAngleOffset = Units.degreesToRadians(244.8);//67.5);
 
         //**NEED TO CHANGE**
         //constants based on the distance between the center of two wheels

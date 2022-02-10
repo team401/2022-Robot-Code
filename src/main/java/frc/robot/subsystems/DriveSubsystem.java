@@ -92,6 +92,7 @@ public class DriveSubsystem extends SubsystemBase{
         frontRight.resetDistance();
         backLeft.resetDistance();
         backRight.resetDistance();
+        
 
     }
 
@@ -103,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase{
         odometry.update(getHeading(), getModuleStates());
 
         //puts the absolute value of the CanCoder
-        SmartDashboard.putNumber("frontLeft Absolute (without offset)", 
+        /*SmartDashboard.putNumber("frontLeft Absolute (without offset)", 
             frontLeft.getCanCoderAngle().getDegrees());
         SmartDashboard.putNumber("frontRight Absolute (without offset)", 
             frontRight.getCanCoderAngle().getDegrees());
@@ -130,7 +131,7 @@ public class DriveSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("backLeft PID Setpoint", 
             backLeft.getPositionPIDValue().getDegrees());
         SmartDashboard.putNumber("backRight PID Setpoint", 
-            backRight.getPositionPIDValue().getDegrees());    
+            backRight.getPositionPIDValue().getDegrees());  */  
 
         //some useful prints that will be added to SmartDashboard for premptive debugging
         SmartDashboard.putNumber("Heading", getHeading().getDegrees());
