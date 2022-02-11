@@ -30,7 +30,7 @@ public class RobotContainer {
     //sets the default command of the drive to Operator Control (normal teleop driving) 
     //this set uses the gamepad as input for easy testing on field
     //for more info, go to the command
-    drive.setDefaultCommand(
+    /*drive.setDefaultCommand(
      new OperatorControl(
         drive, 
         () -> gamepad.getLeftY(), //Left up & down
@@ -38,9 +38,9 @@ public class RobotContainer {
         () -> gamepad.getRightX(), //Right side-to-side
         true
       )
-    );
+    );*/
 
-    /*
+    
     //uncomment this to use the competition control set-up (with two joysticks rather than the gamepad)
     drive.setDefaultCommand(
      new OperatorControl(
@@ -51,7 +51,7 @@ public class RobotContainer {
         true
       )
     );
-    */
+    
 
     configureButtonBindings();
 

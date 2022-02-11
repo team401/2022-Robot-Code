@@ -79,7 +79,7 @@ public class OperatorControl extends CommandBase {
         rot = deadbandInputs(rot) * Units.degreesToRadians(DriveConstants.teleopTurnRateDegPerSec);
 
         drive.drive(
-            -fwdX,
+            fwdX,
             -fwdY,
             -rot,
             isFieldRelative

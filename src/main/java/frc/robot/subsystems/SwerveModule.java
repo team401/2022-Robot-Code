@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 
+import java.rmi.Remote;
+
 import javax.sql.rowset.RowSetFactory;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -8,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -36,8 +39,9 @@ public class SwerveModule extends SubsystemBase {
     //creating the two PID controllers using the values in our constant folder
     private final PIDController driveController = new PIDController(
         DriveConstants.drivekP, DriveConstants.drivekI, DriveConstants.drivekD);
-    private final PIDController rotationController = new PIDController(
-        DriveConstants.rotationkP, DriveConstants.rotationkI, DriveConstants.rotationkD);
+
+    //value we are sending to the PID
+    private double desiredClosedLoopTargetAngle = 0.0;
 
     //Constructor
     public SwerveModule(
@@ -46,9 +50,13 @@ public class SwerveModule extends SubsystemBase {
         int cancoderID,
         double measuredOffsetRadians
     ) {
+
+
         //initializing motors
         driveMotor = new WPI_TalonFX(driveMotorID);
         rotationMotor = new WPI_TalonFX(rotationMotorID);
+
+        rotationMotor.configFactoryDefault();
 
         //initializing CANCoder  to be from 0 to 360 and set up Offset Rotation2d for the rotation motor
         canCoder = new CANCoder(cancoderID);
@@ -59,15 +67,23 @@ public class SwerveModule extends SubsystemBase {
         driveMotor.setNeutralMode(NeutralMode.Coast);
         rotationMotor.setNeutralMode(NeutralMode.Coast);
 
-        rotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 10);
+        //configurations for our rotation motors
+        rotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 10);
+        rotationMotor.setSensorPhase(true);
         rotationMotor.selectProfileSlot(0, 0);
+        //rotationMotor.setInverted(true);
 
         //****CHANGE ME FOR TESTING****
         //sets the PID values for position in the rotation motor 
         //untested, might work?
+        rotationMotor.configAllowableClosedloopError(0, 0, 30);
         rotationMotor.config_kP(0, 0.5);
         rotationMotor.config_kI(0, 0);
         rotationMotor.config_kD(0, 0);
+        rotationMotor.configRemoteFeedbackFilter(cancoderID, RemoteSensorSource.CANCoder, 0);
+        
+        //CanCoder config
+        //canCoder.configMagnetOffset(-offset.getDegrees()); //TODO: Figure out how this works
 
     }
 
@@ -103,8 +119,8 @@ public class SwerveModule extends SubsystemBase {
     public Rotation2d getCanCoderAngle() {
 
         return new Rotation2d(
-            (Units.degreesToRadians(canCoder.getAbsolutePosition()) - offset.getRadians()) % ( 2 * Math.PI ));
-   
+            //(Units.degreesToRadians(canCoder.getAbsolutePosition()) - offset.getRadians()) % ( 2 * Math.PI ));
+            (Units.degreesToRadians(canCoder.getAbsolutePosition())) % ( 2 * Math.PI ));
     }
     
     //**CHECK ME***
@@ -117,6 +133,12 @@ public class SwerveModule extends SubsystemBase {
             / 2048.0 * 2 * Math.PI) % (2 * Math.PI));
 
     }
+
+    /*public Rotation2d setInternalRotationAngle() {
+
+        rotationMotor.setSelectedSensorPosition(getCanCoderAngle())
+
+    }*/
 
     //***CHECK ME***
     //just a test to make sure that the gear reduction is right
@@ -165,18 +187,19 @@ public class SwerveModule extends SubsystemBase {
     }
 
     //initializes the CANCoder to the offset measurements from its current reading
-    public void initRotationOffset() {
+    public void initRotation() {
 
         rotationMotor.setSelectedSensorPosition(
             getCanCoderAngle().getRadians() / DriveConstants.FalconSensorConversionFactor);
 
+        
+
     }
 
-    //**NEW** - Might not work
     //will send the desired position off the PID loop in degrees
-    public Rotation2d getDesiredPosition() {
+    public Rotation2d getPositionPIDValue() {
 
-        return new Rotation2d(rotationMotor.getClosedLoopTarget(0) / 2048.0);
+        return new Rotation2d(desiredClosedLoopTargetAngle);
 
     }
 
@@ -188,46 +211,26 @@ public class SwerveModule extends SubsystemBase {
     with the PID controller)
     EXPERIMENTAL
     */
-    public void setDesiredStateClosedLoop(SwerveModuleState desiredState, int count) {
+    public void setDesiredStateClosedLoop(SwerveModuleState desiredState) {
 
         //takes in the state
         SwerveModuleState state = desiredState;
 
-        //optimize method (don't need to do it again this year)
-        //state = SwerveModuleState.optimize(desiredState, getCanCoderAngle());
-        
-
-        /**
-         * OUTDATED: External PID WPI Controller
-         * we don't need the external PID controller (I believe?) since there is one internally in the
-         * motor to get the position
-         * Because of this, we can just input our desired position in?
-         * The reason it didn't work before is that we didn't change the PID values from 0, and that explains
-         * why the setVoltage method worked
-         */
-        double rotationPosition = rotationController.calculate(
-            getCanCoderAngle().getRadians(),
-            calculateAdjustedAngle(state.angle.getRadians(), getCanCoderAngle().getRadians())
-        );
-
         //***NEW SECTION***
         //sends the calculated position
         //need to convert from radians to tics/sensor position
-        /*
-        when this code is commented out the rotation motors stop jittering,
-        output value (via smartdashboard) is always 0, so the motors are still moving even when
-        we output 0
-        rotationMotor.set(ControlMode.Position, 
-            calculateAdjustedAngle(state.angle.getRadians(), 
-            getInternalRotationAngle().getRadians())/(2 * Math.PI) * 2048);*/
 
-        //testing line
-        rotationMotor.set(ControlMode.Position, 
-            calculateAdjustedAngle(state.angle.getRadians(), 
-            getInternalRotationAngle().getRadians())/(2 * Math.PI) * 2048);
-        
-        SmartDashboard.putNumber("Rotation Set " + count, calculateAdjustedAngle(state.angle.getRadians(), 
-        getInternalRotationAngle().getRadians())/(2 * Math.PI) * 2048);
+        /*desiredClosedLoopTargetAngle = calculateAdjustedAngle(
+            state.angle.getRadians(), 
+            getCanCoderAngle().getRadians());*/ //TODO: Fix this
+
+        desiredClosedLoopTargetAngle = calculateAdjustedAngle(
+            state.angle.getRadians(), 
+            getInternalRotationAngle().getRadians());
+
+        rotationMotor.set(TalonFXControlMode.Position, 
+            desiredClosedLoopTargetAngle / (2 * Math.PI) * 4096
+            );
 
         //calculates drive speed of the modules
         double speedRadPerSec = state.speedMetersPerSecond / (DriveConstants.wheelDiameterMeters / 2);
@@ -243,11 +246,8 @@ public class SwerveModule extends SubsystemBase {
             );
 
         //sends the sum of the two calculated velocities to the drive motor
-        //driveMotor.setVoltage(driveVelocityFFCalculated);// + driveVelocityPIDCalculated
-
-        //SmartDashboard.putNumber("Output Voltage", driveVelocityFFCalculated);
+        driveMotor.setVoltage(driveVelocityFFCalculated + driveVelocityPIDCalculated);
         
     }
-
 
 }

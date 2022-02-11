@@ -15,17 +15,17 @@ public class Constants {
     public static final class CANDevices {
 
         //drive motor IDs grouped by swerve module (Falcon 500s)
-        public static final int frontLeftRotationMotorID = 1;
         public static final int frontLeftDriveMotorID = 0;
+        public static final int frontLeftRotationMotorID = 1;
 
-        public static final int frontRightRotationMotorID = 3;
         public static final int frontRightDriveMotorID = 2;
+        public static final int frontRightRotationMotorID = 3;
 
-        public static final int backLeftRotationMotorID = 5;
         public static final int backLeftDriveMotorID = 4;
+        public static final int backLeftRotationMotorID = 5;
 
-        public static final int backRightRotationMotorID = 7;
         public static final int backRightDriveMotorID = 6;
+        public static final int backRightRotationMotorID = 7;
 
         //PREP
         //IDs for shooter motors (Falcon 500s)
@@ -34,16 +34,16 @@ public class Constants {
 
         //PREP
         //IDs for each of the climbing motors (775 Pros + TalonSRX)
-        public static final int firstStageLeftMotorID = 10;
-        public static final int firstStageRightMotorID = 11;
-        public static final int secondStageLeftMotorID = 12;
-        public static final int secondStageRightMotorID = 13;
+        public static final int firstStageLeftMotorID = 14;
+        public static final int firstStageRightMotorID = 15;
+        public static final int secondStageLeftMotorID = 16;
+        public static final int secondStageRightMotorID = 17;
 
         //CANcoder IDs for the Swerve Modules
         public static final int frontLeftRotationEncoderID = 10;
         public static final int frontRightRotationEncoderID = 11;
-        public static final int backLeftRotationEncoderID = 13;
-        public static final int backRightRotationEncoderID = 14;
+        public static final int backLeftRotationEncoderID = 12;
+        public static final int backRightRotationEncoderID = 13;
 
         //PREP
         //IDs for turret 
@@ -117,10 +117,10 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //static offset values based on how the swerve modules were installed (gotten manually)
-        public static final double frontLeftAngleOffset = Units.degreesToRadians(0.0);//232.3);
-        public static final double frontRightAngleOffset = Units.degreesToRadians(0.0);//147.7);
-        public static final double backLeftAngleOffset = Units.degreesToRadians(0.0);//252.4);
-        public static final double backRightAngleOffset = Units.degreesToRadians(0.0);//67.5);
+        public static final double frontLeftAngleOffset = Units.degreesToRadians(50.4);//232.3);
+        public static final double frontRightAngleOffset = Units.degreesToRadians(329.7);//147.7);
+        public static final double backLeftAngleOffset = Units.degreesToRadians(73.5);//252.4);
+        public static final double backRightAngleOffset = Units.degreesToRadians(244.8);//67.5);
 
         //**NEED TO CHANGE**
         //constants based on the distance between the center of two wheels

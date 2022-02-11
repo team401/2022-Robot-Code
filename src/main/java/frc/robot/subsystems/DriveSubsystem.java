@@ -83,15 +83,16 @@ public class DriveSubsystem extends SubsystemBase{
         
         resetIMU();
 
-        frontLeft.initRotationOffset();
-        frontRight.initRotationOffset();
-        backLeft.initRotationOffset();
-        backRight.initRotationOffset();
+        frontLeft.initRotation();
+        frontRight.initRotation();
+        backLeft.initRotation();
+        backRight.initRotation();
 
         frontLeft.resetDistance();
         frontRight.resetDistance();
         backLeft.resetDistance();
         backRight.resetDistance();
+        
 
     }
 
@@ -102,7 +103,8 @@ public class DriveSubsystem extends SubsystemBase{
         //update the odometry with the latest heading, speed, and angle (of each module)
         odometry.update(getHeading(), getModuleStates());
 
-        SmartDashboard.putNumber("frontLeft Absolute (without offset)", 
+        //puts the absolute value of the CanCoder
+        /*SmartDashboard.putNumber("frontLeft Absolute (without offset)", 
             frontLeft.getCanCoderAngle().getDegrees());
         SmartDashboard.putNumber("frontRight Absolute (without offset)", 
             frontRight.getCanCoderAngle().getDegrees());
@@ -111,6 +113,7 @@ public class DriveSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("backRight Absolute (without offset)",
              backRight.getCanCoderAngle().getDegrees());
         
+        //puts the value of the rotation motor internal encoder
         SmartDashboard.putNumber("frontLeft Rotation Motor Angle (used for position)", 
             frontLeft.getInternalRotationAngle().getDegrees());
         SmartDashboard.putNumber("frontRight Rotation Motor Angle (used for position)",
@@ -120,14 +123,15 @@ public class DriveSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("backRight Rotation Motor Angle (used for position)", 
             backRight.getInternalRotationAngle().getDegrees());
 
-        SmartDashboard.putNumber("frontLeft Desired Position", 
-            frontLeft.getDesiredPosition().getRadians());
-        SmartDashboard.putNumber("frontRight Desired Position", 
-            frontRight.getDesiredPosition().getRadians());
-        SmartDashboard.putNumber("backLeft Desired Position", 
-            backLeft.getDesiredPosition().getRadians());
-        SmartDashboard.putNumber("backRight Desired Position", 
-            backRight.getDesiredPosition().getRadians());
+        //setpoint for the rotation motor position PID
+        SmartDashboard.putNumber("frontLeft PID Setpoint", 
+            frontLeft.getPositionPIDValue().getDegrees());
+        SmartDashboard.putNumber("frontRight PID Setpoint", 
+            frontRight.getPositionPIDValue().getDegrees());
+        SmartDashboard.putNumber("backLeft PID Setpoint", 
+            backLeft.getPositionPIDValue().getDegrees());
+        SmartDashboard.putNumber("backRight PID Setpoint", 
+            backRight.getPositionPIDValue().getDegrees());  */  
 
         //some useful prints that will be added to SmartDashboard for premptive debugging
         SmartDashboard.putNumber("Heading", getHeading().getDegrees());
@@ -184,10 +188,14 @@ public class DriveSubsystem extends SubsystemBase{
     public SwerveModuleState[] getModuleStates() {
 
         SwerveModuleState[] states = {
-            new SwerveModuleState(frontLeft.getCurrentVelocityMetersPerSecond(), frontLeft.getInternalRotationAngle()),
-            new SwerveModuleState(frontRight.getCurrentVelocityMetersPerSecond(), frontRight.getInternalRotationAngle()),
-            new SwerveModuleState(backLeft.getCurrentVelocityMetersPerSecond(), backLeft.getInternalRotationAngle()),
-            new SwerveModuleState(backRight.getCurrentVelocityMetersPerSecond(), backRight.getInternalRotationAngle())            
+            new SwerveModuleState(frontLeft.getCurrentVelocityMetersPerSecond(), 
+                frontLeft.getInternalRotationAngle()),
+            new SwerveModuleState(frontRight.getCurrentVelocityMetersPerSecond(), 
+                frontRight.getInternalRotationAngle()),
+            new SwerveModuleState(backLeft.getCurrentVelocityMetersPerSecond(), 
+                backLeft.getInternalRotationAngle()),
+            new SwerveModuleState(backRight.getCurrentVelocityMetersPerSecond(), 
+                backRight.getInternalRotationAngle())            
         };
 
         return states;
@@ -200,10 +208,10 @@ public class DriveSubsystem extends SubsystemBase{
      */
     public void setModuleStates(SwerveModuleState[] moduleStates) {
 
-        frontLeft.setDesiredStateClosedLoop(moduleStates[0], 0);
-        frontRight.setDesiredStateClosedLoop(moduleStates[1], 1);
-        backLeft.setDesiredStateClosedLoop(moduleStates[2], 2);
-        backRight.setDesiredStateClosedLoop(moduleStates[3], 3);
+        frontLeft.setDesiredStateClosedLoop(moduleStates[0]);
+        frontRight.setDesiredStateClosedLoop(moduleStates[1]);
+        backLeft.setDesiredStateClosedLoop(moduleStates[2]);
+        backRight.setDesiredStateClosedLoop(moduleStates[3]);
 
         SmartDashboard.putNumber("module states[2]", moduleStates[2].angle.getDegrees());
 
