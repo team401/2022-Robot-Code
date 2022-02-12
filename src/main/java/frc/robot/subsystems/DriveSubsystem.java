@@ -104,19 +104,19 @@ public class DriveSubsystem extends SubsystemBase{
         odometry.update(getHeading(), getModuleStates());
 
         //puts the absolute value of the CanCoder
-        /*SmartDashboard.putNumber("frontLeft Absolute (without offset)", 
+        SmartDashboard.putNumber("frontLeft Position", 
             frontLeft.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("frontRight Absolute (without offset)", 
+        SmartDashboard.putNumber("frontRight Position", 
             frontRight.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("backLeft Absolute (without offset)", 
-            backLeft.getCanCoderAngle().getDegrees()); */
-        SmartDashboard.putNumber("backRight Absolute (without offset)",
+        SmartDashboard.putNumber("backLeft Position", 
+            backLeft.getCanCoderAngle().getDegrees());
+        SmartDashboard.putNumber("backRight Position",
              backRight.getCanCoderAngle().getDegrees());
         
         //puts the value of the rotation motor internal encoder
-        /*SmartDashboard.putNumber("frontLeft Rotation Motor Angle (used for position)", 
-            frontLeft.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("frontRight State Angle",
+        //SmartDashboard.putNumber("frontLeft Rotation Motor Angle (used for position)", 
+        //    frontLeft.getInternalRotationAngle().getDegrees());
+        /*SmartDashboard.putNumber("frontRight State Angle",
             frontRight.getStateAngle());
         SmartDashboard.putNumber("backLeft Rotation Motor Angle (used for position)", 
             backLeft.getStateAngle());*/

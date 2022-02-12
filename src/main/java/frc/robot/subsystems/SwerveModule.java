@@ -17,6 +17,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -91,8 +92,8 @@ public class SwerveModule extends SubsystemBase {
         
         //CanCoder config
         canCoder.configMagnetOffset(-offset.getDegrees()); //TODO: Figure out how this works
-
-        canCoder.setPosition(canCoder.getAbsolutePosition());
+        canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+        //canCoder.setPosition(canCoder.getAbsolutePosition());
 
     }
 
