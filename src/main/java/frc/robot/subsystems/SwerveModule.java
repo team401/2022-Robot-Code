@@ -42,6 +42,10 @@ public class SwerveModule extends SubsystemBase {
 
     //value we are sending to the PID
     private double desiredClosedLoopTargetAngle = 0.0;
+    private double desiredStateAngle = 0.0;
+    private double tolerance = Units.degreesToRadians(1.5);
+    private double difference = 0.0;
+    private double previousAngle = 0.0;
 
     //Constructor
     public SwerveModule(
@@ -62,16 +66,18 @@ public class SwerveModule extends SubsystemBase {
         canCoder = new CANCoder(cancoderID);
         canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
         offset = new Rotation2d(measuredOffsetRadians);
+        rotationMotor.configFactoryDefault();
+        canCoder.configFactoryDefault();
 
         //setting idle modes of the two motors
-        driveMotor.setNeutralMode(NeutralMode.Coast);
+        driveMotor.setNeutralMode(NeutralMode.Brake);
         rotationMotor.setNeutralMode(NeutralMode.Coast);
 
         //configurations for our rotation motors
         rotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 10);
         rotationMotor.setSensorPhase(true);
         rotationMotor.selectProfileSlot(0, 0);
-        //rotationMotor.setInverted(true);
+        rotationMotor.setInverted(true);
 
         //****CHANGE ME FOR TESTING****
         //sets the PID values for position in the rotation motor 
@@ -83,7 +89,9 @@ public class SwerveModule extends SubsystemBase {
         rotationMotor.configRemoteFeedbackFilter(cancoderID, RemoteSensorSource.CANCoder, 0);
         
         //CanCoder config
-        //canCoder.configMagnetOffset(-offset.getDegrees()); //TODO: Figure out how this works
+        canCoder.configMagnetOffset(-offset.getDegrees()); //TODO: Figure out how this works
+
+        canCoder.setPosition(canCoder.getAbsolutePosition());
 
     }
 
@@ -92,6 +100,18 @@ public class SwerveModule extends SubsystemBase {
         
         driveMotor.setSelectedSensorPosition(0.0);
     
+    }
+
+    public double getPreviousAngle() {
+
+        return Units.radiansToDegrees(previousAngle);
+
+    }
+
+    public double getDifference() {
+
+        return difference;
+
     }
 
     //returns the current encoder position in radians by multiplying from conversion factor
@@ -115,12 +135,19 @@ public class SwerveModule extends SubsystemBase {
 
     }
 
+    public double getStateAngle(){
+
+        return desiredStateAngle;
+
+    }
+
     //sends rotation with position of CanCoder angle pointing (note - if returns negative, add in if case)
     public Rotation2d getCanCoderAngle() {
 
         return new Rotation2d(
             //(Units.degreesToRadians(canCoder.getAbsolutePosition()) - offset.getRadians()) % ( 2 * Math.PI ));
-            (Units.degreesToRadians(canCoder.getAbsolutePosition())) % ( 2 * Math.PI ));
+            (Units.degreesToRadians(canCoder.getPosition())));
+
     }
     
     //**CHECK ME***
@@ -133,12 +160,6 @@ public class SwerveModule extends SubsystemBase {
             / 2048.0 * 2 * Math.PI) % (2 * Math.PI));
 
     }
-
-    /*public Rotation2d setInternalRotationAngle() {
-
-        rotationMotor.setSelectedSensorPosition(getCanCoderAngle())
-
-    }*/
 
     //***CHECK ME***
     //just a test to make sure that the gear reduction is right
@@ -166,9 +187,10 @@ public class SwerveModule extends SubsystemBase {
     //calculating the setpoint we will feed based on the desired angle and the current angle
     public double calculateAdjustedAngle(double targetAngle, double currentAngle) {
 
-        //Finds the current angle in a range of [0, 2pi]
-        double modAngle = currentAngle % (2.0 * Math.PI);
-        if (modAngle < 0.0) modAngle += 2.0 * Math.PI;
+        targetAngle += Math.PI;
+
+        if (Math.abs(currentAngle) >= (2 * Math.PI)) 
+            difference = (currentAngle) - ((currentAngle) % (2.0 * Math.PI));
 
         /*
         finds the adjusted target angle by increasing the value of the target angle 
@@ -176,12 +198,12 @@ public class SwerveModule extends SubsystemBase {
         current angle and modangle (which is equivalent to the number of full rotations
         the motor has made around in degrees, which will always be multiples of 2pi)
         */
-        double newTarget = targetAngle + (currentAngle - modAngle);
+        double newTarget = targetAngle + difference;
 
         //Optimizes the angle so make sure the wheel will never have to turn more than half a rotation
-        if (targetAngle - modAngle > Math.PI) newTarget -= 2.0 * Math.PI;
-        else if (targetAngle - modAngle < -Math.PI) newTarget += 2.0 * Math.PI;
-
+        //if (targetAngle - modAngle >= Math.PI) newTarget -= 2.0 * Math.PI;
+        //else if (targetAngle - modAngle <= -Math.PI) newTarget += 2.0 * Math.PI;
+        
         return newTarget;
 
     }
@@ -224,10 +246,14 @@ public class SwerveModule extends SubsystemBase {
             state.angle.getRadians(), 
             getCanCoderAngle().getRadians());*/ //TODO: Fix this
 
+        //state = SwerveModuleState.optimize(desiredState, new Rotation2d(getCanCoderAngle().getRadians() - Math.PI));
+
         desiredClosedLoopTargetAngle = calculateAdjustedAngle(
             state.angle.getRadians(), 
-            getInternalRotationAngle().getRadians());
+            getCanCoderAngle().getRadians());
 
+        desiredStateAngle = state.angle.getDegrees();
+                
         rotationMotor.set(TalonFXControlMode.Position, 
             desiredClosedLoopTargetAngle / (2 * Math.PI) * 4096
             );
@@ -246,7 +272,7 @@ public class SwerveModule extends SubsystemBase {
             );
 
         //sends the sum of the two calculated velocities to the drive motor
-        driveMotor.setVoltage(driveVelocityFFCalculated + driveVelocityPIDCalculated);
+        //driveMotor.setVoltage(driveVelocityFFCalculated + driveVelocityPIDCalculated);
         
     }
 
