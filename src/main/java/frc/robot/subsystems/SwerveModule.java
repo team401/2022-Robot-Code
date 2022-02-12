@@ -87,6 +87,7 @@ public class SwerveModule extends SubsystemBase {
         rotationMotor.config_kI(0, 0);
         rotationMotor.config_kD(0, 0);
         rotationMotor.configRemoteFeedbackFilter(cancoderID, RemoteSensorSource.CANCoder, 0);
+        rotationMotor.configFeedbackNotContinuous(false, 0);
         
         //CanCoder config
         canCoder.configMagnetOffset(-offset.getDegrees()); //TODO: Figure out how this works
@@ -248,14 +249,16 @@ public class SwerveModule extends SubsystemBase {
 
         //state = SwerveModuleState.optimize(desiredState, new Rotation2d(getCanCoderAngle().getRadians() - Math.PI));
 
-        desiredClosedLoopTargetAngle = calculateAdjustedAngle(
+        /*desiredClosedLoopTargetAngle = calculateAdjustedAngle(
             state.angle.getRadians(), 
-            getCanCoderAngle().getRadians());
+            getCanCoderAngle().getRadians());*/
+
+        state = optimize(state, getCanCoderAngle());
 
         desiredStateAngle = state.angle.getDegrees();
                 
         rotationMotor.set(TalonFXControlMode.Position, 
-            desiredClosedLoopTargetAngle / (2 * Math.PI) * 4096
+            state.angle.getRadians() / (2 * Math.PI) * 4096
             );
 
         //calculates drive speed of the modules
@@ -272,8 +275,46 @@ public class SwerveModule extends SubsystemBase {
             );
 
         //sends the sum of the two calculated velocities to the drive motor
-        //driveMotor.setVoltage(driveVelocityFFCalculated + driveVelocityPIDCalculated);
+        driveMotor.setVoltage(driveVelocityFFCalculated + driveVelocityPIDCalculated);
         
+    }
+
+    //ALL CREDIT TO 364 <- The literal best <3
+    public static SwerveModuleState optimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
+        double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(), desiredState.angle.getDegrees());
+        double targetSpeed = desiredState.speedMetersPerSecond;
+        double delta = targetAngle - currentAngle.getDegrees();
+        if (Math.abs(delta) > 90){
+            targetSpeed = -targetSpeed;
+            targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
+        }        
+        return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
+    }
+
+    //ALL CREDIT TO 364 <- The literal best <3
+    private static double placeInAppropriate0To360Scope(double scopeReference, double newAngle) {
+        double lowerBound;
+        double upperBound;
+        double lowerOffset = scopeReference % 360;
+        if (lowerOffset >= 0) {
+            lowerBound = scopeReference - lowerOffset;
+            upperBound = scopeReference + (360 - lowerOffset);
+        } else {
+            upperBound = scopeReference - lowerOffset;
+            lowerBound = scopeReference - (360 + lowerOffset);
+        }
+        while (newAngle < lowerBound) {
+            newAngle += 360;
+        }
+        while (newAngle > upperBound) {
+            newAngle -= 360;
+        }
+        if (newAngle - scopeReference > 180) {
+            newAngle -= 360;
+        } else if (newAngle - scopeReference < -180) {
+            newAngle += 360;
+        }
+        return newAngle;
     }
 
 }
