@@ -93,7 +93,6 @@ public class DriveSubsystem extends SubsystemBase{
         backLeft.resetDistance();
         backRight.resetDistance();
         
-
     }
 
     //runs every 20 seconds, good for updating and debugging with prints
@@ -112,28 +111,6 @@ public class DriveSubsystem extends SubsystemBase{
             backLeft.getCanCoderAngle().getDegrees());
         SmartDashboard.putNumber("backRight Position",
              backRight.getCanCoderAngle().getDegrees());
-        
-        //puts the value of the rotation motor internal encoder
-        //SmartDashboard.putNumber("frontLeft Rotation Motor Angle (used for position)", 
-        //    frontLeft.getInternalRotationAngle().getDegrees());
-        /*SmartDashboard.putNumber("frontRight State Angle",
-            frontRight.getStateAngle());
-        SmartDashboard.putNumber("backLeft Rotation Motor Angle (used for position)", 
-            backLeft.getStateAngle());*/
-        SmartDashboard.putNumber("backRight stateAngle", 
-            backRight.getStateAngle());
-
-        //setpoint for the rotation motor position PID
-        /*SmartDashboard.putNumber("frontLeft PID Setpoint", 
-            frontLeft.getPositionPIDValue().getDegrees());
-        SmartDashboard.putNumber("frontRight PID Setpoint", 
-            frontRight.getPositionPIDValue().getDegrees());
-        SmartDashboard.putNumber("backLeft PID Setpoint", 
-            backLeft.getPositionPIDValue().getDegrees());*/
-        SmartDashboard.putNumber("backRight PID Setpoint", 
-            backRight.getPositionPIDValue().getDegrees()); 
-        SmartDashboard.putNumber("backRight difference", backRight.getDifference());
-        SmartDashboard.putNumber("backRight previous angle", backRight.getPreviousAngle());
 
         //some useful prints that will be added to SmartDashboard for premptive debugging
         SmartDashboard.putNumber("Heading", getHeading().getDegrees());

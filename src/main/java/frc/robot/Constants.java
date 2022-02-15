@@ -173,6 +173,12 @@ public class Constants {
 
         //Gear reduction/increase in resoltuion from the gearing on the hood Neo 550 and Versa Planetarys
         public static final double hoodGearReduction = 80 * 5;
+
+        //Gear reduction for shooter & max speed/acceleration
+        public static final double shooterReduction = 1;
+        public static final double shooterMaxSpeed = Units.rotationsPerMinuteToRadiansPerSecond(6200);
+        public static final double shooterMaxAcceleration = Units.rotationsPerMinuteToRadiansPerSecond(2000);
+        
     }
 
     //put any exclusive auto constants in here
