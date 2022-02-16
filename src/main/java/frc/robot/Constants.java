@@ -85,12 +85,6 @@ public class Constants {
     public static final class DriveConstants {
 
         //**NEED TO CHANGE**
-        //PID values for drive motor in the Swerve Module class
-        public static final double drivekP = 0.05;
-        public static final double drivekI = 0.0;
-        public static final double drivekD = 0.0;
-       
-        //**NEED TO CHANGE**
         //PID values for rotation motor in the Swerve Module class
         //Currently tuned down for testing using set voltage control?
         public static final double rotationkP = 0.5;
@@ -117,10 +111,10 @@ public class Constants {
 
         //**NEED TO CHANGE**
         //static offset values based on how the swerve modules were installed (gotten manually)
-        public static final double frontLeftAngleOffset = Units.degreesToRadians(50.4);//232.3);
-        public static final double frontRightAngleOffset = Units.degreesToRadians(329.7);//147.7);
-        public static final double backLeftAngleOffset = Units.degreesToRadians(73.5);//252.4);
-        public static final double backRightAngleOffset = Units.degreesToRadians(244.8);//67.5);
+        public static final double frontLeftAngleOffset = Units.degreesToRadians(50.098);//232.3);
+        public static final double frontRightAngleOffset = Units.degreesToRadians(329.678);;//147.7);
+        public static final double backLeftAngleOffset = Units.degreesToRadians(73.564);//252.4);
+        public static final double backRightAngleOffset = Units.degreesToRadians(244.75);//67.5);
 
         //**NEED TO CHANGE**
         //constants based on the distance between the center of two wheels
@@ -173,6 +167,38 @@ public class Constants {
 
         //Gear reduction/increase in resoltuion from the gearing on the hood Neo 550 and Versa Planetarys
         public static final double hoodGearReduction = 80 * 5;
+
+        //Gear reduction for shooter & max speed/acceleration
+        public static final double shooterReduction = 1;
+        public static final double shooterMaxSpeed = Units.rotationsPerMinuteToRadiansPerSecond(6200);
+        public static final double shooterMaxAcceleration = Units.rotationsPerMinuteToRadiansPerSecond(2000);
+
+        //Encoder IDS (through-bore REV)
+        public static final int leftArmEncoder = 0;
+        public static final int rightArmEncoder = 1;
+
+        //PID Values for extension arm (left and right)
+        public static final double leftkPExtension = 1.0;
+        public static final double leftkIExtension = 0.0;
+        public static final double leftkDExtension = 0.0;
+        public static final double rightkPExtension = 1.0;
+        public static final double rightkIExtension = 0.0;
+        public static final double rightkDExtension = 0.0;
+
+        //PID values for rotating arm (left and right)
+        public static final double leftkPRotation = 1.0;
+        public static final double leftkIRotation = 0.0;
+        public static final double leftkDRotation = 0.0;
+        public static final double rightkPRotation = 1.0;
+        public static final double rightkIRotation = 0.0;
+        public static final double rightkDRotation = 0.0;
+
+        //motion profiling values for the arms (in rad/s)
+        public static final double maxVelocityLeftRotation = 1.5;
+        public static final double maxAccelerationLeftRotation = 1.5;
+        public static final double maxVelocityRightRotation = 1.5;
+        public static final double maxAccelerationRightRotation = 1.5;
+
     }
 
     //put any exclusive auto constants in here

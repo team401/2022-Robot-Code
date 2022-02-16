@@ -93,7 +93,6 @@ public class DriveSubsystem extends SubsystemBase{
         backLeft.resetDistance();
         backRight.resetDistance();
         
-
     }
 
     //runs every 20 seconds, good for updating and debugging with prints
@@ -104,34 +103,14 @@ public class DriveSubsystem extends SubsystemBase{
         odometry.update(getHeading(), getModuleStates());
 
         //puts the absolute value of the CanCoder
-        /*SmartDashboard.putNumber("frontLeft Absolute (without offset)", 
+        SmartDashboard.putNumber("frontLeft Position", 
             frontLeft.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("frontRight Absolute (without offset)", 
+        SmartDashboard.putNumber("frontRight Position", 
             frontRight.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("backLeft Absolute (without offset)", 
+        SmartDashboard.putNumber("backLeft Position", 
             backLeft.getCanCoderAngle().getDegrees());
-        SmartDashboard.putNumber("backRight Absolute (without offset)",
+        SmartDashboard.putNumber("backRight Position",
              backRight.getCanCoderAngle().getDegrees());
-        
-        //puts the value of the rotation motor internal encoder
-        SmartDashboard.putNumber("frontLeft Rotation Motor Angle (used for position)", 
-            frontLeft.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("frontRight Rotation Motor Angle (used for position)",
-            frontRight.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("backLeft Rotation Motor Angle (used for position)", 
-            backLeft.getInternalRotationAngle().getDegrees());
-        SmartDashboard.putNumber("backRight Rotation Motor Angle (used for position)", 
-            backRight.getInternalRotationAngle().getDegrees());
-
-        //setpoint for the rotation motor position PID
-        SmartDashboard.putNumber("frontLeft PID Setpoint", 
-            frontLeft.getPositionPIDValue().getDegrees());
-        SmartDashboard.putNumber("frontRight PID Setpoint", 
-            frontRight.getPositionPIDValue().getDegrees());
-        SmartDashboard.putNumber("backLeft PID Setpoint", 
-            backLeft.getPositionPIDValue().getDegrees());
-        SmartDashboard.putNumber("backRight PID Setpoint", 
-            backRight.getPositionPIDValue().getDegrees());  */  
 
         //some useful prints that will be added to SmartDashboard for premptive debugging
         SmartDashboard.putNumber("Heading", getHeading().getDegrees());

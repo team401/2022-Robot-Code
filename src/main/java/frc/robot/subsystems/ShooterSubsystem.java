@@ -8,6 +8,9 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -39,7 +42,11 @@ public class ShooterSubsystem extends SubsystemBase {
     private final RelativeEncoder feederEncoder = feederMotor.getEncoder();
 
     //PID Controllers 
-    private final PIDController shooterController = new PIDController(0, 0, 0); //need to use WPILib controller
+    private final ProfiledPIDController shooterController = new ProfiledPIDController(0.005, 0.005, 0, 
+        new TrapezoidProfile.Constraints(
+            SuperstructureConstants.shooterMaxSpeed * SuperstructureConstants.shooterReduction,
+            SuperstructureConstants.shooterMaxAcceleration
+        )); //need to use WPILib controller
     private final SparkMaxPIDController hoodController = hoodMotor.getPIDController(); //can use integrated REV
     private final SparkMaxPIDController turretController = turretMotor.getPIDController(); //can use integrated REV
 
@@ -62,6 +69,9 @@ public class ShooterSubsystem extends SubsystemBase {
     //set tolerance
     //invert a shooter motor
     public ShooterSubsystem() {
+
+        rightShooterMotor.configFactoryDefault();
+        leftShooterMotor.configFactoryDefault();
 
         //sets up turret PID controller
         turretController.setP(turretkP);
@@ -91,6 +101,8 @@ public class ShooterSubsystem extends SubsystemBase {
         hoodEncoder.setVelocityConversionFactor(
             2.0 * Math.PI / (SuperstructureConstants.hoodGearReduction * 60.0));
 
+        
+
     }
 
     @Override 
@@ -110,9 +122,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public void runHoodPercent() {
+    public void setHoodPosition(double position) {
 
-
+        hoodController.setReference(position, ControlType.kPosition);        
 
     }
 
