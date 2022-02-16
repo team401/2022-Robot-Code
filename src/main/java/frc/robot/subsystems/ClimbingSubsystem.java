@@ -30,5 +30,31 @@ public class ClimbingSubsystem extends SubsystemBase {
 
     }
 
+    @Override
+    public void periodic() {
+
+    }
+
+    public double getLeftExtensionEncoderValue() {
+        return leftExtensionMotor.getSelectedSensorPosition();
+    } 
+
+    public double getRightExtensionEncoderValue() {
+        return rightExtensionMotor.getSelectedSensorPosition();
+
+    }
+
+    public void setLeftExtensionPercent() {
+
+    }
+
+    public void setRightExtensionPercent() {
+
+    }
+
+
+
+
+
 
 }
