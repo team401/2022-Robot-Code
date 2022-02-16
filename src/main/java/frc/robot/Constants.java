@@ -85,12 +85,6 @@ public class Constants {
     public static final class DriveConstants {
 
         //**NEED TO CHANGE**
-        //PID values for drive motor in the Swerve Module class
-        public static final double drivekP = 0.05;
-        public static final double drivekI = 0.0;
-        public static final double drivekD = 0.0;
-       
-        //**NEED TO CHANGE**
         //PID values for rotation motor in the Swerve Module class
         //Currently tuned down for testing using set voltage control?
         public static final double rotationkP = 0.5;
@@ -178,7 +172,33 @@ public class Constants {
         public static final double shooterReduction = 1;
         public static final double shooterMaxSpeed = Units.rotationsPerMinuteToRadiansPerSecond(6200);
         public static final double shooterMaxAcceleration = Units.rotationsPerMinuteToRadiansPerSecond(2000);
-        
+
+        //Encoder IDS (through-bore REV)
+        public static final int leftArmEncoder = 0;
+        public static final int rightArmEncoder = 1;
+
+        //PID Values for extension arm (left and right)
+        public static final double leftkPExtension = 1.0;
+        public static final double leftkIExtension = 0.0;
+        public static final double leftkDExtension = 0.0;
+        public static final double rightkPExtension = 1.0;
+        public static final double rightkIExtension = 0.0;
+        public static final double rightkDExtension = 0.0;
+
+        //PID values for rotating arm (left and right)
+        public static final double leftkPRotation = 1.0;
+        public static final double leftkIRotation = 0.0;
+        public static final double leftkDRotation = 0.0;
+        public static final double rightkPRotation = 1.0;
+        public static final double rightkIRotation = 0.0;
+        public static final double rightkDRotation = 0.0;
+
+        //motion profiling values for the arms (in rad/s)
+        public static final double maxVelocityLeftRotation = 1.5;
+        public static final double maxAccelerationLeftRotation = 1.5;
+        public static final double maxVelocityRightRotation = 1.5;
+        public static final double maxAccelerationRightRotation = 1.5;
+
     }
 
     //put any exclusive auto constants in here
