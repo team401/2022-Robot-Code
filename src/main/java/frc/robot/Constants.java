@@ -185,6 +185,8 @@ public class Constants {
         public static final double rightkIExtension = 0.0;
         public static final double rightkDExtension = 0.0;
 
+        public static final double extensionMotorShaftDiameter = 0.675;
+
         //PID values for rotating arm (left and right)
         public static final double leftkPRotation = 1.0;
         public static final double leftkIRotation = 0.0;
