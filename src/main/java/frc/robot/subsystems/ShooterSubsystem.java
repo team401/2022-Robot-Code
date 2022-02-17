@@ -11,7 +11,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CANDevices;
@@ -26,15 +28,18 @@ import frc.robot.Constants.SuperstructureConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
 
+    //Falcon 500s
     private final WPI_TalonFX rightShooterMotor = new WPI_TalonFX(CANDevices.rightShooterMotorID); //Falcons
     private final WPI_TalonFX leftShooterMotor = new WPI_TalonFX(CANDevices.leftShooterMotorID);  
 
     private final MotorControllerGroup shooterMotors = new MotorControllerGroup(leftShooterMotor, rightShooterMotor);
         
-        
-    private final CANSparkMax feederMotor = new CANSparkMax(CANDevices.feederMotorID, MotorType.kBrushless); //775PRO 
-    private final CANSparkMax hoodMotor = new CANSparkMax(CANDevices.hoodMotorID, MotorType.kBrushless); //Neo550
-    private final CANSparkMax turretMotor = new CANSparkMax(CANDevices.turretMotorID, MotorType.kBrushless); //Neo
+    //775 Pro  
+    private final CANSparkMax feederMotor = new CANSparkMax(CANDevices.feederMotorID, MotorType.kBrushless); 
+    //Neo550
+    private final CANSparkMax hoodMotor = new CANSparkMax(CANDevices.hoodMotorID, MotorType.kBrushless); 
+    //Neo
+    private final CANSparkMax turretMotor = new CANSparkMax(CANDevices.turretMotorID, MotorType.kBrushless); 
 
     //Encoders
     private final RelativeEncoder turretEncoder = turretMotor.getEncoder();
@@ -63,15 +68,22 @@ public class ShooterSubsystem extends SubsystemBase {
     private final double hoodkD = 0.0;
 
     private final double tolerance = 0.01; //radians
+    private final double shooterTolerance = Units.rotationsPerMinuteToRadiansPerSecond(150);
+    private double desiredSpeed;
+    private double hoodDesired;
+
+    private Timer timer;
+    
 
     //TO DO
     //zero the turret
     //set tolerance
-    //invert a shooter motor
     public ShooterSubsystem() {
 
         rightShooterMotor.configFactoryDefault();
         leftShooterMotor.configFactoryDefault();
+
+        rightShooterMotor.setInverted(true);
 
         //sets up turret PID controller
         turretController.setP(turretkP);
@@ -101,20 +113,25 @@ public class ShooterSubsystem extends SubsystemBase {
         hoodEncoder.setVelocityConversionFactor(
             2.0 * Math.PI / (SuperstructureConstants.hoodGearReduction * 60.0));
 
-        
+        timer.start();
+        timer.reset();
 
     }
 
     @Override 
     public void periodic() {
 
+        SmartDashboard.putNumber("desired shooter speed", desiredSpeed);
+        SmartDashboard.putNumber("desired hood position", hoodDesired);
+        SmartDashboard.putNumber("current hood position", getHoodPositionRadians());
+
+        if (!(Math.abs(desiredSpeed - getFlywheelVelocityRadPerSec()) < shooterTolerance)) timer.reset();
+
     }    
 
-    public void runShooterPercent(double percent) {
-
-        shooterMotors.set(percent);
-
-    }
+    /**
+     * FEEDER METHODS
+     */
 
     public void runFeederPercent(double percent) {
 
@@ -122,11 +139,21 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public void setHoodPosition(double position) {
+    public void reverseFeederPercent(double percent) {
 
-        hoodController.setReference(position, ControlType.kPosition);        
+        feederMotor.set(-percent);
 
     }
+
+    public void stopFeeder() {
+
+        feederMotor.set(0);
+
+    }
+
+    /**
+     * TURRET METHOD
+     */
 
     //runs turret at given percent
     public void runTurretPercent(double speed) {
@@ -180,7 +207,20 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    //sets value of hood encoder to what is passed in
+    //is it within the bounds?
+    public boolean isWithinEdges() {
+
+        return (
+            SuperstructureConstants.leftTurretExtrema - getTurretPositionRadians() < tolerance && 
+            SuperstructureConstants.rightTurretExtrema - getTurretPositionRadians() > tolerance);
+
+    }
+
+    /**
+     * HOOD METHODS
+     */
+
+    //sets value of hood encoder to what is passed in 
     public void setHoodEncoder(double desiredPosition){
 
         hoodEncoder.setPosition(desiredPosition);
@@ -212,18 +252,56 @@ public class ShooterSubsystem extends SubsystemBase {
     public void hoodSetDesiredClosedState(double desiredPosition) {
 
         hoodController.setReference(
-            getHoodPositionRadians(),
+            desiredPosition,
             ControlType.kPosition
         );
 
+        hoodDesired = desiredPosition;
+
     }
 
-    //is it within the bounds?
-    public boolean isWithinEdges() {
+    /**
+     * SHOOTER METHODS
+     */
 
-        return (
-            SuperstructureConstants.leftTurretExtrema - getTurretPositionRadians() < tolerance && 
-            SuperstructureConstants.rightTurretExtrema - getTurretPositionRadians() > tolerance);
+    //converts raw sensor units per 100 ms to rad / s
+    public double getFlywheelVelocityRadPerSec() {
+
+        return leftShooterMotor.getSelectedSensorVelocity() / 2048 * 2 * Math.PI * 10 
+            * SuperstructureConstants.turretGearReduction;
+
+    }
+
+    //runs at percent
+    public void runShooterPercent(double percent) {
+
+        shooterMotors.set(percent);
+
+    }
+
+    //sets the velocity using the profiled pid
+    public void runShooterVelocityProfiledController(double desiredSpeedRadPerSec){
+
+        desiredSpeed = desiredSpeedRadPerSec;
+        double powerOut = shooterController.calculate(
+             getFlywheelVelocityRadPerSec(),
+             desiredSpeedRadPerSec
+        );
+
+        shooterMotors.set(powerOut);
+
+    }
+
+    //stops shooter
+    public void stopShooter() {
+
+        shooterMotors.set(0);
+
+    }
+
+    public boolean atGoal() {
+
+        return timer.get() >= 0.25;
 
     }
 

@@ -1,4 +1,4 @@
-package frc.robot.commands.turret.manual;
+package frc.robot.commands.superstructure.turret.manual;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
