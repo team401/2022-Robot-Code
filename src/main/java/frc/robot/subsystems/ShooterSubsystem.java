@@ -38,11 +38,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private final CANSparkMax feederMotor = new CANSparkMax(CANDevices.feederMotorID, MotorType.kBrushless); 
     //Neo550
     private final CANSparkMax hoodMotor = new CANSparkMax(CANDevices.hoodMotorID, MotorType.kBrushless); 
-    //Neo
-    private final CANSparkMax turretMotor = new CANSparkMax(CANDevices.turretMotorID, MotorType.kBrushless); 
 
     //Encoders
-    private final RelativeEncoder turretEncoder = turretMotor.getEncoder();
     private final RelativeEncoder hoodEncoder = hoodMotor.getEncoder();
     private final RelativeEncoder feederEncoder = feederMotor.getEncoder();
 
@@ -53,13 +50,6 @@ public class ShooterSubsystem extends SubsystemBase {
             SuperstructureConstants.shooterMaxAcceleration
         )); //need to use WPILib controller
     private final SparkMaxPIDController hoodController = hoodMotor.getPIDController(); //can use integrated REV
-    private final SparkMaxPIDController turretController = turretMotor.getPIDController(); //can use integrated REV
-
-    //**NEED TO CHANGE**
-    //PID Values for Turret
-    private final double turretkP = 0.0;
-    private final double turretkI = 0.0;
-    private final double turretkD = 0.0;
 
     //**NEED TO CHANGE**
     //PID Values for Hood
@@ -67,7 +57,6 @@ public class ShooterSubsystem extends SubsystemBase {
     private final double hoodkI = 0.0;
     private final double hoodkD = 0.0;
 
-    private final double tolerance = 0.01; //radians
     private final double shooterTolerance = Units.rotationsPerMinuteToRadiansPerSecond(150);
     private double desiredSpeed;
     private double hoodDesired;
@@ -85,24 +74,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
         rightShooterMotor.setInverted(true);
 
-        //sets up turret PID controller
-        turretController.setP(turretkP);
-        turretController.setI(turretkI);
-        turretController.setD(turretkD);
-
         //sets up hood PID Controller
         hoodController.setP(hoodkP);
         hoodController.setI(hoodkI);
         hoodController.setD(hoodkD);
-
-        /**
-         * sets the turretEncoder position and velocity to be based off of radians and 
-         * radians per sec of the structure
-         */
-        turretEncoder.setPositionConversionFactor(
-            2.0 * Math.PI / SuperstructureConstants.turretGearReduction);
-        turretEncoder.setVelocityConversionFactor(
-            2.0 * Math.PI / (SuperstructureConstants.turretGearReduction * 60.0));
 
         /**
          * sets the turretEncoder position and velocity to be based off of radians and 
@@ -148,71 +123,6 @@ public class ShooterSubsystem extends SubsystemBase {
     public void stopFeeder() {
 
         feederMotor.set(0);
-
-    }
-
-    /**
-     * TURRET METHOD
-     */
-
-    //runs turret at given percent
-    public void runTurretPercent(double speed) {
-
-        turretMotor.set(speed);
-        
-    }
-
-    //runs turret based on given voltage for the motor
-    public void runTurretVoltage(double volts) {
-
-        turretMotor.setVoltage(volts);
-
-    }
-
-    public double getTurretPositionRadians() {
-
-        //no change is needed in the gear ratio since we set the conversion factor above
-        return turretEncoder.getPosition(); 
-
-    }
-
-    //returns velocity in rad per sec
-    public double getTurretVelocityCurrent() {
-
-        return turretEncoder.getVelocity();
-
-    }
-
-    //sets value of turret encoder to what is passed in
-    public void setTurretEncoder(double desiredPosition){
-
-        turretEncoder.setPosition(desiredPosition);
-
-    }
-
-    //sets the position of the Turret Encoder to 0 (in radians)
-    public void resetTurretEncoder() {
-
-        turretEncoder.setPosition(0.0);
-
-    }
-
-    //Uses the Turret PID Controller to go to the desired position
-    public void turretSetDesiredClosedState(double desiredPosition) {
-
-        turretController.setReference(
-            getTurretPositionRadians(), 
-            ControlType.kPosition
-        );
-
-    }
-
-    //is it within the bounds?
-    public boolean isWithinEdges() {
-
-        return (
-            SuperstructureConstants.leftTurretExtrema - getTurretPositionRadians() < tolerance && 
-            SuperstructureConstants.rightTurretExtrema - getTurretPositionRadians() > tolerance);
 
     }
 
