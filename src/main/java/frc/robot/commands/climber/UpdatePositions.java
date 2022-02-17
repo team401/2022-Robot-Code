@@ -36,6 +36,8 @@ public class UpdatePositions extends CommandBase {
     public void end(boolean isInterrupted) {
         climbingSubsystem.setLeftRotationPercent(0);
         climbingSubsystem.setRightRotationPercent(0);
+
+        climbingSubsystem.resetControllers();
     }
 
     @Override

@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.ClimberConstants;
@@ -25,8 +26,6 @@ public class ClimbSubsystem extends SubsystemBase {
     private final WPI_TalonSRX leftRotationMotor = new WPI_TalonSRX(CANDevices.leftRotationMotorID);
     private final WPI_TalonSRX rightRotationMotor = new WPI_TalonSRX(CANDevices.rightRotationMotorID);
 
-    // TODO: Add mag encoders
-
     private final DutyCycleEncoder leftRotationEncoder = new DutyCycleEncoder(SuperstructureConstants.leftArmEncoder);
     private final DutyCycleEncoder rightRotationEncoder = new DutyCycleEncoder(SuperstructureConstants.rightArmEncoder);
 
@@ -40,7 +39,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     // Goal Tolerance
     // TODO: Change value
-    private double tolerance = Units.degreesToRadians(420);
+    private double tolerance = Units.degreesToRadians(1);
 
     // Boundaries
     // TODO: Change values
@@ -74,8 +73,18 @@ public class ClimbSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
+        SmartDashboard.putNumber("Left Rotation Encoder", getLeftRotationEncoderValue());
+        SmartDashboard.putNumber("Right Rotation Encoder", getRightRotationEncoderValue());
+
+        SmartDashboard.putNumber("Left Telescope Encoder", getLeftTelescopeEncoderValue());
+        SmartDashboard.putNumber("Right Telescope Encoder", getRightTelescopeEncoderValue());
+
+        SmartDashboard.putNumber("Left Telescope Velocity", getLeftTelescopeVelocity());
+        SmartDashboard.putNumber("Right Telescope Velocity", getRightTelescopeVelocity());
+
     }
 
+    // Get encoder value methods
     public double getLeftRotationEncoderValue() {
         return leftRotationEncoder.getDistance();
     }
@@ -92,6 +101,17 @@ public class ClimbSubsystem extends SubsystemBase {
         return rightTelescopeMotor.getSelectedSensorPosition();
     }
 
+    public double getLeftTelescopeVelocity() {
+        // * 10 converts from units per 100ms to units per 1s
+        return leftTelescopeMotor.getSelectedSensorVelocity() * 10;
+    }
+
+    public double getRightTelescopeVelocity() {
+        // * 10 converts from units per 100ms to units per 1s
+        return rightTelescopeMotor.getSelectedSensorVelocity() * 10;
+    }
+
+    // Get amp value methods
     public double getLeftTelescopeAmps() {
         return leftTelescopeMotor.getStatorCurrent();
     } 
@@ -100,6 +120,7 @@ public class ClimbSubsystem extends SubsystemBase {
         return rightTelescopeMotor.getStatorCurrent();
     }
 
+    // Set percent methods
     public void setLeftRotationPercent(double percent) {
         leftRotationMotor.set(ControlMode.PercentOutput, percent);
     }
@@ -116,6 +137,7 @@ public class ClimbSubsystem extends SubsystemBase {
         rightTelescopeMotor.set(ControlMode.PercentOutput, percent);
     }
 
+    // Set desired position methods
     public void setLeftDesiredRotationPosition(double desiredRadians) {
 
         goalLeftRotationPosition = desiredRadians;
@@ -132,6 +154,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     }
 
+    // Idk what to call methods like atGoal and withinBoundaries
     public boolean atGoal() {
         return Math.abs(getLeftRotationEncoderValue()) <= tolerance && 
                 Math.abs(getRightRotationEncoderValue()) <= tolerance;

@@ -228,12 +228,16 @@ public class Constants {
         // TODO: Update values
         public static final double defaultArmPosition = 0;
         public static final double intakeArmPosition = 0;
-        public static final double backArmPosition = 0; // TODO: why?
+        public static final double backArmPosition = 0; // TODO: ask what the back arm position for?
         public static final double climbArmPosition = 0;
 
         // TODO: Update values
         public static final double leftRotationOffset = 0;
         public static final double rightRotationOffset = 0;
+
+        // TODO: Update values
+        public static final double leftTelescopeMaxHeight = 0;
+        public static final double rightTelescopeMaxHeight = 0;
     }
 
 }

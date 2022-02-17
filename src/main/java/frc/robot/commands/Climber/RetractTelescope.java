@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.ClimbSubsystem;
 
-public class ExtendTelescope extends CommandBase {
+public class RetractTelescope extends CommandBase {
 
     private final ClimbSubsystem climbingSubsystem;
 
-    public ExtendTelescope(ClimbSubsystem climber) {
+    public RetractTelescope(ClimbSubsystem climber) {
         climbingSubsystem = climber;
 
         addRequirements(climbingSubsystem);
@@ -17,8 +17,8 @@ public class ExtendTelescope extends CommandBase {
     @Override
     public void execute() {
 
-        climbingSubsystem.setLeftTelescopePercent(0.1);
-        climbingSubsystem.setRightTelescopePercent(0.1);
+        climbingSubsystem.setLeftTelescopePercent(-0.1);
+        climbingSubsystem.setRightTelescopePercent(-0.1);
 
     }
 
