@@ -170,6 +170,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
+    public void runHoodPercent(double percent) {
+
+        hoodMotor.set(percent);
+
+    }
+
     /**
      * SHOOTER METHODS
      */

@@ -16,8 +16,9 @@ public class FirstBarClimb extends CommandBase {
     }
 
     @Override
-    public void periodic() {
-        
+    public void execute() {
+
     }
-    
 }
+
+    
