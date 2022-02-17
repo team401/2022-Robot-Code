@@ -64,7 +64,7 @@ public class ClimbSubsystem extends SubsystemBase {
         rightTelescopeMotor.setNeutralMode(NeutralMode.Brake);
         leftRotationMotor.setNeutralMode(NeutralMode.Brake);
 
-        // TODO: Change values
+        // TODO: Do we need to change values?
         leftRotationEncoder.setDistancePerRotation(2 * Math.PI);
         rightRotationEncoder.setDistancePerRotation(2 * Math.PI);
 

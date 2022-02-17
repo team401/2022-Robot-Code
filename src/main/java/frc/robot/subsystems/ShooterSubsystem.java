@@ -64,7 +64,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private Timer timer;
     
 
-    //TO DO
+    //TODO
     //zero the turret
     //set tolerance
     public ShooterSubsystem() {
