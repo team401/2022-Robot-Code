@@ -34,10 +34,10 @@ public class Constants {
 
         //PREP
         //IDs for each of the climbing motors (775 Pros + TalonSRX)
-        public static final int firstStageLeftMotorID = 14;
-        public static final int firstStageRightMotorID = 15;
-        public static final int secondStageLeftMotorID = 16;
-        public static final int secondStageRightMotorID = 17;
+        public static final int leftRotationMotorID = 14;
+        public static final int rightRotationMotorID = 15;
+        public static final int leftTelescopingMotorID = 16;
+        public static final int rightTelescopingMotorID = 17;
 
         //CANcoder IDs for the Swerve Modules
         public static final int frontLeftRotationEncoderID = 10;
@@ -52,8 +52,9 @@ public class Constants {
         public static final int feederMotorID = 21; //775 Pro
 
         //PREP
-        //IDs for Intake
+        //IDs for Intake & Indexing
         public static final int intakeMotorID = 22; //775 Pro
+        public static final int conveyorMotorID = 23;
 
         //ID for Pigeon
         public static final int imuID = 20;
@@ -64,8 +65,8 @@ public class Constants {
     public static final class DIOChannels {
 
         //For the encoders on each of the swinging arms
-        public static final int leftSwingEncoder = 0;
-        public static final int rightSwingEncoder = 1;
+        public static final int topBannerPort = 0;
+        public static final int bottomBannerPort = 1;
 
     }
 
@@ -201,6 +202,10 @@ public class Constants {
         public static final double maxVelocityRightRotation = 1.5;
         public static final double maxAccelerationRightRotation = 1.5;
 
+        //power constants
+        public static final double conveyorPower = 0.4;
+        public static final double jogFowardPower = 0.3;
+
     }
 
     //put any exclusive auto constants in here
@@ -211,6 +216,24 @@ public class Constants {
         public static final double maxVelocityMetersPerSec = 2.0;
         public static final double maxAccelerationMetersPerSecondPerSecond = 1.0;
 
+    }
+
+    public static final class ClimberConstants {
+
+        // TODO: Update value
+        public static final double rotationArmGearRation = 1;
+
+        public static final double rotationEncoderConversionFactor = (2 * Math.PI) * 4096 / rotationArmGearRation;
+
+        // TODO: Update values
+        public static final double defaultArmPosition = 0;
+        public static final double intakeArmPosition = 0;
+        public static final double backArmPosition = 0; // TODO: why?
+        public static final double climbArmPosition = 0;
+
+        // TODO: Update values
+        public static final double leftRotationOffset = 0;
+        public static final double rightRotationOffset = 0;
     }
 
 }
