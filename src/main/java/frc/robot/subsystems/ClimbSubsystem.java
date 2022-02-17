@@ -20,10 +20,10 @@ import frc.robot.Constants.SuperstructureConstants;
 public class ClimbSubsystem extends SubsystemBase {
 
     //sets up our two climbing arms (each which has two motors: one who can rotate and one who can't)
-    private final WPI_TalonSRX leftTelescopeMotor = new WPI_TalonSRX(CANDevices.firstStageLeftMotorID);
-    private final WPI_TalonSRX rightTelescopeMotor = new WPI_TalonSRX(CANDevices.firstStageRightMotorID);
-    private final WPI_TalonSRX leftRotationMotor = new WPI_TalonSRX(CANDevices.secondStageLeftMotorID);
-    private final WPI_TalonSRX rightRotationMotor = new WPI_TalonSRX(CANDevices.secondStageRightMotorID);
+    private final WPI_TalonSRX leftTelescopeMotor = new WPI_TalonSRX(CANDevices.leftTelescopingMotorID);
+    private final WPI_TalonSRX rightTelescopeMotor = new WPI_TalonSRX(CANDevices.rightTelescopingMotorID);
+    private final WPI_TalonSRX leftRotationMotor = new WPI_TalonSRX(CANDevices.leftRotationMotorID);
+    private final WPI_TalonSRX rightRotationMotor = new WPI_TalonSRX(CANDevices.rightRotationMotorID);
 
     // TODO: Add mag encoders
 
