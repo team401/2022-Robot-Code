@@ -5,6 +5,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /**TO DO
@@ -18,6 +19,7 @@ public class Wrapping extends CommandBase {
     //the instances of the two subsystems needed
     VisionSubsystem visionSubsystem;
     ShooterSubsystem shooterSubsystem;
+    TurretSubsystem turretSubsystem;
 
     //PID we use to calculate the velocity we should give to our turret and gives in volts
     private PIDController turretWrappingPIDController = new PIDController(0, 0, 0);
@@ -29,10 +31,11 @@ public class Wrapping extends CommandBase {
     private boolean isFinished = false;
     
     //constructor
-    public Wrapping(VisionSubsystem vision, ShooterSubsystem shooter) {
+    public Wrapping(VisionSubsystem vision, ShooterSubsystem shooter, TurretSubsystem turret) {
 
         visionSubsystem = vision;
         shooterSubsystem = shooter;
+        turretSubsystem = turret;
 
         //we use the vision subsystem and shooter subsystem for this method
         addRequirements(vision, shooter);
@@ -43,7 +46,7 @@ public class Wrapping extends CommandBase {
     public void initialize() {
 
         //get the position and see which side is closest, and that determines the direction
-        double currentRotation = shooterSubsystem.getTurretPositionRadians();
+        double currentRotation = turretSubsystem.getTurretPositionRadians();
         if (currentRotation < 0)
             direction = 1;
         else
@@ -55,22 +58,22 @@ public class Wrapping extends CommandBase {
     public void execute() {
 
         //if we reach the edge of the turret, invert the direction
-        if (Math.abs(shooterSubsystem.getTurretPositionRadians()) > SuperstructureConstants.turretEdge) 
+        if (Math.abs(turretSubsystem.getTurretPositionRadians()) > SuperstructureConstants.turretEdge) 
             direction = -direction;
 
         //if the tx is greater than our tolerance (not locked on), we use PID control to send it to the edge 
         if (!visionSubsystem.withinTolerance()) {
 
             double output = turretWrappingPIDController.calculate(
-                shooterSubsystem.getTurretPositionRadians(), 
+                turretSubsystem.getTurretPositionRadians(), 
                 direction*SuperstructureConstants.turretEdge
             );
-            shooterSubsystem.runTurretVoltage(output);
+            turretSubsystem.runTurretVoltage(output);
 
         } else { //if we are within the tolerance, we mark our flag as finished and go to tracking
 
             isFinished = true;
-            new Tracking(visionSubsystem, shooterSubsystem).schedule();;
+            new Tracking(visionSubsystem, shooterSubsystem, turretSubsystem).schedule();;
 
         }
 

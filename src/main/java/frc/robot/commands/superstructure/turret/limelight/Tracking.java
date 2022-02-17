@@ -2,6 +2,7 @@ package frc.robot.commands.superstructure.turret.limelight;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,6 +18,7 @@ public class Tracking extends CommandBase {
     //needed subsystems for our command
     private final VisionSubsystem visionSubsystem;
     private final ShooterSubsystem shooterSubsystem;
+    private final TurretSubsystem turretSubsystem;
 
     //PID we use to calculate the velocity we should give to our turret and gives in volts
     private PIDController turretTrackingPIDController = new PIDController(0, 0, 0);
@@ -27,10 +29,11 @@ public class Tracking extends CommandBase {
     private double tolerance = 0.025;
 
     //constructor
-    public Tracking(VisionSubsystem vision, ShooterSubsystem shooter) {
+    public Tracking(VisionSubsystem vision, ShooterSubsystem shooter, TurretSubsystem turret) {
 
         visionSubsystem = vision;
         shooterSubsystem = shooter;
+        turretSubsystem = turret;
 
         //subsystems that are required to run this method
         addRequirements(vision, shooter);
@@ -40,12 +43,12 @@ public class Tracking extends CommandBase {
     @Override
     public void execute() {
         
-        if (visionSubsystem.hasValidTarget() && shooterSubsystem.isWithinEdges()) {
+        if (visionSubsystem.hasValidTarget() && turretSubsystem.isWithinEdges()) {
             
             //calculates velocity(voltage) we should give to the motor controller
             double outputVoltage = turretTrackingPIDController.calculate(
                 visionSubsystem.gettX(), tolerance); 
-            shooterSubsystem.runTurretVoltage(outputVoltage);
+            turretSubsystem.runTurretVoltage(outputVoltage);
 
             //puts if is in tolerance 
             SmartDashboard.putBoolean("Locked onto Target?", (visionSubsystem.gettX() < tolerance));
@@ -56,11 +59,11 @@ public class Tracking extends CommandBase {
             isFinished = true;
             new Searching(visionSubsystem, shooterSubsystem).schedule();
             
-        } else if (!shooterSubsystem.isWithinEdges()) {
+        } else if (!turretSubsystem.isWithinEdges()) {
             
             //if we reach the edge of turret range, go to Wrapping
             isFinished = true;
-            new Wrapping(visionSubsystem, shooterSubsystem).schedule();
+            new Wrapping(visionSubsystem, shooterSubsystem, turretSubsystem).schedule();
             
         }
         
