@@ -213,4 +213,22 @@ public class Constants {
 
     }
 
+    public static final class ClimberConstants {
+
+        // TODO: Update value
+        public static final double rotationArmGearRation = 1;
+
+        public static final double rotationEncoderConversionFactor = (2 * Math.PI) * 4096 / rotationArmGearRation;
+
+        // TODO: Update values
+        public static final double defaultArmPosition = 0;
+        public static final double intakeArmPosition = 0;
+        public static final double backArmPosition = 0; // TODO: why?
+        public static final double climbArmPosition = 0;
+
+        // TODO: Update values
+        public static final double leftRotationOffset = 0;
+        public static final double rightRotationOffset = 0;
+    }
+
 }
