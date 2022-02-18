@@ -124,10 +124,12 @@ public class ClimbSubsystem extends SubsystemBase {
 
     // Set percent methods
     public void setLeftRotationPercent(double percent) {
+        SmartDashboard.putNumber("Left Percent Output", percent);
         leftRotationMotor.set(ControlMode.PercentOutput, percent);
     }
 
     public void setRightRotationPercent(double percent) {
+        SmartDashboard.putNumber("right Percent Output", percent);
         rightRotationMotor.set(ControlMode.PercentOutput, percent);
     }
 

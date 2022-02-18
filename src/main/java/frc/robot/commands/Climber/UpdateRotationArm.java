@@ -1,15 +1,16 @@
-package frc.robot.commands.climber;
+package frc.robot.commands.Climber;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbSubsystem;
 
-public class UpdatePositions extends CommandBase {
+public class UpdateRotationArm extends CommandBase {
 
     private final ClimbSubsystem climbingSubsystem;
 
     private final double desiredPositionRadians;
     
-    public UpdatePositions(ClimbSubsystem climber, double desired) {
+    public UpdateRotationArm(ClimbSubsystem climber, double desired) {
 
         climbingSubsystem = climber;
 
@@ -27,8 +28,12 @@ public class UpdatePositions extends CommandBase {
     @Override
     public void execute() {
 
-        climbingSubsystem.setLeftDesiredRotationPosition(desiredPositionRadians);
-        climbingSubsystem.setRightDesiredRotationPosition(desiredPositionRadians);
+        /*climbingSubsystem.setLeftDesiredRotationPosition(desiredPositionRadians);
+        climbingSubsystem.setRightDesiredRotationPosition(desiredPositionRadians);*/
+
+        climbingSubsystem.setLeftRotationPercent(0.45);
+        climbingSubsystem.setRightRotationPercent(0.45);
+
         
     }
 
@@ -42,7 +47,7 @@ public class UpdatePositions extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return climbingSubsystem.atGoal() || !climbingSubsystem.withinBoundaries();
+        return false;//climbingSubsystem.atGoal() || !climbingSubsystem.withinBoundaries();
     }
     
 }

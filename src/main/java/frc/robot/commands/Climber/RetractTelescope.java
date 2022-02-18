@@ -1,4 +1,4 @@
-package frc.robot.commands.climber;
+package frc.robot.commands.Climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimberConstants;
@@ -33,8 +33,8 @@ public class RetractTelescope extends CommandBase {
         // TODO: change velocity values
         return climbingSubsystem.getLeftTelescopeEncoderValue() >= ClimberConstants.leftTelescopeMaxHeight || 
                 climbingSubsystem.getRightTelescopeEncoderValue() >= ClimberConstants.rightTelescopeMaxHeight ||
-                Math.abs(climbingSubsystem.getLeftTelescopeVelocity()) < 0.05 || 
-                Math.abs(climbingSubsystem.getRightTelescopeVelocity()) < 0.05;
+                Math.abs(climbingSubsystem.getLeftTelescopeVelocity()) < 0.025 || 
+                Math.abs(climbingSubsystem.getRightTelescopeVelocity()) < 0.025;
     }
     
 }
