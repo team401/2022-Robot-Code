@@ -49,9 +49,9 @@ public class ClimbSubsystem extends SubsystemBase {
     public ClimbSubsystem() {
 
         leftTelescopeMotor.configFactoryDefault();
-        rightRotationMotor.configFactoryDefault();
-        rightTelescopeMotor.configFactoryDefault();
         leftRotationMotor.configFactoryDefault();
+        rightTelescopeMotor.configFactoryDefault();
+        rightRotationMotor.configFactoryDefault();
 
         leftTelescopeMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
         rightTelescopeMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
@@ -60,13 +60,15 @@ public class ClimbSubsystem extends SubsystemBase {
         rightTelescopeMotor.setSelectedSensorPosition(0, 0, 10);
 
         leftTelescopeMotor.setNeutralMode(NeutralMode.Brake);
-        rightRotationMotor.setNeutralMode(NeutralMode.Brake);
-        rightTelescopeMotor.setNeutralMode(NeutralMode.Brake);
         leftRotationMotor.setNeutralMode(NeutralMode.Brake);
+        rightTelescopeMotor.setNeutralMode(NeutralMode.Brake);
+        rightRotationMotor.setNeutralMode(NeutralMode.Brake);
 
         // TODO: Do we need to change values?
         leftRotationEncoder.setDistancePerRotation(2 * Math.PI);
         rightRotationEncoder.setDistancePerRotation(2 * Math.PI);
+
+        leftTelescopeMotor.setInverted(true);
 
     }
 
@@ -86,11 +88,11 @@ public class ClimbSubsystem extends SubsystemBase {
 
     // Get encoder value methods
     public double getLeftRotationEncoderValue() {
-        return leftRotationEncoder.getDistance();
+        return leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset;
     }
 
     public double getRightRotationEncoderValue() {
-        return rightRotationEncoder.getDistance();
+        return rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset;
     }
 
     public double getLeftTelescopeEncoderValue() {

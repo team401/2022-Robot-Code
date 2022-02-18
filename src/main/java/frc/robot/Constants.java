@@ -175,8 +175,8 @@ public class Constants {
         public static final double shooterMaxAcceleration = Units.rotationsPerMinuteToRadiansPerSecond(2000);
 
         //Encoder IDS (through-bore REV)
-        public static final int leftArmEncoder = 0;
-        public static final int rightArmEncoder = 1;
+        public static final int leftArmEncoder = 2;
+        public static final int rightArmEncoder = 3;
 
         //PID Values for extension arm (left and right)
         public static final double leftkPExtension = 1.0;
@@ -227,13 +227,12 @@ public class Constants {
 
         // TODO: Update values
         public static final double defaultArmPosition = 0;
-        public static final double intakeArmPosition = 0;
-        public static final double backArmPosition = 0; // TODO: ask what the back arm position for?
-        public static final double climbArmPosition = 0;
+        public static final double intakeArmPosition = 0.85;
+        public static final double climbArmPosition = 0.35;
 
         // TODO: Update values
-        public static final double leftRotationOffset = 0;
-        public static final double rightRotationOffset = 0;
+        public static final double leftRotationOffset = -1.11;
+        public static final double rightRotationOffset = 1.01-6.28;
 
         // TODO: Update values
         public static final double leftTelescopeMaxHeight = 0;

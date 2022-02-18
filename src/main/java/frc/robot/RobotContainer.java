@@ -44,7 +44,7 @@ public class RobotContainer {
 
     
     //uncomment this to use the competition control set-up (with two joysticks rather than the gamepad)
-    /*drive.setDefaultCommand(
+    drive.setDefaultCommand(
      new OperatorControl(
         drive, 
         () -> leftJoystick.getY(), //Left up & down
@@ -52,7 +52,7 @@ public class RobotContainer {
         () -> rightJoystick.getX(), //Right side-to-side
         true
       )
-    );*/
+    );
     
 
     configureButtonBindings();
