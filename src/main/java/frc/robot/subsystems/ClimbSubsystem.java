@@ -29,9 +29,18 @@ public class ClimbSubsystem extends SubsystemBase {
     private final DutyCycleEncoder leftRotationEncoder = new DutyCycleEncoder(SuperstructureConstants.leftArmEncoder);
     private final DutyCycleEncoder rightRotationEncoder = new DutyCycleEncoder(SuperstructureConstants.rightArmEncoder);
 
+    //PID Controller Constraints 
+    private double leftRotationMaxVel = 0.8;
+    private double leftRotationMaxAccel = 0.8;
+    private double rightRotationMaxVel = 0.8;
+    private double rightRotationMaxAccel = 0.8;
+
     //PID Controllers
-    private final ProfiledPIDController leftRotationController = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
-    private final ProfiledPIDController rightRotationController = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0, 0));
+    private final ProfiledPIDController leftRotationController = new ProfiledPIDController(0.05, 0, 0, 
+            new TrapezoidProfile.Constraints(leftRotationMaxVel, leftRotationMaxAccel));
+
+    private final ProfiledPIDController rightRotationController = new ProfiledPIDController(0.05, 0, 0, 
+            new TrapezoidProfile.Constraints(rightRotationMaxVel, rightRotationMaxAccel));
     
     // Goal Values
     private double goalLeftRotationPosition = 0;
@@ -60,15 +69,18 @@ public class ClimbSubsystem extends SubsystemBase {
         rightTelescopeMotor.setSelectedSensorPosition(0, 0, 10);
 
         leftTelescopeMotor.setNeutralMode(NeutralMode.Brake);
-        leftRotationMotor.setNeutralMode(NeutralMode.Brake);
+        leftRotationMotor.setNeutralMode(NeutralMode.Coast);
         rightTelescopeMotor.setNeutralMode(NeutralMode.Brake);
         rightRotationMotor.setNeutralMode(NeutralMode.Brake);
 
-        // TODO: Do we need to change values?
+        //leftRotationMotor.setNeutralMode(NeutralMode.Brake);
+
+        // TODO: Do we need to change vsalues?
         leftRotationEncoder.setDistancePerRotation(2 * Math.PI);
         rightRotationEncoder.setDistancePerRotation(2 * Math.PI);
 
         leftTelescopeMotor.setInverted(true);
+        leftRotationMotor.setInverted(true);
 
     }
 

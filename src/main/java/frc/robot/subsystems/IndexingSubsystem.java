@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DIOChannels;
@@ -18,13 +19,21 @@ public class IndexingSubsystem extends SubsystemBase {
  
     private final WPI_TalonSRX conveyorMotor = new WPI_TalonSRX(CANDevices.conveyorMotorID);
 
+    private final WPI_TalonSRX leftIndexMotor = new WPI_TalonSRX(CANDevices.leftIndexMotorID);
+    private final WPI_TalonSRX rightIndexMotor = new WPI_TalonSRX(CANDevices.rightIndexMotorID);
+
     private final DigitalInput bottomBanner = new DigitalInput(DIOChannels.topBannerPort);
     private final DigitalInput topBanner = new DigitalInput(DIOChannels.bottomBannerPort);
+
+    private final MotorControllerGroup indexMotors = new MotorControllerGroup(leftIndexMotor, rightIndexMotor);
 
     public IndexingSubsystem() {
 
         //ensure the intake motor stops when we don't command it to prevent jamming
         conveyorMotor.setNeutralMode(NeutralMode.Brake);
+        leftIndexMotor.setNeutralMode(NeutralMode.Coast);
+        rightIndexMotor.setNeutralMode(NeutralMode.Coast);
+
 
     }
 
@@ -61,6 +70,18 @@ public class IndexingSubsystem extends SubsystemBase {
     public void reverseConveyor() {
 
         conveyorMotor.set(-SuperstructureConstants.conveyorPower);
+
+    }
+
+    public void runIndexWheels() {
+
+        indexMotors.set(SuperstructureConstants.indexPower);
+
+    }
+
+    public void stopIndexWheels() {
+
+        indexMotors.set(0.0);
 
     }
 

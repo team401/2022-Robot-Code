@@ -54,7 +54,9 @@ public class Constants {
         //PREP
         //IDs for Intake & Indexing
         public static final int intakeMotorID = 22; //775 Pro
-        public static final int conveyorMotorID = 23;
+        public static final int conveyorMotorID = 23; //Neo
+        public static final int leftIndexMotorID = 24; //775 Pro
+        public static final int rightIndexMotorID = 35; //775 Pro
 
         //ID for Pigeon
         public static final int imuID = 20;
@@ -206,6 +208,8 @@ public class Constants {
         public static final double conveyorPower = 0.4;
         public static final double jogFowardPower = 0.3;
 
+        public static final double indexPower = 0.3;
+
     }
 
     //put any exclusive auto constants in here
@@ -232,7 +236,7 @@ public class Constants {
 
         // TODO: Update values
         public static final double leftRotationOffset = -1.11;
-        public static final double rightRotationOffset = 1.01-6.28;
+        public static final double rightRotationOffset = 1.01;
 
         // TODO: Update values
         public static final double leftTelescopeMaxHeight = 0;

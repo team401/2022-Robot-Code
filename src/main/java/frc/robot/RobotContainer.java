@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.InputDevices;
-import frc.robot.commands.Climber.ExtendTelescope;
-import frc.robot.commands.Climber.RetractTelescope;
-import frc.robot.commands.Climber.UpdateRotationArm;
+import frc.robot.commands.climber.ExtendTelescope;
+import frc.robot.commands.climber.RetractTelescope;
+import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -89,13 +89,13 @@ public class RobotContainer {
      */
 
     new JoystickButton(gamepad, Button.kA.value)
-        .whileHeld(new UpdateRotationArm(climb, ClimberConstants.intakeArmPosition));
+        .whenPressed(new UpdateRotationArm(climb, ClimberConstants.intakeArmPosition));
 
     new JoystickButton(gamepad, Button.kB.value)
-        .whileHeld(new UpdateRotationArm(climb, ClimberConstants.climbArmPosition));
+        .whenPressed(new UpdateRotationArm(climb, ClimberConstants.climbArmPosition));
 
     new JoystickButton(gamepad, Button.kX.value)
-        .whileHeld(new UpdateRotationArm(climb, ClimberConstants.defaultArmPosition));
+        .whenPressed(new UpdateRotationArm(climb, ClimberConstants.defaultArmPosition));
 
     new JoystickButton(gamepad, Button.kLeftBumper.value)
         .whenPressed(new ExtendTelescope(climb));

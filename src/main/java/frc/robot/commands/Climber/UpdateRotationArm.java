@@ -1,4 +1,4 @@
-package frc.robot.commands.Climber;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -28,11 +28,11 @@ public class UpdateRotationArm extends CommandBase {
     @Override
     public void execute() {
 
-        /*climbingSubsystem.setLeftDesiredRotationPosition(desiredPositionRadians);
-        climbingSubsystem.setRightDesiredRotationPosition(desiredPositionRadians);*/
+        climbingSubsystem.setLeftDesiredRotationPosition(desiredPositionRadians);
+        climbingSubsystem.setRightDesiredRotationPosition(desiredPositionRadians);
 
-        climbingSubsystem.setLeftRotationPercent(0.45);
-        climbingSubsystem.setRightRotationPercent(0.45);
+        /*climbingSubsystem.setLeftRotationPercent(-0.15);
+        climbingSubsystem.setRightRotationPercent(-0.15);*/
 
         
     }
@@ -43,11 +43,11 @@ public class UpdateRotationArm extends CommandBase {
         climbingSubsystem.setRightRotationPercent(0);
 
         climbingSubsystem.resetControllers();
-    }
+    } 
 
     @Override
     public boolean isFinished() {
-        return false;//climbingSubsystem.atGoal() || !climbingSubsystem.withinBoundaries();
+        return climbingSubsystem.atGoal();// || !climbingSubsystem.withinBoundaries();
     }
     
 }
