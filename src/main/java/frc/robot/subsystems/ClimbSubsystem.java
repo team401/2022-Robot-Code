@@ -69,7 +69,7 @@ public class ClimbSubsystem extends SubsystemBase {
         rightTelescopeMotor.setSelectedSensorPosition(0, 0, 10);
 
         leftTelescopeMotor.setNeutralMode(NeutralMode.Brake);
-        leftRotationMotor.setNeutralMode(NeutralMode.Coast);
+        leftRotationMotor.setNeutralMode(NeutralMode.Brake);
         rightTelescopeMotor.setNeutralMode(NeutralMode.Brake);
         rightRotationMotor.setNeutralMode(NeutralMode.Brake);
 
