@@ -110,12 +110,13 @@ public class RobotContainer {
     new JoystickButton(gamepad, Button.kRightBumper.value)
       .whenPressed(new RetractTelescope(climb));*/
 
-    new JoystickButton(gamepad, Button.kA.value)
+    new JoystickButton(rightJoystick, 3)//Button.kA.value)
       .whenPressed(new InstantCommand(shooter::runHood))
       .whenReleased(new InstantCommand(shooter::stopHood));
 
-    new JoystickButton(gamepad, Button.kX.value)
-      .whileHeld(new HoodCalibrate(shooter));
+    new JoystickButton(rightJoystick, 2)//Button.kX.valurightJoye)
+      .whenHeld(new HoodCalibrate(shooter));
+      //.whenReleased(new InstantCommand(shooter::stopHood));
 
     //whenReleased sets the command to be interruptable, so they should stop if button is pressed/released
     /*new JoystickButton(rightJoystick, 3)

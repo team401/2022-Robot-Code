@@ -33,7 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final WPI_TalonFX leftShooterMotor = new WPI_TalonFX(CANDevices.leftShooterMotorID);  
 
     private final MotorControllerGroup shooterMotors = new MotorControllerGroup(leftShooterMotor, rightShooterMotor);
-        
+    
     //775 Pro  
     private final CANSparkMax feederMotor = new CANSparkMax(CANDevices.feederMotorID, MotorType.kBrushless); 
     //Neo550
@@ -61,9 +61,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private double desiredSpeed;
     private double hoodDesired;
 
-    private Timer timer;
+    private Timer timer = new Timer();
     
-
     //TODO
     //zero the turret
     //set tolerance
@@ -73,6 +72,10 @@ public class ShooterSubsystem extends SubsystemBase {
         leftShooterMotor.configFactoryDefault();
 
         rightShooterMotor.setInverted(true);
+        hoodMotor.setInverted(true);
+
+        //Current Limits
+        hoodMotor.setSmartCurrentLimit(20);
 
         //sets up hood PID Controller
         hoodController.setP(hoodkP);
@@ -83,10 +86,10 @@ public class ShooterSubsystem extends SubsystemBase {
          * sets the turretEncoder position and velocity to be based off of radians and 
          * radians per sec of the structure
          */        
-        hoodEncoder.setPositionConversionFactor(
+        /*hoodEncoder.setPositionConversionFactor(
             2.0 * Math.PI / SuperstructureConstants.hoodGearReduction);
         hoodEncoder.setVelocityConversionFactor(
-            2.0 * Math.PI / (SuperstructureConstants.hoodGearReduction * 60.0));
+            2.0 * Math.PI / (SuperstructureConstants.hoodGearReduction * 60.0));*/
 
         timer.start();
         timer.reset();
@@ -98,7 +101,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("desired shooter speed", desiredSpeed);
         SmartDashboard.putNumber("desired hood position", hoodDesired);
-        SmartDashboard.putNumber("current hood position", getHoodPositionRadians());
+        SmartDashboard.putNumber("current hood position", getHoodPositionRevolutions());
 
         if (!(Math.abs(desiredSpeed - getFlywheelVelocityRadPerSec()) < shooterTolerance)) timer.reset();
 
@@ -128,6 +131,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /**
      * HOOD METHODS
+     * 
+     * Positive Percent = UP
+     * Negative Percent = DOWN
+     * 
      */
 
     //sets value of hood encoder to what is passed in 
@@ -147,6 +154,12 @@ public class ShooterSubsystem extends SubsystemBase {
     //returns position of the hood in radians (with 0 being at the bottom)
     public double getHoodPositionRadians() {
 
+        return hoodEncoder.getPosition() * 2.0 * Math.PI;
+
+    }
+
+    public double getHoodPositionRevolutions() {
+        
         return hoodEncoder.getPosition();
 
     }
