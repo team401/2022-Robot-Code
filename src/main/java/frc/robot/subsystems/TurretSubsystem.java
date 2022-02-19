@@ -1,115 +1,128 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.SuperstructureConstants;
+import frc.robot.commands.superstructure.turret.limelight.BasicSearch;
+import frc.robot.commands.superstructure.turret.limelight.Tracking;
 
-public class TurretSubsystem extends SubsystemBase {
-    
-    //Neo
-    private final CANSparkMax turretMotor = new CANSparkMax(CANDevices.turretMotorID, MotorType.kBrushless); 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
-    //Encoders
-    private final RelativeEncoder turretEncoder = turretMotor.getEncoder();
+/**
+ * This link was a helpful example:
+ * https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/Java%20General/MagEncoder_Absolute/src/main/java/frc/robot/Robot.java
+ */
 
-    //can use integrated REV PID controller
-    private final SparkMaxPIDController turretController = turretMotor.getPIDController(); 
+public class TurretSubsystem extends SubsystemBase{
 
-    //**NEED TO CHANGE**
-    //PID Values for Turret
-    private final double turretkP = 0.0;
-    private final double turretkI = 0.0;
-    private final double turretkD = 0.0;
+    private final WPI_TalonFX turretMotor = new WPI_TalonFX(0);
 
-    private final double tolerance = 0.01; //radians
-    
+    // works for the best in .1 rad increments
+    private double kP = 1.2;
+    private double kI = 0.5;
+    private double kD = 0;
+
+    private final PIDController turretController = new PIDController(kP, kI, kD);
+
+    //private double centerOffsetTicks = 0;
+
+    //private boolean shouldBeTracking = false;
+
     public TurretSubsystem() {
 
-        //sets up turret PID controller
-        turretController.setP(turretkP);
-        turretController.setI(turretkI);
-        turretController.setD(turretkD);
+        turretMotor.configFactoryDefault();
+        turretMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
 
-        /**
-         * sets the turretEncoder position and velocity to be based off of radians and 
-         * radians per sec of the structure
-         */
-        turretEncoder.setPositionConversionFactor(
-            2.0 * Math.PI / SuperstructureConstants.turretGearReduction);
-        turretEncoder.setVelocityConversionFactor(
-            2.0 * Math.PI / (SuperstructureConstants.turretGearReduction * 60.0));
+        turretMotor.setSelectedSensorPosition(0, 0, 10);
 
+        //centerOffsetTicks = getEncoderPositionTicks();
+
+        turretMotor.configForwardSoftLimitEnable(true);
+        turretMotor.configReverseSoftLimitEnable(true);
+        //turretMotor.configForwardSoftLimitThreshold(SuperstructureConstants.rightTurretSoftLimitTicks);
+        //turretMotor.configReverseSoftLimitThreshold(SuperstructureConstants.leftTurretSoftLimitTicks);
 
     }
 
-    /**
-     * TURRET METHOD
-     */
+    @Override
+    public void periodic() {
 
-    //runs turret at given percent
-    public void runTurretPercent(double speed) {
+        SmartDashboard.putNumber("Turret Position Radians", getTurretPositionRadians());
+        SmartDashboard.putNumber("Turret Position Ticks", getEncoderPositionTicks());
+        SmartDashboard.putBoolean("isWithinEdges", isWithinEdges());    
+    }
 
-        turretMotor.set(speed);
+    public static double convertTurretTicksToRadians(double ticks) {
+        return ticks / SuperstructureConstants.turretEncoderCountsPerRevolution 
+                / SuperstructureConstants.turretGearReduction * (2*Math.PI);
+    } 
+
+    public double getTurretPositionRadians() {
+
+        return getEncoderPositionTicks() / SuperstructureConstants.turretEncoderCountsPerRevolution 
+                / SuperstructureConstants.turretGearReduction * (2*Math.PI);
+
+    }
+
+    public double getEncoderPositionTicks() {
+
+        return turretMotor.getSelectedSensorPosition();
+    }
+
+    /*public double getTurretPositionPulseWidth() {
+        
+        return turretMotor.getSensorCollection().getPulseWidthPosition();
+
+    }*/
+
+    public void runTurretPercent(double percent) {
+
+        turretMotor.set(ControlMode.PercentOutput, percent);
         
     }
 
-    //runs turret based on given voltage for the motor
     public void runTurretVoltage(double volts) {
 
         turretMotor.setVoltage(volts);
 
     }
 
-    public double getTurretPositionRadians() {
+    public void setTurretDesiredClosedState(double desiredPositionRad) {
 
-        //no change is needed in the gear ratio since we set the conversion factor above
-        return turretEncoder.getPosition(); 
-
-    }
-
-    //returns velocity in rad per sec
-    public double getTurretVelocityCurrent() {
-
-        return turretEncoder.getVelocity();
+        double output = turretController.calculate(getTurretPositionRadians(), desiredPositionRad);
+        runTurretPercent(output);
 
     }
 
-    //sets value of turret encoder to what is passed in
-    public void setTurretEncoder(double desiredPosition){
-
-        turretEncoder.setPosition(desiredPosition);
-
-    }
-
-    //sets the position of the Turret Encoder to 0 (in radians)
-    public void resetTurretEncoder() {
-
-        turretEncoder.setPosition(0.0);
-
-    }
-
-    //Uses the Turret PID Controller to go to the desired position
-    public void turretSetDesiredClosedState(double desiredPosition) {
-
-        turretController.setReference(
-            getTurretPositionRadians(), 
-            ControlType.kPosition
-        );
-
-    }
-
-    //is it within the bounds?
     public boolean isWithinEdges() {
 
-        return (
-            SuperstructureConstants.leftTurretExtrema - getTurretPositionRadians() < tolerance && 
-            SuperstructureConstants.rightTurretExtrema - getTurretPositionRadians() > tolerance);
+        return Math.abs(getTurretPositionRadians()) < SuperstructureConstants.rightTurretExtremaRadians;
 
     }
+
+    /*public void startTracking(LimelightSubsystem limelight, TurretSubsystem turret) {
+
+        isTracking(true);
+
+        new BasicSearch(limelight, turret).schedule();;
+        
+    }
+
+    public void isTracking(boolean shouldbe) {
+
+        shouldBeTracking = shouldbe;
+
+    }
+
+    public boolean shouldBeTracking() { 
+
+        return shouldBeTracking;
+
+    }*/
+
 }

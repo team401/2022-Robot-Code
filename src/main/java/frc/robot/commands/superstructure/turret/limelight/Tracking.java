@@ -5,6 +5,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**TO DO
@@ -12,70 +13,100 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * if it reaches the edge, it exits to wrapping
  * if it loses the target, it goes to searching
  */
-
 public class Tracking extends CommandBase {
-
-    //needed subsystems for our command
-    private final VisionSubsystem visionSubsystem;
-    private final ShooterSubsystem shooterSubsystem;
+    
+    // Subystems
+    private final VisionSubsystem limelightSubsystem;
     private final TurretSubsystem turretSubsystem;
 
     //PID we use to calculate the velocity we should give to our turret and gives in volts
-    private PIDController turretTrackingPIDController = new PIDController(0, 0, 0);
+    private final PIDController turretTrackingPIDController = new PIDController(1.2, 0.5, 0);
 
-    //flag boolean
+    // Flag boolean
     private boolean isFinished = false;
 
-    private double tolerance = 0.025;
+    // Constructor
+    public Tracking(VisionSubsystem limelight, TurretSubsystem turret) {
 
-    //constructor
-    public Tracking(VisionSubsystem vision, ShooterSubsystem shooter, TurretSubsystem turret) {
-
-        visionSubsystem = vision;
-        shooterSubsystem = shooter;
+        // Set the subsystems
+        limelightSubsystem = limelight;
         turretSubsystem = turret;
 
-        //subsystems that are required to run this method
-        addRequirements(vision, shooter);
-        
+        // Use the limelight and turret subsystems
+        addRequirements(limelightSubsystem, turretSubsystem);
+
+    }
+
+    @Override
+    public void initialize() {
+
+        SmartDashboard.putBoolean("Tracking Running", true);
+
     }
 
     @Override
     public void execute() {
-        
-        if (visionSubsystem.hasValidTarget() && turretSubsystem.isWithinEdges()) {
-            
-            //calculates velocity(voltage) we should give to the motor controller
-            double outputVoltage = turretTrackingPIDController.calculate(
-                visionSubsystem.gettX(), tolerance); 
-            turretSubsystem.runTurretVoltage(outputVoltage);
 
-            //puts if is in tolerance 
-            SmartDashboard.putBoolean("Locked onto Target?", (visionSubsystem.gettX() < tolerance));
+        SmartDashboard.putBoolean("Tracking Running", true);
 
-        } else if (!visionSubsystem.hasValidTarget()) { 
-            
-            //if can't see target, go to Searching
+        if (limelightSubsystem.hasValidTarget() && turretSubsystem.isWithinEdges()) {
+
+            SmartDashboard.putNumber("Reached here:", System.currentTimeMillis());
+            // Calculates output we should give to the motor controller
+            //double output = turretTrackingPIDController.calculate(limelightSubsystem.gettX(), 0); 
+
+            //limelight tx value [-27,27] converted to radians 
+            double limelightErrorRadians = Units.degreesToRadians(-limelightSubsystem.gettX());
+
+            // If the error is more than 0.1, set the desired position to be 0.1 closer to target
+            if (Math.abs(limelightErrorRadians) >= 0.1) { 
+
+                SmartDashboard.putBoolean("SetDesiredPosition ++ 1", true);
+
+                turretSubsystem.setTurretDesiredClosedState(
+                    turretSubsystem.getTurretPositionRadians() + (Math.signum(limelightErrorRadians) * 0.1));
+                    
+            } else if (Math.abs(limelightErrorRadians) < 0.1) {
+            //If error is within 0.1, set the desired position to be the error
+
+                turretSubsystem.setTurretDesiredClosedState(
+                    turretSubsystem.getTurretPositionRadians() + limelightErrorRadians);
+
+            }
+
+        } else {
+
+            SmartDashboard.putBoolean("Tracking Running", false);
+
+            // Finish tracking and start wrapping
             isFinished = true;
-            new Searching(visionSubsystem, shooterSubsystem).schedule();
-            
-        } else if (!turretSubsystem.isWithinEdges()) {
-            
-            //if we reach the edge of turret range, go to Wrapping
-            isFinished = true;
-            new Wrapping(visionSubsystem, shooterSubsystem, turretSubsystem).schedule();
-            
+            //true sets command to interruptable 
+            new BasicSearch(limelightSubsystem, turretSubsystem).schedule(true);
+
         }
-        
+
     }
 
     @Override
     public boolean isFinished() {
 
-        return isFinished;
-    
+        // Finish wrapping if tracking has started or the turret subsystem is set to stop tracking
+        return isFinished; //|| !turretSubsystem.shouldBeTracking();
+
     }
-    
+
+    @Override
+    public void end(boolean isInterrupted) {
+
+        // Stop the motor from spinning after we end the command
+        turretSubsystem.runTurretPercent(0);
+
+        SmartDashboard.putBoolean("Tracking Running", false);
+
+    }
+
+}
+
     /* 
     This might work ¯\_( ͡° ͜ʖ ͡°)_/¯
     We are so cool 
@@ -84,4 +115,3 @@ public class Tracking extends CommandBase {
     DESIGN DOES NOT SUCKSSSSS
     */
     
-}

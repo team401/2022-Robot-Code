@@ -1,78 +1,80 @@
 package frc.robot.commands.superstructure.turret.limelight;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.SuperstructureConstants;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-
-/**
- * TODO: the execute logic?
- * Goes to the closest extrema, and then goes to wrapping
- */
+import frc.robot.subsystems.TurretSubsystem;
 
 public class BasicSearch extends CommandBase {
 
-    VisionSubsystem visionSubsystem;
-    ShooterSubsystem shooterSubsystem;
-    TurretSubsystem turretSubsystem;
+    // Subystems
+    private final VisionSubsystem visionSubsystem;
+    private final TurretSubsystem turretSubsystem;
 
-    //PID we use to calculate the velocity we should give to our turret and gives in volts
-    private PIDController turretSearchingPIDController = new PIDController(0, 0, 0);
+    // Direction of the turret movement; -1 (left) 1 (Positive)
+    private int direction = 0;
 
-    //what direction we are going to use (-1 is to the left, 1 is to the right)
-    private double direction;
-    
-    //flag boolean
+    // Flag boolean
     private boolean isFinished = false;
     
-    //constructor
-    public BasicSearch(VisionSubsystem vision, ShooterSubsystem shooter, TurretSubsystem turret) {
-        
-        //initializing subsystmes
-        visionSubsystem = vision;
-        shooterSubsystem = shooter;
+    // Constructor
+    public BasicSearch(VisionSubsystem limelight, TurretSubsystem turret) {
+
+        // Set the subsystems
+        visionSubsystem = limelight;
         turretSubsystem = turret;
 
-        //what we need to use for the subsystem
-        addRequirements(vision, shooter);
+        // Use the limelight and turret subsystems
+        addRequirements(visionSubsystem, turretSubsystem);
 
     }
 
     @Override
     public void initialize() {
-        
-        //find the closest side based on the position
-        double currentRotation = turretSubsystem.getTurretPositionRadians();
-        if (currentRotation < 0)
+
+        SmartDashboard.putBoolean("Basic Search Running", true);
+
+        // Set the initial direction to the closest edge
+        if (turretSubsystem.getTurretPositionRadians() < 0) {
             direction = -1;
-        else
+        }
+
+        else if (turretSubsystem.getTurretPositionRadians() >= 0) {
             direction = 1;
+        }
 
     }
 
     @Override
     public void execute() {
 
-        //if statement for 
-        if (Math.abs(turretSubsystem.getTurretPositionRadians()) > SuperstructureConstants.turretEdge) {
+        // Change directions if we reach an edge
+        /*if ((turretSubsystem.getTurretPositionRadians() > SuperstructureConstants.turretEdge && movingRight) || 
+            (turretSubsystem.getTurretPositionRadians() < -SuperstructureConstants.turretEdge && !movingRight))
+            movingRight = !movingRight;*/
+        
+        // If the turret is not centered on the target
+        if (!visionSubsystem.hasValidTarget()) {
 
+            //If turret is at or over an extrema position, invert the movement direction
+            if (turretSubsystem.getTurretPositionRadians() >= SuperstructureConstants.rightTurretExtremaRadians ||
+                turretSubsystem.getTurretPositionRadians() <= SuperstructureConstants.leftTurretExtremaRadians){
+
+                direction*=-1;
+                
+            }
+
+            // Set the turret to run at 25% in the correct direction
+            turretSubsystem.runTurretPercent(0.25 * direction);
+
+
+        }
+        else if(visionSubsystem.hasValidTarget()) {
+
+            // Finish wrapping and start tracking
             isFinished = true;
-            new Wrapping(visionSubsystem, shooterSubsystem, turretSubsystem);
-
-        } else if (!visionSubsystem.withinTolerance()) {
-
-            double output = turretSearchingPIDController.calculate(
-                turretSubsystem.getTurretPositionRadians(), 
-                direction*Units.degreesToRadians(130));
-            shooterSubsystem.runShooterPercent(output);
-
-        } else {
-
-            isFinished = true;
-            new Tracking(visionSubsystem, shooterSubsystem, turretSubsystem);
+            new Tracking(visionSubsystem, turretSubsystem).schedule(true);
 
         }
 
@@ -80,7 +82,20 @@ public class BasicSearch extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return isFinished;
+
+        // Finish wrapping if tracking has started or the turret subsystem is set to stop tracking
+        return isFinished; //|| !turretSubsystem.shouldBeTracking();
+
+    }
+
+    @Override
+    public void end(boolean isInterrupted) {
+
+        // Stop the motor from spinning after we end the command
+        turretSubsystem.runTurretPercent(0);
+
+        SmartDashboard.putBoolean("Basic Search Running", false);
+
     }
 
 }
