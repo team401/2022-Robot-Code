@@ -88,13 +88,13 @@ public class RobotContainer {
      * Right Xbox Trigger = Retract Telescope
      */
 
-    new JoystickButton(gamepad, Button.kA.value)
+    new JoystickButton(gamepad, Button.kX.value)
         .whenPressed(new UpdateRotationArm(climb, ClimberConstants.intakeArmPosition));
 
     new JoystickButton(gamepad, Button.kB.value)
         .whenPressed(new UpdateRotationArm(climb, ClimberConstants.climbArmPosition));
 
-    new JoystickButton(gamepad, Button.kX.value)
+    new JoystickButton(gamepad, Button.kA.value)
         .whenPressed(new UpdateRotationArm(climb, ClimberConstants.defaultArmPosition));
 
     new JoystickButton(gamepad, Button.kLeftBumper.value)

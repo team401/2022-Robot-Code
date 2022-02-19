@@ -235,7 +235,7 @@ public class Constants {
         public static final double climbArmPosition = 0.35;
 
         // TODO: Update values
-        public static final double leftRotationOffset = -1.11;
+        public static final double leftRotationOffset = -1.145;
         public static final double rightRotationOffset = 1.01;
 
         // TODO: Update values

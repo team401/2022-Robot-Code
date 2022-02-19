@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
@@ -29,18 +30,22 @@ public class ClimbSubsystem extends SubsystemBase {
     private final DutyCycleEncoder leftRotationEncoder = new DutyCycleEncoder(SuperstructureConstants.leftArmEncoder);
     private final DutyCycleEncoder rightRotationEncoder = new DutyCycleEncoder(SuperstructureConstants.rightArmEncoder);
 
+    private final Encoder quadratureEncoder = new Encoder(4,5);
+
     //PID Controller Constraints 
-    private double leftRotationMaxVel = 0.8;
-    private double leftRotationMaxAccel = 0.8;
-    private double rightRotationMaxVel = 0.8;
-    private double rightRotationMaxAccel = 0.8;
+    private double leftRotationMaxVel = Math.PI * 2;
+    private double leftRotationMaxAccel = 5;
+    private double rightRotationMaxVel = Math.PI * 2;
+    private double rightRotationMaxAccel = 5;
 
     //PID Controllers
-    private final ProfiledPIDController leftRotationController = new ProfiledPIDController(0.05, 0, 0, 
+    private final ProfiledPIDController leftRotationController = new ProfiledPIDController(0.35, 0, 0, 
             new TrapezoidProfile.Constraints(leftRotationMaxVel, leftRotationMaxAccel));
 
-    private final ProfiledPIDController rightRotationController = new ProfiledPIDController(0.05, 0, 0, 
+    private final ProfiledPIDController rightRotationController = new ProfiledPIDController(0.35, 0, 0, 
             new TrapezoidProfile.Constraints(rightRotationMaxVel, rightRotationMaxAccel));
+
+
     
     // Goal Values
     private double goalLeftRotationPosition = 0;
@@ -69,9 +74,11 @@ public class ClimbSubsystem extends SubsystemBase {
         rightTelescopeMotor.setSelectedSensorPosition(0, 0, 10);
 
         leftTelescopeMotor.setNeutralMode(NeutralMode.Brake);
-        leftRotationMotor.setNeutralMode(NeutralMode.Coast);
+        leftRotationMotor.setNeutralMode(NeutralMode.Brake);
         rightTelescopeMotor.setNeutralMode(NeutralMode.Brake);
         rightRotationMotor.setNeutralMode(NeutralMode.Brake);
+
+        quadratureEncoder.setDistancePerPulse(2* Math.PI / 4096.0);
 
         //leftRotationMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -82,29 +89,64 @@ public class ClimbSubsystem extends SubsystemBase {
         leftTelescopeMotor.setInverted(true);
         leftRotationMotor.setInverted(true);
 
+        SmartDashboard.putNumber("P Value", 0.0);
+        SmartDashboard.putNumber("I Value", 0.0);
+        SmartDashboard.putNumber("D Value", 0.0);
+        SmartDashboard.putNumber("velocity", 0.0);
+        SmartDashboard.putNumber("acceleration", 0.0);
+
     }
 
     @Override
     public void periodic() {
 
+        SmartDashboard.putNumber("quadrature encoder vel", quadratureEncoder.getRate());
+
         SmartDashboard.putNumber("Left Rotation Encoder", getLeftRotationEncoderValue());
         SmartDashboard.putNumber("Right Rotation Encoder", getRightRotationEncoderValue());
 
-        SmartDashboard.putNumber("Left Telescope Encoder", getLeftTelescopeEncoderValue());
+        SmartDashboard.putBoolean("at goal rot?", atGoal());
+
+        /*SmartDashboard.putNumber("Left Telescope Encoder", getLeftTelescopeEncoderValue());
         SmartDashboard.putNumber("Right Telescope Encoder", getRightTelescopeEncoderValue());
 
         SmartDashboard.putNumber("Left Telescope Velocity", getLeftTelescopeVelocity());
-        SmartDashboard.putNumber("Right Telescope Velocity", getRightTelescopeVelocity());
+        SmartDashboard.putNumber("Right Telescope Velocity", getRightTelescopeVelocity());*/
+
+        leftRotationController.setP(SmartDashboard.getNumber("P Value", 0.0));
+        leftRotationController.setI(SmartDashboard.getNumber("I Value", 0.0));
+        leftRotationController.setD(SmartDashboard.getNumber("D Value", 0.0));
+        rightRotationController.setP(SmartDashboard.getNumber("P Value", 0.0));
+        rightRotationController.setI(SmartDashboard.getNumber("I Value", 0.0));
+        rightRotationController.setD(SmartDashboard.getNumber("D Value", 0.0));
+
+        leftRotationController.setConstraints(new 
+            TrapezoidProfile.Constraints(SmartDashboard.getNumber("velocity", 1.0), 
+            SmartDashboard.getNumber("acceleration", 1.0)));
+
+        rightRotationController.setConstraints(new 
+            TrapezoidProfile.Constraints(SmartDashboard.getNumber("velocity", 1.0), 
+            SmartDashboard.getNumber("acceleration", 1.0)));
 
     }
 
     // Get encoder value methods
     public double getLeftRotationEncoderValue() {
-        return leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset;
+       // if (leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset > Math.PI) 
+         //   return ((leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset) % 2* Math.PI)- 2 * Math.PI;
+         if(leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset > Math.PI)
+            return leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset - 2 * Math.PI;
+         return (leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset);
+        //dreturn leftRotationEncoder.getDistance();
     }
 
     public double getRightRotationEncoderValue() {
+        //if (rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset > Math.PI) 
+          //  return ((rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset) % 2* Math.PI)- 2 * Math.PI;
+        if(rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset > Math.PI)
+            return rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset - 2 * Math.PI;
         return rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset;
+        //return rightRotationEncoder.getDistance();
     }
 
     public double getLeftTelescopeEncoderValue() {
@@ -172,8 +214,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
     // Idk what to call methods like atGoal and withinBoundaries
     public boolean atGoal() {
-        return Math.abs(getLeftRotationEncoderValue()) <= tolerance && 
-                Math.abs(getRightRotationEncoderValue()) <= tolerance;
+        return Math.abs(getLeftRotationEncoderValue() - goalLeftRotationPosition) <= tolerance && 
+                Math.abs(getRightRotationEncoderValue() - goalRightRotationPosition) <= tolerance;
     }
 
     public boolean withinBoundaries() {
