@@ -10,9 +10,6 @@ public class HoodCalibrate extends CommandBase {
 
     private Timer hoodTimer = new Timer();
 
-    private double zeroVelocityTimeStamp;
-    private boolean timeStampMeasured;
-
     public HoodCalibrate(ShooterSubsystem shooter) {
 
         shooterSubsystem = shooter;
