@@ -10,9 +10,6 @@ public class HoodCalibrate extends CommandBase {
 
     private Timer hoodTimer = new Timer();
 
-    private double zeroVelocityTimeStamp;
-    private boolean timeStampMeasured;
-
     public HoodCalibrate(ShooterSubsystem shooter) {
 
         shooterSubsystem = shooter;
@@ -33,28 +30,27 @@ public class HoodCalibrate extends CommandBase {
     @Override
     public void execute() {
 
-        double hoodVelocity = shooterSubsystem.getHoodVelocity();
+        if (shooterSubsystem.getHoodVelocity() > 0) {
 
-        if (hoodVelocity == 0 && !timeStampMeasured) {
-
-            zeroVelocityTimeStamp = hoodTimer.get();
-            timeStampMeasured = true;
+            hoodTimer.reset();
 
         }
-        else if (hoodVelocity > 0) {
-
-            timeStampMeasured = false;
-
-        }
-
-        if (hoodTimer.get() - zeroVelocityTimeStamp >= 0.2) {
-
-            shooterSubsystem.runHoodPercent(0);
-            shooterSubsystem.resetHoodEncoder();
-
-        }
+        
     }
 
+    @Override
+    public boolean isFinished() {
 
+        return hoodTimer.get() >= 0.2;
+
+    }
+
+    @Override
+    public void end(boolean isInterrupted) {
+
+        shooterSubsystem.runHoodPercent(0);
+        shooterSubsystem.resetHoodEncoder();
+        
+    }
     
 }

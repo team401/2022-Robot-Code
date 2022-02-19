@@ -13,8 +13,11 @@ import frc.robot.commands.climber.RetractTelescope;
 import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
+import frc.robot.commands.superstructure.turret.manual.ManualTurret;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import pabeles.concurrency.ConcurrencyOps.NewInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -27,9 +30,12 @@ public class RobotContainer {
   private final Joystick rightJoystick = new Joystick(InputDevices.rightJoystickPort);
   private final XboxController gamepad = new XboxController(InputDevices.gamepadPort);
 
+
   //list out all of the subsystems we need in our robot
   private final DriveSubsystem drive = new DriveSubsystem();
   private final ClimbSubsystem climb = new ClimbSubsystem();
+  private final TurretSubsystem turret = new TurretSubsystem();
+  private final VisionSubsystem limelight = new VisionSubsystem();
 
   public RobotContainer() {
 
@@ -102,6 +108,19 @@ public class RobotContainer {
 
     new JoystickButton(gamepad, Button.kRightBumper.value)
         .whenPressed(new RetractTelescope(climb));
+
+                
+    //whenReleased sets the command to be interruptable, so they should stop if button is pressed/released
+    /*new JoystickButton(rightJoystick, 3)
+        .whenHeld(new Tracking(limelight, turret))
+        .whenReleased(new ManualTurret(
+                limelight, 
+                turret, 
+                () -> turretManualLeftButton.get(), 
+                () -> turretManualRightButton.get()
+              )
+          );*/
+
 
 
     

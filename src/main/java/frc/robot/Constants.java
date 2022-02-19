@@ -161,12 +161,14 @@ public class Constants {
 
         //Turret Angle Offsets
         public static final double turretEdge = Units.degreesToRadians(132.5); //what we designate as the edge of the turrret
-        public static final double leftTurretExtrema = Units.degreesToRadians(135);  //angle offset from front center of robot, if intake is front
-        public static final double rightTurretExtrema = Units.degreesToRadians(-135); //negative in order to match odometry and unit circle
+        public static final double leftTurretExtremaRadians = Units.degreesToRadians(135);  //angle offset from front center of robot, if intake is front
+        public static final double rightTurretExtremaRadians = Units.degreesToRadians(-135); //negative in order to match odometry and unit circle
+        public static final double turretEncoderCountsPerRevolution = 4096;
 
         //**NEED TO CHANGE**
-        //Gear reduction/increase in resolution from the gearing on the turret Neo
-        public static final double turretGearReduction = 900 * 70; 
+        //Gear reduction/increase in resolution from the gearing on the turret Falcon
+        public static final double turretGearReduction = 15*14; 
+
 
         //Gear reduction/increase in resoltuion from the gearing on the hood Neo 550 and Versa Planetarys
         public static final double hoodGearReduction = 80 * 5;
