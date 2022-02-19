@@ -13,9 +13,11 @@ import frc.robot.commands.climber.RetractTelescope;
 import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
+import frc.robot.commands.superstructure.HoodCalibrate;
 import frc.robot.commands.superstructure.turret.manual.ManualTurret;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import pabeles.concurrency.ConcurrencyOps.NewInstance;
@@ -36,6 +38,7 @@ public class RobotContainer {
   private final ClimbSubsystem climb = new ClimbSubsystem();
   private final TurretSubsystem turret = new TurretSubsystem();
   private final VisionSubsystem limelight = new VisionSubsystem();
+  private final ShooterSubsystem shooter = new ShooterSubsystem();
 
   public RobotContainer() {
 
@@ -51,10 +54,9 @@ public class RobotContainer {
         true
       )
     );*/
-
     
     //uncomment this to use the competition control set-up (with two joysticks rather than the gamepad)
-    drive.setDefaultCommand(
+    /*drive.setDefaultCommand(
      new OperatorControl(
         drive, 
         () -> leftJoystick.getY(), //Left up & down
@@ -62,9 +64,8 @@ public class RobotContainer {
         () -> rightJoystick.getX(), //Right side-to-side
         true
       )
-    );
+    );*/
     
-
     configureButtonBindings();
 
   }
@@ -94,37 +95,38 @@ public class RobotContainer {
      * Right Xbox Trigger = Retract Telescope
      */
 
-    new JoystickButton(gamepad, Button.kX.value)
-        .whenPressed(new UpdateRotationArm(climb, ClimberConstants.intakeArmPosition));
+    /*new JoystickButton(gamepad, Button.kA.value)
+      .whenPressed(new UpdateRotationArm(climb, ClimberConstants.intakeArmPosition));
 
     new JoystickButton(gamepad, Button.kB.value)
-        .whenPressed(new UpdateRotationArm(climb, ClimberConstants.climbArmPosition));
+      .whenPressed(new UpdateRotationArm(climb, ClimberConstants.climbArmPosition));
 
-    new JoystickButton(gamepad, Button.kA.value)
-        .whenPressed(new UpdateRotationArm(climb, ClimberConstants.defaultArmPosition));
+    new JoystickButton(gamepad, Button.kX.value)
+      .whenPressed(new UpdateRotationArm(climb, ClimberCons tants.defaultArmPosition));
 
     new JoystickButton(gamepad, Button.kLeftBumper.value)
-        .whenPressed(new ExtendTelescope(climb));
+      .whenPressed(new ExtendTelescope(climb));
 
     new JoystickButton(gamepad, Button.kRightBumper.value)
-        .whenPressed(new RetractTelescope(climb));
+      .whenPressed(new RetractTelescope(climb));*/
 
-                
+    new JoystickButton(gamepad, Button.kA.value)
+      .whenPressed(new InstantCommand(shooter::runHood))
+      .whenReleased(new InstantCommand(shooter::stopHood));
+
+    new JoystickButton(gamepad, Button.kX.value)
+      .whileHeld(new HoodCalibrate(shooter));
+
     //whenReleased sets the command to be interruptable, so they should stop if button is pressed/released
     /*new JoystickButton(rightJoystick, 3)
-        .whenHeld(new Tracking(limelight, turret))
-        .whenReleased(new ManualTurret(
-                limelight, 
-                turret, 
-                () -> turretManualLeftButton.get(), 
-                () -> turretManualRightButton.get()
-              )
-          );*/
-
-
-
-    
-
+      .whenHeld(new Tracking(limelight, turret))
+      .whenReleased(new ManualTurret(
+          limelight, 
+          turret, 
+          () -> turretManualLeftButton.get(), 
+          () -> turretManualRightButton.get()
+        )
+      );*/
 
   }
 

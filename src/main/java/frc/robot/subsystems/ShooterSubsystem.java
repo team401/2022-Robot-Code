@@ -176,6 +176,18 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
+    public void runHood() {
+
+        hoodMotor.set(0.05);
+
+    }
+
+    public void stopHood() {
+
+        hoodMotor.set(0);
+
+    }
+
     /**
      * SHOOTER METHODS
      */
