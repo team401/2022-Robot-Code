@@ -30,22 +30,27 @@ public class HoodCalibrate extends CommandBase {
     @Override
     public void execute() {
 
-        double hoodVelocity = shooterSubsystem.getHoodVelocity();
+        if (shooterSubsystem.getHoodVelocity() > 0) {
 
-        if (hoodVelocity > 0)
             hoodTimer.reset();
+
+        }
         
     }
 
     @Override
     public boolean isFinished() {
+
         return hoodTimer.get() >= 0.2;
+
     }
 
     @Override
     public void end(boolean isInterrupted) {
+
         shooterSubsystem.runHoodPercent(0);
         shooterSubsystem.resetHoodEncoder();
+        
     }
     
 }
