@@ -1,6 +1,7 @@
 package frc.robot.commands.superstructure;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -21,6 +22,7 @@ public class HoodCalibrate extends CommandBase {
     @Override
     public void initialize() {
 
+        hoodTimer.reset();
         hoodTimer.start();
 
         shooterSubsystem.runHoodPercent(-0.05);
@@ -30,7 +32,9 @@ public class HoodCalibrate extends CommandBase {
     @Override
     public void execute() {
 
-        if (shooterSubsystem.getHoodVelocity() > 0) {
+        SmartDashboard.putNumber("Hood Velocity", shooterSubsystem.getHoodVelocity());
+
+        if (Math.abs(shooterSubsystem.getHoodVelocity()) > 0.01) {
 
             hoodTimer.reset();
 
@@ -41,7 +45,7 @@ public class HoodCalibrate extends CommandBase {
     @Override
     public boolean isFinished() {
 
-        return hoodTimer.get() >= 0.2;
+        return hoodTimer.get() >= 0.1;
 
     }
 
@@ -50,6 +54,8 @@ public class HoodCalibrate extends CommandBase {
 
         shooterSubsystem.runHoodPercent(0);
         shooterSubsystem.resetHoodEncoder();
+
+        SmartDashboard.putNumber("Calibration Time", System.currentTimeMillis());
         
     }
     
