@@ -233,16 +233,20 @@ public class Constants {
 
         // TODO: Update values
         public static final double defaultArmPosition = 0;
-        public static final double intakeArmPosition = 0.85;
+        public static final double intakeArmPosition = 0.75;
         public static final double climbArmPosition = 0.35;
 
-        // TODO: Update values
-        public static final double leftRotationOffset = -1.145;
+        // measured offsets
+        public static final double leftRotationOffset = -1.445 + 0.0996;
         public static final double rightRotationOffset = 1.01;
 
         // TODO: Update values
         public static final double leftTelescopeMaxHeight = 0;
         public static final double rightTelescopeMaxHeight = 0;
+
+        //vertical conversion from rotations
+        public static final double linearConversion = 0.625 * Math.PI;
+
     }
 
 }

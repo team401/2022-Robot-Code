@@ -28,7 +28,7 @@ public class UpdateRotationArm extends CommandBase {
     @Override
     public void execute() {
 
-        //climbingSubsystem.setLeftDesiredRotationPosition(desiredPositionRadians);
+        climbingSubsystem.setLeftDesiredRotationPosition(desiredPositionRadians);
         climbingSubsystem.setRightDesiredRotationPosition(desiredPositionRadians);
 
         SmartDashboard.putNumber("left rot", desiredPositionRadians);
@@ -41,13 +41,13 @@ public class UpdateRotationArm extends CommandBase {
 
     @Override
     public void end(boolean isInterrupted) {
-        //climbingSubsystem.setLeftRotationPercent(0);
+        climbingSubsystem.setLeftRotationPercent(0);
         climbingSubsystem.setRightRotationPercent(0);
     } 
 
     @Override
     public boolean isFinished() {
-        return climbingSubsystem.atGoal();// || !climbingSubsystem.withinBoundaries();
+        return climbingSubsystem.atGoal() || !climbingSubsystem.withinBoundaries();
     }
     
 }
