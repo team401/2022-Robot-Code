@@ -113,18 +113,14 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override 
     public void periodic() {
 
-        /*SmartDashboard.putNumber("desired shooter speed", desiredSpeed);
+        SmartDashboard.putNumber("desired shooter speed", desiredSpeed);
         SmartDashboard.putNumber("desired hood position", hoodDesired);
-<<<<<<< HEAD
         SmartDashboard.putNumber("current hood position Revolutions", getHoodPositionRevolutions());
 
         hoodController.setP(SmartDashboard.getNumber("hoodkP", 0));
         hoodController.setD(SmartDashboard.getNumber("hoodkD", 0));
 
         if (!(Math.abs(desiredSpeed - getFlywheelVelocityRadPerSec()) < shooterTolerance)) timer.reset();
-=======
-        if (!(Math.abs(desiredSpeed - getFlywheelVelocityRadPerSec()) < shooterTolerance)) timer.reset();*/
->>>>>>> 5b8eaa6c1e4934c7eab2549822cd02e56e1fc9a2
 
     }    
 
@@ -273,5 +269,7 @@ public class ShooterSubsystem extends SubsystemBase {
         return timer.get() >= 0.25;
 
     }
+
+    
 
 }
