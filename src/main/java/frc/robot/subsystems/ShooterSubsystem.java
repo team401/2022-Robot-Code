@@ -49,13 +49,14 @@ public class ShooterSubsystem extends SubsystemBase {
             SuperstructureConstants.shooterMaxSpeed * SuperstructureConstants.shooterReduction,
             SuperstructureConstants.shooterMaxAcceleration
         )); //need to use WPILib controller
+
     private final SparkMaxPIDController hoodController = hoodMotor.getPIDController(); //can use integrated REV
 
     //**NEED TO CHANGE**
     //PID Values for Hood
-    private final double hoodkP = 0.0;
-    private final double hoodkI = 0.0;
-    private final double hoodkD = 0.0;
+    private double hoodkP = 0.1;
+    private double hoodkI = 0.0;
+    private double hoodkD = 0.0;
 
     private final double shooterTolerance = Units.rotationsPerMinuteToRadiansPerSecond(150);
     private double desiredSpeed;
@@ -68,8 +69,12 @@ public class ShooterSubsystem extends SubsystemBase {
     //set tolerance
     public ShooterSubsystem() {
 
+        SmartDashboard.putNumber("hoodkP", hoodkP);
+        SmartDashboard.putNumber("hoodkD", hoodkD);
+
         rightShooterMotor.configFactoryDefault();
         leftShooterMotor.configFactoryDefault();
+        hoodMotor.restoreFactoryDefaults();
 
         rightShooterMotor.setInverted(true);
         hoodMotor.setInverted(true);
@@ -77,10 +82,19 @@ public class ShooterSubsystem extends SubsystemBase {
         //Current Limits
         hoodMotor.setSmartCurrentLimit(20);
 
+
+        //Soft Limits
+        hoodMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
+        hoodMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
+        
+
         //sets up hood PID Controller
         hoodController.setP(hoodkP);
         hoodController.setI(hoodkI);
         hoodController.setD(hoodkD);
+
+        hoodController.setSmartMotionMaxVelocity(6, 0);
+        hoodController.setSmartMotionMaxAccel(20, 0);
 
         /**
          * sets the turretEncoder position and velocity to be based off of radians and 
@@ -101,7 +115,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("desired shooter speed", desiredSpeed);
         SmartDashboard.putNumber("desired hood position", hoodDesired);
-        SmartDashboard.putNumber("current hood position", getHoodPositionRevolutions());
+        SmartDashboard.putNumber("current hood position Revolutions", getHoodPositionRevolutions());
+
+        hoodController.setP(SmartDashboard.getNumber("hoodkP", 0));
+        hoodController.setD(SmartDashboard.getNumber("hoodkD", 0));
 
         if (!(Math.abs(desiredSpeed - getFlywheelVelocityRadPerSec()) < shooterTolerance)) timer.reset();
 
@@ -172,7 +189,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     //PID controller to set desired position of the hood in radians
-    public void hoodSetDesiredClosedState(double desiredPosition) {
+    public void hoodSetDesiredClosedStateRevolutions(double desiredPosition) {
 
         hoodController.setReference(
             desiredPosition,
@@ -198,6 +215,13 @@ public class ShooterSubsystem extends SubsystemBase {
     public void stopHood() {
 
         hoodMotor.set(0);
+
+    }
+
+    public void setHoodSoftLimits(float forward, float reverse) {
+
+        hoodMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, forward);
+        hoodMotor.setSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, reverse);
 
     }
 

@@ -6,14 +6,16 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.InputDevices;
-import frc.robot.commands.climber.ExtendTelescope;
-import frc.robot.commands.climber.RetractTelescope;
-import frc.robot.commands.climber.UpdateRotationArm;
+import frc.robot.commands.Climber.ExtendTelescope;
+import frc.robot.commands.Climber.RetractTelescope;
+import frc.robot.commands.Climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
 import frc.robot.commands.superstructure.HoodCalibrate;
+import frc.robot.commands.superstructure.HoodToSetPoint;
 import frc.robot.commands.superstructure.turret.manual.ManualTurret;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -34,11 +36,11 @@ public class RobotContainer {
 
 
   //list out all of the subsystems we need in our robot
-  private final DriveSubsystem drive = new DriveSubsystem();
-  private final ClimbSubsystem climb = new ClimbSubsystem();
-  private final TurretSubsystem turret = new TurretSubsystem();
-  private final VisionSubsystem limelight = new VisionSubsystem();
-  private final ShooterSubsystem shooter = new ShooterSubsystem();
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+  private final TurretSubsystem turretSubsystem = new TurretSubsystem();
+  private final VisionSubsystem limelightSubsystem = new VisionSubsystem();
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
   public RobotContainer() {
 
@@ -65,7 +67,9 @@ public class RobotContainer {
         true
       )
     );*/
-    
+
+    SmartDashboard.putNumber("Hood SetPoint", 0);
+
     configureButtonBindings();
 
   }
@@ -111,12 +115,15 @@ public class RobotContainer {
       .whenPressed(new RetractTelescope(climb));*/
 
     new JoystickButton(rightJoystick, 3)//Button.kA.value)
-      .whenPressed(new InstantCommand(shooter::runHood))
-      .whenReleased(new InstantCommand(shooter::stopHood));
+      .whenPressed(new InstantCommand(shooterSubsystem::runHood))
+      .whenReleased(new InstantCommand(shooterSubsystem::stopHood));
 
     new JoystickButton(rightJoystick, 2)//Button.kX.valurightJoye)
-      .whenHeld(new HoodCalibrate(shooter));
+      .whenHeld(new HoodCalibrate(shooterSubsystem));
       //.whenReleased(new InstantCommand(shooter::stopHood));
+
+    new JoystickButton(rightJoystick, 5)
+      .whenPressed(new HoodToSetPoint(shooterSubsystem));
 
     //whenReleased sets the command to be interruptable, so they should stop if button is pressed/released
     /*new JoystickButton(rightJoystick, 3)

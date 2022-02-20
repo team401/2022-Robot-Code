@@ -22,10 +22,12 @@ public class HoodCalibrate extends CommandBase {
     @Override
     public void initialize() {
 
+        SmartDashboard.putBoolean("hood calibration running ", true);
+
         hoodTimer.reset();
         hoodTimer.start();
 
-        shooterSubsystem.runHoodPercent(-0.05);
+        shooterSubsystem.runHoodPercent(-0.1);
 
     }
 
@@ -54,8 +56,7 @@ public class HoodCalibrate extends CommandBase {
 
         shooterSubsystem.runHoodPercent(0);
         shooterSubsystem.resetHoodEncoder();
-
-        SmartDashboard.putNumber("Calibration Time", System.currentTimeMillis());
+        shooterSubsystem.setHoodSoftLimits(5, 0);
         
     }
     
