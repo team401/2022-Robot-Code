@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -74,14 +78,28 @@ public class ShooterSubsystem extends SubsystemBase {
 
         rightShooterMotor.configFactoryDefault();
         leftShooterMotor.configFactoryDefault();
+
+        rightShooterMotor.configNeutralDeadband(0.001);
+        leftShooterMotor.configNeutralDeadband(0.001);
+
+        rightShooterMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 10);
+        leftShooterMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 10);
+
         hoodMotor.restoreFactoryDefaults();
+
+        // Terminal, Constant, Timeout
+        leftShooterMotor.config_kF(0, 1023.0/21650, 10);
+        leftShooterMotor.config_kP(0, 10, 10);
+        leftShooterMotor.config_kP(0, 0, 10);
+        leftShooterMotor.config_kP(0, 0, 10);
 
         rightShooterMotor.setInverted(true);
         hoodMotor.setInverted(true);
 
+        rightShooterMotor.follow(leftShooterMotor);
+
         //Current Limits
         hoodMotor.setSmartCurrentLimit(20);
-
 
         //Soft Limits
         hoodMotor.enableSoftLimit(CANSparkMax.SoftLimitDirection.kReverse, true);
@@ -240,9 +258,11 @@ public class ShooterSubsystem extends SubsystemBase {
     //runs at percent
     public void runShooterPercent(double percent) {
 
-        shooterMotors.set(percent);
+        //shooterMotors.set(percent);
+        leftShooterMotor.set(percent);
 
     }
+
 
     //sets the velocity using the profiled pid
     public void runShooterVelocityProfiledController(double desiredSpeedRadPerSec){
@@ -253,14 +273,24 @@ public class ShooterSubsystem extends SubsystemBase {
              desiredSpeedRadPerSec
         );
 
-        shooterMotors.set(powerOut);
+        //shooterMotors.set(powerOut);
+        leftShooterMotor.set(powerOut);
+
+    }
+
+    public void runShooterVelocityController(double desiredRPM) {
+
+        double output = desiredRPM * SuperstructureConstants.shooterMotorRPMConversionFactor;
+        leftShooterMotor.set(TalonFXControlMode.Velocity, output);
+        SmartDashboard.putNumber("Shooter output", output);
 
     }
 
     //stops shooter
     public void stopShooter() {
 
-        shooterMotors.set(0);
+        //shooterMotors.set(0);
+        leftShooterMotor.set(0);
 
     }
 

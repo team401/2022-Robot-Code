@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.InputDevices;
-import frc.robot.commands.Climber.ExtendTelescope;
-import frc.robot.commands.Climber.RetractTelescope;
-import frc.robot.commands.Climber.UpdateRotationArm;
+import frc.robot.commands.climber.ExtendTelescope;
+import frc.robot.commands.climber.RetractTelescope;
+import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
 import frc.robot.commands.superstructure.HoodCalibrate;
@@ -99,7 +99,7 @@ public class RobotContainer {
      * Right Xbox Trigger = Retract Telescope
      */
 
-    new JoystickButton(gamepad, Button.kX.value)
+    /*new JoystickButton(gamepad, Button.kX.value)
       .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.intakeArmPosition));
 
     new JoystickButton(gamepad, Button.kB.value)
@@ -135,6 +135,14 @@ public class RobotContainer {
           () -> turretManualRightButton.get()
         )
       );*/
+
+    /*new JoystickButton(rightJoystick, 3)
+      .whenPressed(() -> shooterSubsystem.runShooterVelocityController(4000))
+      .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));*/
+
+    new JoystickButton(rightJoystick, 3)
+      .whileHeld(() -> shooterSubsystem.runShooterVelocityController(Math.abs(rightJoystick.getY()*4000)))
+      .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));
 
   }
 
