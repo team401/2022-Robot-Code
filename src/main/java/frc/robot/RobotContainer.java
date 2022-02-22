@@ -160,6 +160,14 @@ public class RobotContainer {
         )
       );*/
 
+    /*new JoystickButton(rightJoystick, 3)
+      .whenPressed(() -> shooterSubsystem.runShooterVelocityController(4000))
+      .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));*/
+
+    new JoystickButton(rightJoystick, 3)
+      .whileHeld(() -> shooterSubsystem.runShooterVelocityController(Math.abs(rightJoystick.getY()*4000)))
+      .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));
+
   }
 
   //prepares the robot for autonomous and send sthe command we should use

@@ -180,6 +180,9 @@ public class Constants {
         public static final double shooterMaxSpeed = Units.rotationsPerMinuteToRadiansPerSecond(6200);
         public static final double shooterMaxAcceleration = Units.rotationsPerMinuteToRadiansPerSecond(2000);
 
+        // converts rpm to integrated units per 100ms               units minute second
+        public static final double shooterMotorRPMConversionFactor = 2048.0 / 60 / 10;
+
         //Encoder IDS (through-bore REV)
         public static final int leftArmEncoder = 2;
         public static final int rightArmEncoder = 3;
