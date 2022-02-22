@@ -1,5 +1,6 @@
-package frc.robot.commands.Climber;
+package frc.robot.commands.climber;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -10,10 +11,10 @@ public class UpdateRotationArm extends CommandBase {
 
     private final double desiredPositionRadians;
     
-    public UpdateRotationArm(ClimbSubsystem climber, double desired) {
+    public UpdateRotationArm(ClimbSubsystem climber, double desired, Constraints constraints) {
 
         climbingSubsystem = climber;
-
+        climbingSubsystem.changeRotationPIDConstraints(constraints);
         desiredPositionRadians = desired;
 
         addRequirements(climbingSubsystem);
@@ -40,14 +41,8 @@ public class UpdateRotationArm extends CommandBase {
     }
 
     @Override
-    public void end(boolean isInterrupted) {
-        climbingSubsystem.setLeftRotationPercent(0);
-        climbingSubsystem.setRightRotationPercent(0);
-    } 
-
-    @Override
     public boolean isFinished() {
-        return climbingSubsystem.atGoal() || !climbingSubsystem.withinBoundaries();
+        return climbingSubsystem.atGoalRotation() || !climbingSubsystem.withinBoundariesRotation();
     }
     
 }
