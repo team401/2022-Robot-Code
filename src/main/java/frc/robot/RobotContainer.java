@@ -140,8 +140,12 @@ public class RobotContainer {
       .whenPressed(() -> shooterSubsystem.runShooterVelocityController(4000))
       .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));*/
 
+    new JoystickButton(rightJoystick, 2)
+      .whenPressed(() -> shooterSubsystem.runFeederPercent(-0.75))
+      .whenReleased(() -> shooterSubsystem.runFeederPercent(0));
+
     new JoystickButton(rightJoystick, 3)
-      .whileHeld(() -> shooterSubsystem.runShooterVelocityController(Math.abs(rightJoystick.getY()*4000)))
+      .whileHeld(() -> shooterSubsystem.runShooterVelocityController(4000))
       .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));
 
   }
