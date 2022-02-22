@@ -237,6 +237,7 @@ public class Constants {
         public static final double defaultArmPosition = 0;
         public static final double intakeArmPosition = 0.75;
         public static final double climbArmPosition = 0.35;
+        public static final double backArmPosition = -0.08;
 
         // measured offsets
         public static final double leftRotationOffset = -1.445 + 0.0996;
@@ -248,6 +249,8 @@ public class Constants {
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
+
+        public static final double maxHeight = 67.5 - 29.29;
 
     }
 

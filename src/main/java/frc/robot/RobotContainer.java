@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -9,9 +10,10 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.InputDevices;
-import frc.robot.commands.Climber.ExtendTelescope;
-import frc.robot.commands.Climber.RetractTelescope;
-import frc.robot.commands.Climber.UpdateRotationArm;
+import frc.robot.commands.climber.CalibrateTelescope;
+import frc.robot.commands.climber.UpdateTelescopeArms;
+import frc.robot.commands.climber.HoldPositionRotationArms;
+import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
 import frc.robot.commands.superstructure.HoodCalibrate;
@@ -100,19 +102,28 @@ public class RobotContainer {
      */
 
     new JoystickButton(gamepad, Button.kX.value)
-      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.intakeArmPosition));
+      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.intakeArmPosition, 
+          new TrapezoidProfile.Constraints(10.0, 15.0))
+        .andThen(new HoldPositionRotationArms(climbSubsystem)));
 
     new JoystickButton(gamepad, Button.kB.value)
-      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.climbArmPosition));
+      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.climbArmPosition, 
+        new TrapezoidProfile.Constraints(10.0, 15.0))
+        .andThen(new HoldPositionRotationArms(climbSubsystem)));
 
     new JoystickButton(gamepad, Button.kA.value)
-      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.defaultArmPosition));
+      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.backArmPosition,
+        new TrapezoidProfile.Constraints(10.0, 15.0))
+        .andThen(new HoldPositionRotationArms(climbSubsystem)));
 
     new JoystickButton(gamepad, Button.kLeftBumper.value)
-      .whenPressed(new ExtendTelescope(climbSubsystem));
+      .whenPressed(new UpdateTelescopeArms(climbSubsystem, 25.0));
 
     new JoystickButton(gamepad, Button.kRightBumper.value)
-      .whenPressed(new RetractTelescope(climbSubsystem));
+      .whenPressed(new UpdateTelescopeArms(climbSubsystem, 5.0));
+
+    new JoystickButton(gamepad, Button.kY.value)
+      .whenPressed(new CalibrateTelescope(climbSubsystem));
 
     new JoystickButton(rightJoystick, 3)//Button.kA.value)
       .whenPressed(new InstantCommand(shooterSubsystem::runHood))
@@ -124,6 +135,19 @@ public class RobotContainer {
 
     new JoystickButton(rightJoystick, 5)
       .whenPressed(new HoodToSetPoint(shooterSubsystem));
+
+    new JoystickButton(gamepad, Button.kBack.value)
+      .whenHeld(new InstantCommand(climbSubsystem::runLeftTelescopePercent)
+        .alongWith(new InstantCommand(climbSubsystem::runRightTelescopePercent)))
+      .whenReleased(new InstantCommand(() -> climbSubsystem.setLeftTelescopePercent(0.0))
+        .alongWith(new InstantCommand(() -> climbSubsystem.setRightTelescopePercent(0.0))));
+
+    new JoystickButton(gamepad, Button.kStart.value)
+      .whenHeld(new InstantCommand(climbSubsystem::retractLeftTelescope)
+        .alongWith(new InstantCommand(climbSubsystem::retractRightTelescope)))
+      .whenReleased(new InstantCommand(() -> climbSubsystem.setLeftTelescopePercent(0.0))
+        .alongWith(new InstantCommand(() -> climbSubsystem.setRightTelescopePercent(0.0))));
+  
 
     //whenReleased sets the command to be interruptable, so they should stop if button is pressed/released
     /*new JoystickButton(rightJoystick, 3)

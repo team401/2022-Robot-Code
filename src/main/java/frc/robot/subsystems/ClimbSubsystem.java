@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
@@ -32,20 +33,30 @@ public class ClimbSubsystem extends SubsystemBase {
     private final DutyCycleEncoder leftRotationEncoder = new DutyCycleEncoder(SuperstructureConstants.leftArmEncoder);
     private final DutyCycleEncoder rightRotationEncoder = new DutyCycleEncoder(SuperstructureConstants.rightArmEncoder);
 
-    private final Encoder rotationQuadEncoder = new Encoder(4,5);
+    private final Encoder rotationQuadEncoder = new Encoder(4, 5);
 
     //PID Controller Constraints 
     private double leftRotationMaxVel = 10.0;
-    private double leftRotationMaxAccel = 10.0;
+    private double leftRotationMaxAccel = 15.0;
     private double rightRotationMaxVel = 10.0;
-    private double rightRotationMaxAccel = 10.0;
+    private double rightRotationMaxAccel = 15.0;
+    private double leftTelescopeMaxVel = 1.0;
+    private double leftTelescopeMaxAccel = 1.0;
+    private double rightTelescopeMaxVel = 1.0;
+    private double rightTelescopeMaxAccel = 1.0;
+
 
     //PID Controllers
-    private final ProfiledPIDController leftRotationController = new ProfiledPIDController(2.5, 0, 0, 
+    private final ProfiledPIDController leftRotationController = new ProfiledPIDController(4.0, 0, 0.1, 
             new TrapezoidProfile.Constraints(leftRotationMaxVel, leftRotationMaxAccel));
 
-    private final ProfiledPIDController rightRotationController = new ProfiledPIDController(2.5, 0, 0.0, 
+    private final ProfiledPIDController rightRotationController = new ProfiledPIDController(4.0, 0, 0.1, 
             new TrapezoidProfile.Constraints(rightRotationMaxVel, rightRotationMaxAccel));
+
+    private final ProfiledPIDController leftTelescopeController = new ProfiledPIDController(0.0, 0.0, 0.0,
+            new TrapezoidProfile.Constraints(leftTelescopeMaxVel, leftTelescopeMaxAccel));
+    private final ProfiledPIDController rightTelescopeController = new ProfiledPIDController(0.0, 0.0, 0.0,
+            new TrapezoidProfile.Constraints(rightTelescopeMaxVel, rightTelescopeMaxAccel));
 
     //controllers is internal, look at 2021 code ;0;0 
     
@@ -55,7 +66,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
     // Goal Tolerance
     // TODO: Change value
-    private double tolerance = Units.degreesToRadians(1);
+    private double rotationTolerance = Units.degreesToRadians(1);
+    private double telescopeTolerance = 1.0 / 8.0; //in inches
 
     // Boundaries
     // TODO: Change values
@@ -75,21 +87,17 @@ public class ClimbSubsystem extends SubsystemBase {
         rightTelescopeMotor.configFactoryDefault();
         rightRotationMotor.configFactoryDefault();
 
-        leftTelescopeMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
-        rightTelescopeMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+        leftTelescopeMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
+        rightTelescopeMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
 
-        leftTelescopeMotor.setSelectedSensorPosition(0, 0, 10);
-        rightTelescopeMotor.setSelectedSensorPosition(0, 0, 10);
+        //leftTelescopeMotor.setSelectedSensorPosition(0, 0, 10);
+        //rightTelescopeMotor.setSelectedSensorPosition(0, 0, 10);
 
         leftTelescopeMotor.setNeutralMode(NeutralMode.Brake);
         leftRotationMotor.setNeutralMode(NeutralMode.Brake);
         rightTelescopeMotor.setNeutralMode(NeutralMode.Brake);
         rightRotationMotor.setNeutralMode(NeutralMode.Brake);
 
-        leftTelescopeMotor.configSelectedFeedbackSensor(
-            TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative , 0, 10);
-        rightTelescopeMotor.configSelectedFeedbackSensor(
-            TalonSRXFeedbackDevice.CTRE_MagEncoder_Relative , 0, 10);
         leftTelescopeMotor.selectProfileSlot(0, 0);
         rightTelescopeMotor.selectProfileSlot(0, 0);
 
@@ -106,7 +114,9 @@ public class ClimbSubsystem extends SubsystemBase {
         rightTelescopeMotor.config_kD(0, 0);
 
         leftTelescopeMotor.setInverted(true);
+        rightTelescopeMotor.setInverted(false);
         leftRotationMotor.setInverted(true);
+        rightRotationMotor.setInverted(false);
 
         SmartDashboard.putNumber("P Value", 0.0);
         SmartDashboard.putNumber("I Value", 0.0);
@@ -120,49 +130,38 @@ public class ClimbSubsystem extends SubsystemBase {
     public void periodic() {
 
 
-        SmartDashboard.putNumber("Left Rotation Encoder", getLeftRotationEncoderValue());
-        SmartDashboard.putNumber("Right Rotation Encoder", getRightRotationEncoderValue());
+        //SmartDashboard.putNumber("Left Rotation Encoder", getLeftRotationEncoderValue());
+        //SmartDashboard.putNumber("Right Rotation Encoder", getRightRotationEncoderValue());
 
-        SmartDashboard.putBoolean("at goal rot?", atGoal());
+        //SmartDashboard.putBoolean("at goal rot?", atGoal());
 
-        /*SmartDashboard.putNumber("Left Telescope Encoder", getLeftTelescopeEncoderValue());
+        SmartDashboard.putNumber("Left Telescope Encoder", getLeftTelescopeEncoderValue());
         SmartDashboard.putNumber("Right Telescope Encoder", getRightTelescopeEncoderValue());
 
         SmartDashboard.putNumber("Left Telescope Velocity", getLeftTelescopeVelocity());
-        SmartDashboard.putNumber("Right Telescope Velocity", getRightTelescopeVelocity());*/
+        SmartDashboard.putNumber("Right Telescope Velocity", getRightTelescopeVelocity());
 
-        SmartDashboard.putNumber("kf value", theoreticalkF * Math.cos(getLeftRotationEncoderValue() + Math.PI/2.0)/2.0);
-        SmartDashboard.putBoolean("within boundaries?", withinBoundaries());
+        //SmartDashboard.putBoolean("within boundaries?", withinBoundaries());
 
-        leftRotationController.setP(SmartDashboard.getNumber("P Value", 0.0));
-        leftRotationController.setI(SmartDashboard.getNumber("I Value", 0.0));
-        leftRotationController.setD(SmartDashboard.getNumber("D Value", 0.0));
-        rightRotationController.setP(SmartDashboard.getNumber("P Value", 0.0));
-        rightRotationController.setI(SmartDashboard.getNumber("I Value", 0.0));
-        rightRotationController.setD(SmartDashboard.getNumber("D Value", 0.0));
+        //SmartDashboard.putNumber("speed", rotationQuadEncoder.getRate());
 
-
-        /*leftTelescopeMotor.config_kP(0, SmartDashboard.getNumber("P Value", 0.0));
+        
+        leftTelescopeMotor.config_kP(0, SmartDashboard.getNumber("P Value", 0.0));
         leftTelescopeMotor.config_kI(0, SmartDashboard.getNumber("I Value", 0.0));
         leftTelescopeMotor.config_kD(0, SmartDashboard.getNumber("D Value", 0.0));
         rightTelescopeMotor.config_kP(0, SmartDashboard.getNumber("P Value", 0.0));
         rightTelescopeMotor.config_kI(0, SmartDashboard.getNumber("I Value", 0.0));
-        rightTelescopeMotor.config_kD(0, SmartDashboard.getNumber("D Value", 0.0));*/
+        rightTelescopeMotor.config_kD(0, SmartDashboard.getNumber("D Value", 0.0));
 
-        leftRotationController.setConstraints(new 
-            TrapezoidProfile.Constraints(SmartDashboard.getNumber("velocity", 5.0), 
-            SmartDashboard.getNumber("acceleration", 5.0)));
-
-        rightRotationController.setConstraints(new 
-            TrapezoidProfile.Constraints(SmartDashboard.getNumber("velocity", 5.0), 
-            SmartDashboard.getNumber("acceleration", 5.0)));
-
+        leftTelescopeController.setConstraints(new TrapezoidProfile.Constraints(
+            SmartDashboard.getNumber("velocity", 1.0), SmartDashboard.getNumber("acceleration", 1.0)));
+        rightTelescopeController.setConstraints(new TrapezoidProfile.Constraints(
+            SmartDashboard.getNumber("velocity", 1.0), SmartDashboard.getNumber("acceleration", 1.0)));
+    
     }
 
     // Get encoder value methods
     public double getLeftRotationEncoderValue() {
-       // if (leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset > Math.PI) 
-         //   return ((leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset) % 2* Math.PI)- 2 * Math.PI;
          if(leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset > Math.PI)
             return leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset - 2 * Math.PI;
          return (leftRotationEncoder.getDistance() + ClimberConstants.leftRotationOffset);
@@ -170,30 +169,41 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public double getRightRotationEncoderValue() {
-        //if (rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset > Math.PI) 
-          //  return ((rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset) % 2* Math.PI)- 2 * Math.PI;
         if(rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset > Math.PI)
             return rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset - 2 * Math.PI;
         return rightRotationEncoder.getDistance() + ClimberConstants.rightRotationOffset;
         //return rightRotationEncoder.getDistance();
     }
 
+    //in linear with inches
     public double getLeftTelescopeEncoderValue() {
-        return leftTelescopeMotor.getSelectedSensorPosition();
+        return leftTelescopeMotor.getSelectedSensorPosition() / 4096.0 * Math.PI * 2 
+            * ClimberConstants.linearConversion;
     } 
 
+    //in linear with inches
     public double getRightTelescopeEncoderValue() {
-        return rightTelescopeMotor.getSelectedSensorPosition();
+        return rightTelescopeMotor.getSelectedSensorPosition() / 4096.0 * Math.PI * 2
+            * ClimberConstants.linearConversion;
     }
 
+    public void changeRotationPIDConstraints(Constraints constraints){
+        leftRotationController.setConstraints(constraints);
+        rightRotationController.setConstraints(constraints);
+    }
+
+    //in linear with inches/s
     public double getLeftTelescopeVelocity() {
         // * 10 converts from units per 100ms to units per 1s
-        return leftTelescopeMotor.getSelectedSensorVelocity() * 10;
+        return leftTelescopeMotor.getSelectedSensorVelocity() * 10 / 4096.0 * Math.PI * 2
+            * ClimberConstants.linearConversion;
     }
 
+    //in linear with inches/s
     public double getRightTelescopeVelocity() {
         // * 10 converts from units per 100ms to units per 1s
-        return rightTelescopeMotor.getSelectedSensorVelocity() * 10;
+        return rightTelescopeMotor.getSelectedSensorVelocity() * 10 / 4096.0 *  Math.PI * 2 
+            * ClimberConstants.linearConversion;
     }
 
     // Get amp value methods
@@ -223,6 +233,22 @@ public class ClimbSubsystem extends SubsystemBase {
     public void setRightRotationPercent(double percent) {
         SmartDashboard.putNumber("right Percent Output", percent);
         rightRotationMotor.set(ControlMode.PercentOutput, percent);
+    }
+
+    public void runLeftTelescopePercent() {
+        setLeftTelescopePercent(0.25);
+    }
+
+    public void runRightTelescopePercent() {
+        setRightTelescopePercent(0.25);
+    }
+
+    public void retractLeftTelescope() {
+        setLeftTelescopePercent(-0.25);
+    }
+
+    public void retractRightTelescope() {
+        setRightTelescopePercent(-0.25);
     }
 
     public void setLeftTelescopePercent(double percent) {
@@ -256,26 +282,45 @@ public class ClimbSubsystem extends SubsystemBase {
     public void setLeftDesiredTelescopePosition(double desiredPosition){
         double rotNeeded = desiredPosition / (Math.PI * 2);
         leftGoal = rotNeeded * ClimberConstants.linearConversion;
-        leftTelescopeMotor.set(TalonSRXControlMode.Position, rotNeeded * 4096);
+
+        double output = leftTelescopeController.calculate(getLeftTelescopeEncoderValue(), leftGoal);
+
+        leftTelescopeMotor.set(TalonSRXControlMode.PercentOutput, output);
     }
 
     public void setRightDesiredTelescopePosition(double desiredPosition){
         double rotNeeded = desiredPosition / (Math.PI * 2);
         rightGoal = rotNeeded * ClimberConstants.linearConversion;
-        rightTelescopeMotor.set(TalonSRXControlMode.Position, rotNeeded * 4096);
+
+        double output = rightTelescopeController.calculate(getLeftTelescopeEncoderValue(), leftGoal);
+
+        rightTelescopeMotor.set(TalonSRXControlMode.PercentOutput, output);
     }
 
     // Idk what to call methods like atGoal and withinBoundaries
-    public boolean atGoal() {
-        return Math.abs(getLeftRotationEncoderValue() - goalLeftRotationPosition) <= tolerance && 
-                Math.abs(getRightRotationEncoderValue() - goalRightRotationPosition) <= tolerance;
+    public boolean atGoalRotation() {
+        return Math.abs(getLeftRotationEncoderValue() - goalLeftRotationPosition) <= rotationTolerance && 
+                Math.abs(getRightRotationEncoderValue() - goalRightRotationPosition) <= rotationTolerance;
     }
 
-    public boolean withinBoundaries() {
+    public boolean atGoalTelescope() {
+        return Math.abs(getLeftTelescopeEncoderValue() - leftGoal) <= telescopeTolerance &&
+                Math.abs(getRightTelescopeEncoderValue() - rightGoal) <= telescopeTolerance;
+
+    }
+
+    public boolean withinBoundariesRotation() {
         return (getLeftRotationEncoderValue() >= backRotationBoundary && 
                 getRightRotationEncoderValue() >= backRotationBoundary && 
                 getLeftRotationEncoderValue() <= frontRotationBoundary && 
                 getRightRotationEncoderValue() <= frontRotationBoundary);
+    }
+
+    public boolean withinBoundariesTelescope() {
+        return (getLeftTelescopeEncoderValue() >= 0.0 &&
+                getRightTelescopeEncoderValue() >= 0.0 &&
+                getLeftTelescopeEncoderValue() <= ClimberConstants.maxHeight &&
+                getRightTelescopeEncoderValue() <= ClimberConstants.maxHeight);
     }
 
     public void resetControllers() {
