@@ -3,19 +3,17 @@ package frc.robot.commands.superstructure.shooting;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterSubsystem;
 
-/**
- * Takes in a speed in rad/sec and runs the shooter using the profiled PID controller
- */
-
-public class RampUpToSpeed extends CommandBase {
+public class RampUp extends CommandBase {
     
     private final ShooterSubsystem shooter;
+
     private double desiredSpeed;
 
-    public RampUpToSpeed(double speed, ShooterSubsystem shoot){
+    public RampUp(ShooterSubsystem shoot, double desiredSpeedRPM) {
 
         shooter = shoot;
-        desiredSpeed = speed;
+
+        desiredSpeed = desiredSpeedRPM;
 
         addRequirements(shooter);
 
@@ -24,7 +22,7 @@ public class RampUpToSpeed extends CommandBase {
     @Override
     public void execute() {
 
-        shooter.runShooterVelocityProfiledController(desiredSpeed);
+        shooter.runShooterVelocityController(desiredSpeed);
 
     }
 
@@ -34,5 +32,5 @@ public class RampUpToSpeed extends CommandBase {
         return shooter.atGoal();
 
     }
-
+    
 }

@@ -1,4 +1,4 @@
-package frc.robot.commands.superstructure;
+package frc.robot.commands.superstructure.shooting;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

@@ -16,8 +16,8 @@ import frc.robot.commands.climber.HoldPositionRotationArms;
 import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
-import frc.robot.commands.superstructure.HoodCalibrate;
-import frc.robot.commands.superstructure.HoodToSetPoint;
+import frc.robot.commands.superstructure.shooting.HoodCalibrate;
+import frc.robot.commands.superstructure.shooting.HoodToSetPoint;
 import frc.robot.commands.superstructure.turret.manual.ManualTurret;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -165,7 +165,7 @@ public class RobotContainer {
       .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));*/
 
     new JoystickButton(rightJoystick, 2)
-      .whenPressed(() -> shooterSubsystem.runFeederPercent(-0.75))
+      .whenPressed(() -> shooterSubsystem.runFeederPercent(0.75))
       .whenReleased(() -> shooterSubsystem.runFeederPercent(0));
 
     new JoystickButton(rightJoystick, 3)

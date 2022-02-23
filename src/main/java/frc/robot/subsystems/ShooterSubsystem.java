@@ -95,6 +95,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         rightShooterMotor.setInverted(true);
         hoodMotor.setInverted(true);
+        feederMotor.setInverted(true);
 
         rightShooterMotor.follow(leftShooterMotor);
 
@@ -263,26 +264,25 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-
-    //sets the velocity using the profiled pid
-    public void runShooterVelocityProfiledController(double desiredSpeedRadPerSec){
-
-        desiredSpeed = desiredSpeedRadPerSec;
-        double powerOut = shooterController.calculate(
-             getFlywheelVelocityRadPerSec(),
-             desiredSpeedRadPerSec
-        );
-
-        //shooterMotors.set(powerOut);
-        leftShooterMotor.set(powerOut);
-
-    }
-
     public void runShooterVelocityController(double desiredRPM) {
 
         double output = desiredRPM * SuperstructureConstants.shooterMotorRPMConversionFactor;
         leftShooterMotor.set(TalonFXControlMode.Velocity, output);
         SmartDashboard.putNumber("Shooter output", output);
+
+    }
+
+    public void runShooterKicker(double desiredRPM) {
+
+        runShooterVelocityController(desiredRPM);
+        runFeederPercent(0.75);
+
+    }
+
+    public void stopShooterKicker() {
+
+        leftShooterMotor.set(TalonFXControlMode.Velocity, 0);
+        runFeederPercent(0.75);
 
     }
 
@@ -299,7 +299,5 @@ public class ShooterSubsystem extends SubsystemBase {
         return timer.get() >= 0.25;
 
     }
-
-    
 
 }
