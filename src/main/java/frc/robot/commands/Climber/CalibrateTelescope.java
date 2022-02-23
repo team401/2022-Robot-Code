@@ -35,16 +35,18 @@ public class CalibrateTelescope extends CommandBase {
     public void execute() {
 
         SmartDashboard.putNumber("left telescope velocity", climb.getLeftTelescopeVelocity());
-        if (Math.abs(climb.getLeftTelescopeVelocity()) > 0.2)
+        if (Math.abs(climb.getLeftTelescopeVelocity()) > 0.2) {
              leftClimbTimer.reset();
              SmartDashboard.putBoolean("left finished", false);
+        }
         if (leftClimbTimer.get() >= 0.025) {
             climb.setLeftTelescopePercent(0.0);
             SmartDashboard.putBoolean("left finished", true);
         }
-        if (Math.abs(climb.getRightTelescopeVelocity()) > 0.2) 
+        if (Math.abs(climb.getRightTelescopeVelocity()) > 0.2) {
             rightClimbTimer.reset();
             SmartDashboard.putBoolean("right finished", false);
+        }
         if (rightClimbTimer.get() >= 0.025) {
             climb.setRightTelescopePercent(0.0);
             SmartDashboard.putBoolean("right finished", true);

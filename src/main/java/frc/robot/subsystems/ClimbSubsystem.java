@@ -40,6 +40,7 @@ public class ClimbSubsystem extends SubsystemBase {
     private double leftRotationMaxAccel = 15.0;
     private double rightRotationMaxVel = 10.0;
     private double rightRotationMaxAccel = 15.0;
+
     private double leftTelescopeMaxVel = 1.0;
     private double leftTelescopeMaxAccel = 1.0;
     private double rightTelescopeMaxVel = 1.0;
@@ -145,13 +146,12 @@ public class ClimbSubsystem extends SubsystemBase {
 
         //SmartDashboard.putNumber("speed", rotationQuadEncoder.getRate());
 
-        
-        leftTelescopeMotor.config_kP(0, SmartDashboard.getNumber("P Value", 0.0));
-        leftTelescopeMotor.config_kI(0, SmartDashboard.getNumber("I Value", 0.0));
-        leftTelescopeMotor.config_kD(0, SmartDashboard.getNumber("D Value", 0.0));
-        rightTelescopeMotor.config_kP(0, SmartDashboard.getNumber("P Value", 0.0));
-        rightTelescopeMotor.config_kI(0, SmartDashboard.getNumber("I Value", 0.0));
-        rightTelescopeMotor.config_kD(0, SmartDashboard.getNumber("D Value", 0.0));
+        leftTelescopeController.setP(SmartDashboard.getNumber("P Value", 0.0));
+        leftTelescopeController.setI(SmartDashboard.getNumber("I Value", 0.0));
+        leftTelescopeController.setD(SmartDashboard.getNumber("D Value", 0.0));
+        rightTelescopeController.setP(SmartDashboard.getNumber("P Value", 0.0));
+        rightTelescopeController.setI(SmartDashboard.getNumber("I Value", 0.0));
+        rightTelescopeController.setD( SmartDashboard.getNumber("D Value", 0.0));
 
         leftTelescopeController.setConstraints(new TrapezoidProfile.Constraints(
             SmartDashboard.getNumber("velocity", 1.0), SmartDashboard.getNumber("acceleration", 1.0)));
@@ -226,12 +226,10 @@ public class ClimbSubsystem extends SubsystemBase {
 
     // Set percent methods
     public void setLeftRotationPercent(double percent) {
-        SmartDashboard.putNumber("Left Percent Output", percent);
         leftRotationMotor.set(ControlMode.PercentOutput, percent);
     }
 
     public void setRightRotationPercent(double percent) {
-        SmartDashboard.putNumber("right Percent Output", percent);
         rightRotationMotor.set(ControlMode.PercentOutput, percent);
     }
 
@@ -277,22 +275,18 @@ public class ClimbSubsystem extends SubsystemBase {
 
     }
 
-    //value is passed in in radians
+    //value is passed in in inches
     //TODO: check set method
     public void setLeftDesiredTelescopePosition(double desiredPosition){
-        double rotNeeded = desiredPosition / (Math.PI * 2);
-        leftGoal = rotNeeded * ClimberConstants.linearConversion;
-
+        leftGoal = desiredPosition;
         double output = leftTelescopeController.calculate(getLeftTelescopeEncoderValue(), leftGoal);
 
         leftTelescopeMotor.set(TalonSRXControlMode.PercentOutput, output);
     }
 
     public void setRightDesiredTelescopePosition(double desiredPosition){
-        double rotNeeded = desiredPosition / (Math.PI * 2);
-        rightGoal = rotNeeded * ClimberConstants.linearConversion;
-
-        double output = rightTelescopeController.calculate(getLeftTelescopeEncoderValue(), leftGoal);
+        rightGoal = desiredPosition;
+        double output = rightTelescopeController.calculate(getRightTelescopeEncoderValue(), rightGoal);
 
         rightTelescopeMotor.set(TalonSRXControlMode.PercentOutput, output);
     }
@@ -306,7 +300,6 @@ public class ClimbSubsystem extends SubsystemBase {
     public boolean atGoalTelescope() {
         return Math.abs(getLeftTelescopeEncoderValue() - leftGoal) <= telescopeTolerance &&
                 Math.abs(getRightTelescopeEncoderValue() - rightGoal) <= telescopeTolerance;
-
     }
 
     public boolean withinBoundariesRotation() {
@@ -323,9 +316,14 @@ public class ClimbSubsystem extends SubsystemBase {
                 getRightTelescopeEncoderValue() <= ClimberConstants.maxHeight);
     }
 
-    public void resetControllers() {
+    public void resetRotationControllers() {
         leftRotationController.reset(getLeftRotationEncoderValue());
         rightRotationController.reset(getRightRotationEncoderValue());
+    }
+
+    public void resetTelescopeControllers() {
+        leftTelescopeController.reset(getLeftTelescopeEncoderValue());
+        rightTelescopeController.reset(getRightTelescopeEncoderValue());
     }
 
 }

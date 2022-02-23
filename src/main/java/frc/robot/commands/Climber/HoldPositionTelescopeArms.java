@@ -19,7 +19,7 @@ public class HoldPositionTelescopeArms extends CommandBase {
 
     @Override
     public void initialize() {
-        climber.resetControllers();
+        climber.resetTelescopeControllers();
         desiredPositionLeft = climber.getLeftTelescopeEncoderValue();
         desiredPositionRight = climber.getRightTelescopeEncoderValue();
     }

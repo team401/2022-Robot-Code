@@ -52,9 +52,9 @@ public class TurretSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
 
-        SmartDashboard.putNumber("Turret Position Radians", getTurretPositionRadians());
-        SmartDashboard.putNumber("Turret Position Ticks", getEncoderPositionTicks());
-        SmartDashboard.putBoolean("isWithinEdges", isWithinEdges());    
+        //SmartDashboard.putNumber("Turret Position Radians", getTurretPositionRadians());
+        //SmartDashboard.putNumber("Turret Position Ticks", getEncoderPositionTicks());
+        //SmartDashboard.putBoolean("isWithinEdges", isWithinEdges());    
     }
 
     public static double convertTurretTicksToRadians(double ticks) {

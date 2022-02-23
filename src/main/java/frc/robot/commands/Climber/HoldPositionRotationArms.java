@@ -19,7 +19,7 @@ public class HoldPositionRotationArms extends CommandBase {
 
     @Override
     public void initialize() {
-        climber.resetControllers();
+        climber.resetRotationControllers();
         desiredPositionLeft = climber.getLeftRotationEncoderValue();
         desiredPositionRight = climber.getRightRotationEncoderValue();
     }
