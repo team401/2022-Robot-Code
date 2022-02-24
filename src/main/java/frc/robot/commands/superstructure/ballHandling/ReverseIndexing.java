@@ -1,26 +1,31 @@
 package frc.robot.commands.superstructure.ballHandling;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.IndexingSubsystem;
 
 public class ReverseIndexing extends CommandBase {
 
-    public ReverseIndexing() {
-        
+    private final IndexingSubsystem indexingSubsystem;
 
+    public ReverseIndexing(IndexingSubsystem index) {
+        
+        indexingSubsystem = index;
         
     }
     
     @Override
     public void execute() {
 
-
+        indexingSubsystem.reverseConveyor();
+        indexingSubsystem.reverseIndexWheels();
 
     }
 
     @Override
-    public boolean isFinished() {
+    public void end(boolean isInterrupted) {
 
-        return false;
+        indexingSubsystem.stopConveyor();
+        indexingSubsystem.stopIndexWheels();
 
     }
     

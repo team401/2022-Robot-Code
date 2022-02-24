@@ -95,5 +95,11 @@ public class IndexingSubsystem extends SubsystemBase {
 
     }
 
+    public void reverseIndexWheels() {
+
+        indexMotors.set(-SuperstructureConstants.indexPower);
+
+    }
+
 }
 

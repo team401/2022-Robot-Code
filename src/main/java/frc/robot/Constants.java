@@ -54,9 +54,9 @@ public class Constants {
         //PREP
         //IDs for Intake & Indexing
         public static final int intakeMotorID = 22; //775 Pro
-        public static final int conveyorMotorID = 23; //Neo
+        public static final int conveyorMotorID = 23; // 775 pro
         public static final int leftIndexMotorID = 24; //775 Pro
-        public static final int rightIndexMotorID = 35; //775 Pro
+        public static final int rightIndexMotorID = 25; //775 Pro
 
         //ID for Pigeon
         public static final int imuID = 20;
@@ -67,8 +67,8 @@ public class Constants {
     public static final class DIOChannels {
 
         //For the encoders on each of the swinging arms
-        public static final int topBannerPort = 0;
-        public static final int bottomBannerPort = 1;
+        public static final int topBannerPort = 1;
+        public static final int bottomBannerPort = 0;
 
     }
 
