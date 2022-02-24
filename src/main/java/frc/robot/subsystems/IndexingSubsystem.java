@@ -20,20 +20,16 @@ public class IndexingSubsystem extends SubsystemBase {
  
     private final WPI_TalonSRX conveyorMotor = new WPI_TalonSRX(CANDevices.conveyorMotorID);
 
-    private final WPI_TalonSRX leftIndexMotor = new WPI_TalonSRX(CANDevices.leftIndexMotorID);
-    private final WPI_TalonSRX rightIndexMotor = new WPI_TalonSRX(CANDevices.rightIndexMotorID);
+    private final WPI_TalonSRX indexMotor = new WPI_TalonSRX(CANDevices.indexMotorID);
 
     private final DigitalInput bottomBanner = new DigitalInput(DIOChannels.topBannerPort);
     private final DigitalInput topBanner = new DigitalInput(DIOChannels.bottomBannerPort);
-
-    private final MotorControllerGroup indexMotors = new MotorControllerGroup(leftIndexMotor, rightIndexMotor);
 
     public IndexingSubsystem() {
 
         //ensure the intake motor stops when we don't command it to prevent jamming
         conveyorMotor.setNeutralMode(NeutralMode.Brake);
-        leftIndexMotor.setNeutralMode(NeutralMode.Coast);
-        rightIndexMotor.setNeutralMode(NeutralMode.Coast);
+        indexMotor.setNeutralMode(NeutralMode.Coast);
 
 
     }
@@ -85,19 +81,19 @@ public class IndexingSubsystem extends SubsystemBase {
 
     public void runIndexWheels() {
 
-        indexMotors.set(SuperstructureConstants.indexPower);
+        indexMotor.set(SuperstructureConstants.indexPower);
 
     }
 
     public void stopIndexWheels() {
 
-        indexMotors.set(0.0);
+        indexMotor.set(0.0);
 
     }
 
     public void reverseIndexWheels() {
 
-        indexMotors.set(-SuperstructureConstants.indexPower);
+        indexMotor.set(-SuperstructureConstants.indexPower);
 
     }
 
