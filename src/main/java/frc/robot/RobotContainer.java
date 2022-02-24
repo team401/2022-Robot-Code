@@ -43,7 +43,7 @@ public class RobotContainer {
 
 
   //list out all of the subsystems we need in our robot
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  private final DriveSubsystem drive = new DriveSubsystem();
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final VisionSubsystem limelightSubsystem = new VisionSubsystem();
@@ -67,7 +67,7 @@ public class RobotContainer {
     );*/
     
     //uncomment this to use the competition control set-up (with two joysticks rather than the gamepad)
-    /*drive.setDefaultCommand(
+    drive.setDefaultCommand(
      new OperatorControl(
         drive, 
         () -> leftJoystick.getY(), //Left up & down
@@ -75,7 +75,7 @@ public class RobotContainer {
         () -> rightJoystick.getX(), //Right side-to-side
         true
       )
-    );*/
+    );
 
     indexingSubsystem.setDefaultCommand(new Waiting(indexingSubsystem));
 
@@ -144,8 +144,12 @@ public class RobotContainer {
       .whenPressed(new CalibrateTelescope(climbSubsystem));
 
     new JoystickButton(gamepad, Button.kA.value)
-      .whenPressed(new InstantCommand(intakeSubsystem::runIntakeMotor))
-      .whenReleased(new InstantCommand(intakeSubsystem::stopIntakeMotor));
+      .whenPressed(new InstantCommand(intakeSubsystem::runIntakeMotor)
+        .alongWith(new InstantCommand(indexingSubsystem::runIndexWheels))
+        .alongWith(new InstantCommand(indexingSubsystem::runConveyor)))
+      .whenReleased(new InstantCommand(intakeSubsystem::stopIntakeMotor)
+        .alongWith(new InstantCommand(indexingSubsystem::stopIndexWheels))
+        .alongWith(new InstantCommand(indexingSubsystem::stopConveyor)));
 
 
     //Telescope Arms
@@ -191,7 +195,7 @@ public class RobotContainer {
       .whileHeld(() -> shooterSubsystem.runShooterVelocityController(4000))
       .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));
 
-    new JoystickButton(gamepad, Button.kA.value)
+    new JoystickButton(gamepad, Button.kB.value)
       .whenHeld(new ReverseIndexing(indexingSubsystem));
 
     

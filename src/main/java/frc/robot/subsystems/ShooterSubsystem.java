@@ -62,7 +62,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private double hoodkI = 0.0;
     private double hoodkD = 0.0;
 
-    private final double shooterTolerance = Units.rotationsPerMinuteToRadiansPerSecond(150);
+    private final double shooterTolerance = Units.rotationsPerMinuteToRadiansPerSecond(50);
     private double desiredSpeed;
     private double hoodDesired;
 
