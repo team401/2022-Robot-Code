@@ -122,6 +122,7 @@ public class RobotContainer {
         new TrapezoidProfile.Constraints(10.0, 15.0))
         .andThen(new HoldPositionRotationArms(climbSubsystem)));
 
+    //telescoping arms
     new JoystickButton(gamepad, Button.kBack.value)
       .whenHeld(new InstantCommand(() -> climbSubsystem.setLeftTelescopePercent(0.25))
         .alongWith(new InstantCommand(() -> climbSubsystem.setRightTelescopePercent(0.25))))
@@ -137,6 +138,7 @@ public class RobotContainer {
     new POVButton(gamepad, 0)
       .whenPressed(new CalibrateTelescope(climbSubsystem));
 
+    //intaking 
     new JoystickButton(gamepad, Button.kA.value)
       .whenPressed(new InstantCommand(intakeSubsystem::runIntakeMotor))
       .whenReleased(new InstantCommand(intakeSubsystem::stopIntakeMotor));
