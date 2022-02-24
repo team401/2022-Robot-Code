@@ -23,7 +23,7 @@ public class UpdateRotationArm extends CommandBase {
 
     @Override
     public void initialize() {
-        climbingSubsystem.resetControllers();
+        climbingSubsystem.resetRotationControllers();
     }
 
     @Override

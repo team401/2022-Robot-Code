@@ -1,5 +1,6 @@
 package frc.robot.commands.climber;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -17,10 +18,18 @@ public class UpdateTelescopeArms extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        climbingSubsystem.resetTelescopeControllers();
+    }
+
+    @Override
     public void execute() {
 
         climbingSubsystem.setLeftDesiredTelescopePosition(position);
         climbingSubsystem.setRightDesiredTelescopePosition(position);
+
+        SmartDashboard.putNumber("left telescope", position);
+        SmartDashboard.putNumber("right telescope", position);
 
         //climbingSubsystem.setLeftTelescopePercent(0.5);
         //climbingSubsystem.setRightTelescopePercent(0.5);
