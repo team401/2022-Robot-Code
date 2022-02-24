@@ -16,11 +16,14 @@ import frc.robot.commands.climber.HoldPositionRotationArms;
 import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
+import frc.robot.commands.superstructure.ballHandling.ReverseIndexing;
+import frc.robot.commands.superstructure.ballHandling.Waiting;
 import frc.robot.commands.superstructure.shooting.HoodCalibrate;
 import frc.robot.commands.superstructure.shooting.HoodToSetPoint;
 import frc.robot.commands.superstructure.turret.manual.ManualTurret;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -43,6 +46,7 @@ public class RobotContainer {
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final VisionSubsystem limelightSubsystem = new VisionSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private final IndexingSubsystem indexSubsystem = new IndexingSubsystem();
 
   public RobotContainer() {
 
@@ -69,6 +73,8 @@ public class RobotContainer {
         true
       )
     );*/
+
+    indexSubsystem.setDefaultCommand(new Waiting(indexSubsystem));
 
     SmartDashboard.putNumber("Hood SetPoint", 0);
 
@@ -101,7 +107,7 @@ public class RobotContainer {
      * Right Xbox Trigger = Retract Telescope
      */
 
-    new JoystickButton(gamepad, Button.kX.value)
+    /**new JoystickButton(gamepad, Button.kX.value)
       .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.intakeArmPosition, 
           new TrapezoidProfile.Constraints(10.0, 15.0))
         .andThen(new HoldPositionRotationArms(climbSubsystem)));
@@ -146,7 +152,7 @@ public class RobotContainer {
       .whenHeld(new InstantCommand(climbSubsystem::retractLeftTelescope)
         .alongWith(new InstantCommand(climbSubsystem::retractRightTelescope)))
       .whenReleased(new InstantCommand(() -> climbSubsystem.setLeftTelescopePercent(0.0))
-        .alongWith(new InstantCommand(() -> climbSubsystem.setRightTelescopePercent(0.0))));
+        .alongWith(new InstantCommand(() -> climbSubsystem.setRightTelescopePercent(0.0))));*/
   
 
     //whenReleased sets the command to be interruptable, so they should stop if button is pressed/released
@@ -164,13 +170,20 @@ public class RobotContainer {
       .whenPressed(() -> shooterSubsystem.runShooterVelocityController(4000))
       .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));*/
 
-    new JoystickButton(rightJoystick, 2)
+    /*new JoystickButton(rightJoystick, 2)
       .whenPressed(() -> shooterSubsystem.runFeederPercent(0.75))
       .whenReleased(() -> shooterSubsystem.runFeederPercent(0));
 
     new JoystickButton(rightJoystick, 3)
       .whileHeld(() -> shooterSubsystem.runShooterVelocityController(4000))
       .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));
+    */
+
+    new JoystickButton(gamepad, Button.kA.value)
+      .whenHeld(new ReverseIndexing(indexSubsystem));
+
+    
+  
 
   }
 
