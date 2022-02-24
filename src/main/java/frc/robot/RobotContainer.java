@@ -16,11 +16,14 @@ import frc.robot.commands.climber.HoldPositionRotationArms;
 import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
+import frc.robot.commands.superstructure.ballHandling.ReverseIndexing;
+import frc.robot.commands.superstructure.ballHandling.Waiting;
 import frc.robot.commands.superstructure.shooting.HoodCalibrate;
 import frc.robot.commands.superstructure.shooting.HoodToSetPoint;
 import frc.robot.commands.superstructure.turret.manual.ManualTurret;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -46,6 +49,7 @@ public class RobotContainer {
   private final VisionSubsystem limelightSubsystem = new VisionSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private final IndexingSubsystem indexingSubsystem = new IndexingSubsystem();
 
   public RobotContainer() {
 
@@ -72,6 +76,8 @@ public class RobotContainer {
         true
       )
     );*/
+
+    indexingSubsystem.setDefaultCommand(new Waiting(indexingSubsystem));
 
     SmartDashboard.putNumber("Hood SetPoint", 0);
 
@@ -184,6 +190,9 @@ public class RobotContainer {
     new JoystickButton(rightJoystick, 3)
       .whileHeld(() -> shooterSubsystem.runShooterVelocityController(4000))
       .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));
+
+    new JoystickButton(gamepad, Button.kA.value)
+      .whenHeld(new ReverseIndexing(indexingSubsystem));
 
     
 

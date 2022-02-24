@@ -53,7 +53,7 @@ public class Constants {
 
         //PREP
         //IDs for Intake & Indexing
-        public static final int intakeMotorID = 22; //775 Pro
+        public static final int intakeMotorID = 22; // Talon SRX
         public static final int conveyorMotorID = 23; // 775 pro
         public static final int leftIndexMotorID = 24; //775 Pro
         public static final int rightIndexMotorID = 25; //775 Pro
