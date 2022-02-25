@@ -47,9 +47,9 @@ public class Constants {
 
         //PREP
         //IDs for turret 
-        public static final int turretMotorID = 18; //Neo
-        public static final int hoodMotorID = 19; //Neo 550
-        public static final int feederMotorID = 21; //775 Pro
+        public static final int turretMotorID = 18; // Neo
+        public static final int hoodMotorID = 19; // Neo 550
+        public static final int feederMotorID = 21; // 775 Pro
 
         //PREP
         //IDs for Intake & Indexing
@@ -66,8 +66,8 @@ public class Constants {
     public static final class DIOChannels {
 
         //For the encoders on each of the swinging arms
-        public static final int topBannerPort = 1;
-        public static final int bottomBannerPort = 0;
+        public static final int topBannerPort = 0;
+        public static final int bottomBannerPort = 1;
 
     }
 
@@ -156,7 +156,7 @@ public class Constants {
     public static final class SuperstructureConstants {
 
         //**NEED TO CHANGE**
-        public static final double intakingPower = 0.5;
+        public static final double intakingPower = 1.0;
 
         //Turret Angle Offsets
         public static final double turretEdge = Units.degreesToRadians(132.5); //what we designate as the edge of the turrret

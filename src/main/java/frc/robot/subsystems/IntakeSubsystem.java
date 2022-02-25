@@ -26,6 +26,8 @@ public class IntakeSubsystem extends SubsystemBase {
         //might not work?
         intakeMotor.configPeakCurrentLimit(40);
 
+        intakeMotor.setInverted(true);
+
     }
 
     @Override
@@ -39,6 +41,8 @@ public class IntakeSubsystem extends SubsystemBase {
     //runs the motor in percent mode based on our constants
     public void runIntakeMotor() {
 
+        SmartDashboard.putNumber("Intake Percent", SuperstructureConstants.intakingPower);
+        SmartDashboard.putNumber("Intake Time", System.currentTimeMillis());
         intakeMotor.set(ControlMode.PercentOutput, SuperstructureConstants.intakingPower);
 
     }

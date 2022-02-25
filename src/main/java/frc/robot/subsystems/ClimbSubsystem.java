@@ -261,8 +261,9 @@ public class ClimbSubsystem extends SubsystemBase {
     public void setLeftDesiredRotationPosition(double desiredRadians) {
 
         goalLeftRotationPosition = desiredRadians;
-        
+        SmartDashboard.putNumber("desired", desiredRadians);
         double output = leftRotationController.calculate(getLeftRotationEncoderValue(), desiredRadians);
+        SmartDashboard.putNumber("output", output);
         leftRotationMotor.set(ControlMode.PercentOutput, output);
 
     }

@@ -17,7 +17,7 @@ import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
 import frc.robot.commands.superstructure.ballHandling.ReverseIndexing;
-import frc.robot.commands.superstructure.ballHandling.Waiting;
+import frc.robot.commands.superstructure.ballHandling.Test;
 import frc.robot.commands.superstructure.shooting.HoodCalibrate;
 import frc.robot.commands.superstructure.shooting.HoodToSetPoint;
 import frc.robot.commands.superstructure.turret.manual.ManualTurret;
@@ -77,8 +77,6 @@ public class RobotContainer {
       )
     );
 
-    indexingSubsystem.setDefaultCommand(new Waiting(indexingSubsystem));
-
     SmartDashboard.putNumber("Hood SetPoint", 0);
 
     configureButtonBindings();
@@ -113,17 +111,32 @@ public class RobotContainer {
      */
 
     //Rotation Arms
-    new POVButton(gamepad, 270)
+    /*new POVButton(gamepad, 270)
+      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.intakeArmPosition, 
+        new TrapezoidProfile.Constraints(10.0, 15.0))
+      .andThen(new HoldPositionRotationArms(climbSubsystem)));*/
+
+    new JoystickButton(gamepad, Button.kX.value)
       .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.intakeArmPosition, 
         new TrapezoidProfile.Constraints(10.0, 15.0))
       .andThen(new HoldPositionRotationArms(climbSubsystem)));
 
-    new POVButton(gamepad, 180)
+    /*new POVButton(gamepad, 180)
       .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.climbArmPosition, 
         new TrapezoidProfile.Constraints(10.0, 15.0))
-        .andThen(new HoldPositionRotationArms(climbSubsystem)));
+        .andThen(new HoldPositionRotationArms(climbSubsystem)));*/
+    
+    new JoystickButton(gamepad, Button.kY.value)
+      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.climbArmPosition, 
+      new TrapezoidProfile.Constraints(10.0, 15.0))
+      .andThen(new HoldPositionRotationArms(climbSubsystem)));
 
-    new POVButton(gamepad, 90)
+    /*new POVButton(gamepad, 90)
+      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.backArmPosition,
+        new TrapezoidProfile.Constraints(10.0, 15.0))
+        .andThen(new HoldPositionRotationArms(climbSubsystem)));*/
+    
+    new JoystickButton(gamepad, Button.kB.value)
       .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.backArmPosition,
         new TrapezoidProfile.Constraints(10.0, 15.0))
         .andThen(new HoldPositionRotationArms(climbSubsystem)));
@@ -143,13 +156,16 @@ public class RobotContainer {
     new POVButton(gamepad, 0)
       .whenPressed(new CalibrateTelescope(climbSubsystem));
 
-    new JoystickButton(gamepad, Button.kA.value)
+    /*new JoystickButton(gamepad, Button.kA.value)
       .whenPressed(new InstantCommand(intakeSubsystem::runIntakeMotor)
-        .alongWith(new InstantCommand(indexingSubsystem::runIndexWheels))
-        .alongWith(new InstantCommand(indexingSubsystem::runConveyor)))
+        .alongWith(new InstantCommand(indexingSubsystem::runIndexWheels)
+        .alongWith(new InstantCommand(indexingSubsystem::runConveyor))))
       .whenReleased(new InstantCommand(intakeSubsystem::stopIntakeMotor)
         .alongWith(new InstantCommand(indexingSubsystem::stopIndexWheels))
-        .alongWith(new InstantCommand(indexingSubsystem::stopConveyor)));
+        .alongWith(new InstantCommand(indexingSubsystem::stopConveyor)));*/
+
+    new JoystickButton(gamepad, Button.kA.value)
+      .whenHeld(new Test(indexingSubsystem, intakeSubsystem));
 
 
     //Telescope Arms
@@ -158,8 +174,7 @@ public class RobotContainer {
 
     new JoystickButton(gamepad, Button.kRightBumper.value)
       .whenPressed(new UpdateTelescopeArms(climbSubsystem, 5.0));
-
-
+    
     //Hood Subsystems
     new JoystickButton(rightJoystick, 3)//Button.kA.value)
       .whenPressed(new InstantCommand(shooterSubsystem::runHood))
@@ -195,8 +210,8 @@ public class RobotContainer {
       .whileHeld(() -> shooterSubsystem.runShooterVelocityController(4000))
       .whenReleased(() -> shooterSubsystem.runShooterVelocityController(0));
 
-    new JoystickButton(gamepad, Button.kB.value)
-      .whenHeld(new ReverseIndexing(indexingSubsystem));
+    //new JoystickButton(gamepad, Button.kB.value)
+      //.whenHeld(new ReverseIndexing(indexingSubsystem));
 
     
 

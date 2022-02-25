@@ -2,7 +2,6 @@ package frc.robot.commands.superstructure.shooting;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.commands.superstructure.ballHandling.Waiting;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -64,8 +63,6 @@ public class Shoot extends CommandBase {
 
         indexingSubsystem.stopConveyor();
         indexingSubsystem.stopIndexWheels();
-
-        new Waiting(indexingSubsystem).schedule();
 
     }
 
