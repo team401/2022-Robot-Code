@@ -17,7 +17,7 @@ import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.drivetrain.RunAtPercent;
 import frc.robot.commands.superstructure.ballHandling.ReverseIndexing;
-import frc.robot.commands.superstructure.ballHandling.Test;
+import frc.robot.commands.superstructure.ballHandling.Intake;
 import frc.robot.commands.superstructure.shooting.HoodCalibrate;
 import frc.robot.commands.superstructure.shooting.HoodToSetPoint;
 import frc.robot.commands.superstructure.turret.manual.ManualTurret;
@@ -116,30 +116,39 @@ public class RobotContainer {
         new TrapezoidProfile.Constraints(10.0, 15.0))
       .andThen(new HoldPositionRotationArms(climbSubsystem)));*/
 
-    new JoystickButton(gamepad, Button.kX.value)
+    /*new JoystickButton(gamepad, Button.kX.value)
       .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.intakeArmPosition, 
         new TrapezoidProfile.Constraints(10.0, 15.0))
-      .andThen(new HoldPositionRotationArms(climbSubsystem)));
+      .andThen(new HoldPositionRotationArms(climbSubsystem)));*/
 
     /*new POVButton(gamepad, 180)
       .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.climbArmPosition, 
         new TrapezoidProfile.Constraints(10.0, 15.0))
         .andThen(new HoldPositionRotationArms(climbSubsystem)));*/
     
-    new JoystickButton(gamepad, Button.kY.value)
+    /*new JoystickButton(gamepad, Button.kY.value)
       .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.climbArmPosition, 
       new TrapezoidProfile.Constraints(10.0, 15.0))
-      .andThen(new HoldPositionRotationArms(climbSubsystem)));
+      .andThen(new HoldPositionRotationArms(climbSubsystem)));*/
 
     /*new POVButton(gamepad, 90)
       .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.backArmPosition,
         new TrapezoidProfile.Constraints(10.0, 15.0))
         .andThen(new HoldPositionRotationArms(climbSubsystem)));*/
     
-    new JoystickButton(gamepad, Button.kB.value)
+    /*new JoystickButton(gamepad, Button.kB.value)
       .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.backArmPosition,
         new TrapezoidProfile.Constraints(10.0, 15.0))
-        .andThen(new HoldPositionRotationArms(climbSubsystem)));
+        .andThen(new HoldPositionRotationArms(climbSubsystem)));*/
+
+    new JoystickButton(gamepad, Button.kRightBumper.value)
+      .whenPressed(() -> climbSubsystem.toggleIntakePosition());
+
+    new JoystickButton(rightJoystick, 2)
+      .whenPressed(() -> drive.resetIMU());
+
+    new JoystickButton(gamepad, Button.kX.value)
+      .whenHeld(new ReverseIndexing(indexingSubsystem, intakeSubsystem));
 
     new JoystickButton(gamepad, Button.kBack.value)
       .whenHeld(new InstantCommand(() -> climbSubsystem.setLeftTelescopePercent(0.25))
@@ -164,9 +173,9 @@ public class RobotContainer {
         .alongWith(new InstantCommand(indexingSubsystem::stopIndexWheels))
         .alongWith(new InstantCommand(indexingSubsystem::stopConveyor)));*/
 
-    new JoystickButton(gamepad, Button.kA.value)
-      .whenHeld(new Test(indexingSubsystem, intakeSubsystem));
-
+    //intake
+    new JoystickButton(gamepad, Button.kB.value)
+      .whenHeld(new Intake(indexingSubsystem, intakeSubsystem));
 
     //Telescope Arms
     new JoystickButton(gamepad, Button.kLeftBumper.value)
@@ -213,7 +222,8 @@ public class RobotContainer {
     //new JoystickButton(gamepad, Button.kB.value)
       //.whenHeld(new ReverseIndexing(indexingSubsystem));
 
-    
+    new POVButton(gamepad, 90)
+      .whenPressed(new UpdateTelescopeArms(climbSubsystem, 15));
 
   }
 

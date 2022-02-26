@@ -36,8 +36,17 @@ public class UpdateTelescopeArms extends CommandBase {
     }
 
     @Override
+    public void end(boolean interrupted) {
+
+        climbingSubsystem.setLeftTelescopePercent(0);
+        climbingSubsystem.setRightTelescopePercent(0);
+
+    }
+
+    @Override
     public boolean isFinished() {
         // TODO: change velocity values
+
         return climbingSubsystem.atGoalTelescope() || !climbingSubsystem.withinBoundariesTelescope();
     }
     

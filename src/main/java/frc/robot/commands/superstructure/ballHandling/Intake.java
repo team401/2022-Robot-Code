@@ -5,12 +5,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class Test extends CommandBase {
+public class Intake extends CommandBase {
 
     private final IndexingSubsystem indexingSubsystem;
     private final IntakeSubsystem intakeSubsystem;
     
-    public Test(IndexingSubsystem index, IntakeSubsystem intake) {
+    public Intake(IndexingSubsystem index, IntakeSubsystem intake) {
 
         indexingSubsystem = index;
         intakeSubsystem = intake;

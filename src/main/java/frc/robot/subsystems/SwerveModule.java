@@ -1,4 +1,3 @@
-
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -75,6 +74,8 @@ public class SwerveModule extends SubsystemBase {
         //CanCoder config
         canCoder.configMagnetOffset(-offset.getDegrees());
         canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+
+        rotationMotor.configNeutralDeadband(0.1);
 
     }
 
@@ -171,7 +172,7 @@ public class SwerveModule extends SubsystemBase {
         //sends the calculated position by optimizing it
         //need to convert from radians to tics/sensor position
         state = optimize(state, getCanCoderAngle());
-        rotationMotor.set(TalonFXControlMode.Position,  state.angle.getRadians() / (2 * Math.PI) * 4096);
+        rotationMotor.set(TalonFXControlMode.Position, state.angle.getRadians() / (2 * Math.PI) * 4096);
 
         //calculates drive speed of the modules
         double speedRadPerSec = state.speedMetersPerSecond / (DriveConstants.wheelDiameterMeters / 2);
@@ -180,6 +181,7 @@ public class SwerveModule extends SubsystemBase {
         double driveVelocityFFCalculated = DriveConstants.driveFF.calculate(speedRadPerSec);
 
         //sends the sum of the two calculated velocities to the drive motor
+    
         driveMotor.setVoltage(driveVelocityFFCalculated);
         
     }

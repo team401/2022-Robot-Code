@@ -25,7 +25,7 @@ public class OperatorControl extends CommandBase {
     private final boolean isFieldRelative;
 
     //tolerance for deadbanding inputs
-    private final double toleranceDeadband = 0.035;
+    private final double toleranceDeadband = 0.05;
 
     /**
      * Constructor that takes in the subsytem, the three double suppliers of the values we want to 
@@ -68,15 +68,15 @@ public class OperatorControl extends CommandBase {
 
         double fwdX = forwardX.getAsDouble();
         fwdX = deadbandInputs(fwdX) * DriveConstants.maxDriveSpeed;
-        fwdX = Math.copySign(fwdX * fwdX, fwdX); //technically optional?
+        //fwdX = Math.copySign(fwdX * fwdX, fwdX); //technically optional?
 
         double fwdY = forwardY.getAsDouble();        
         fwdY = deadbandInputs(fwdY) * Units.feetToMeters(DriveConstants.maxDriveSpeed);
-        fwdY = Math.copySign(fwdY * fwdY, fwdY); //technically optional?
+        //fwdY = Math.copySign(fwdY * fwdY, fwdY); //technically optional?
 
         double rot = rotation.getAsDouble();
         rot = deadbandInputs(rot) * Units.degreesToRadians(DriveConstants.teleopTurnRateDegPerSec);
-        rot = Math.copySign(rot * rot, rot);
+        //rot = Math.copySign(rot * rot, rot);
 
         drive.drive(
             fwdX,

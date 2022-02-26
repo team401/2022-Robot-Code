@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Timer;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -81,6 +83,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
     private double theoreticalkF =  1.81437 * Units.inchesToMeters(4.0) / 0.71 * 1 * 72.0/17.0 * 70.0;
 
+    private boolean isStowed = true;
+
     public ClimbSubsystem() {
 
         leftTelescopeMotor.configFactoryDefault();
@@ -157,6 +161,15 @@ public class ClimbSubsystem extends SubsystemBase {
             SmartDashboard.getNumber("velocity", 1.0), SmartDashboard.getNumber("acceleration", 1.0)));
         rightTelescopeController.setConstraints(new TrapezoidProfile.Constraints(
             SmartDashboard.getNumber("velocity", 1.0), SmartDashboard.getNumber("acceleration", 1.0)));
+
+        if (isStowed) {
+            setLeftDesiredRotationPosition(ClimberConstants.backArmPosition);
+            setRightDesiredRotationPosition(ClimberConstants.backArmPosition);
+        }
+        else {
+            setLeftDesiredRotationPosition(ClimberConstants.intakeArmPosition);
+            setRightDesiredRotationPosition(ClimberConstants.intakeArmPosition);
+        }
     
     }
 
@@ -177,14 +190,12 @@ public class ClimbSubsystem extends SubsystemBase {
 
     //in linear with inches
     public double getLeftTelescopeEncoderValue() {
-        return leftTelescopeMotor.getSelectedSensorPosition() / 4096.0 * Math.PI * 2 
-            * ClimberConstants.linearConversion;
+        return leftTelescopeMotor.getSelectedSensorPosition() / 4096.0 * ClimberConstants.linearConversion;
     } 
 
     //in linear with inches
     public double getRightTelescopeEncoderValue() {
-        return rightTelescopeMotor.getSelectedSensorPosition() / 4096.0 * Math.PI * 2
-            * ClimberConstants.linearConversion;
+        return rightTelescopeMotor.getSelectedSensorPosition() / 4096.0 * ClimberConstants.linearConversion;
     }
 
     public void changeRotationPIDConstraints(Constraints constraints){
@@ -311,8 +322,8 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public boolean withinBoundariesTelescope() {
-        return (getLeftTelescopeEncoderValue() >= 0.0 &&
-                getRightTelescopeEncoderValue() >= 0.0 &&
+        return (getLeftTelescopeEncoderValue() >= -1 &&
+                getRightTelescopeEncoderValue() >= -1 &&
                 getLeftTelescopeEncoderValue() <= ClimberConstants.maxHeight &&
                 getRightTelescopeEncoderValue() <= ClimberConstants.maxHeight);
     }
@@ -325,6 +336,12 @@ public class ClimbSubsystem extends SubsystemBase {
     public void resetTelescopeControllers() {
         leftTelescopeController.reset(getLeftTelescopeEncoderValue());
         rightTelescopeController.reset(getRightTelescopeEncoderValue());
+    }
+
+    public void toggleIntakePosition() {
+
+        isStowed = !isStowed;
+
     }
 
 }

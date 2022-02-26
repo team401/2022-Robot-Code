@@ -10,6 +10,7 @@ public class CalibrateTelescope extends CommandBase {
     private ClimbSubsystem climb;
     private Timer leftClimbTimer = new Timer();
     private Timer rightClimbTimer = new Timer();
+    private Timer resetTimer = new Timer();
 
     public CalibrateTelescope(ClimbSubsystem climber) {
 
@@ -23,9 +24,11 @@ public class CalibrateTelescope extends CommandBase {
 
         leftClimbTimer.reset();
         rightClimbTimer.reset();
+        resetTimer.reset();
 
         leftClimbTimer.start();
         rightClimbTimer.start();
+        resetTimer.stop();
         climb.setLeftTelescopePercent(-0.25);
         climb.setRightTelescopePercent(-0.25);
 
@@ -35,39 +38,52 @@ public class CalibrateTelescope extends CommandBase {
     public void execute() {
 
         SmartDashboard.putNumber("left telescope velocity", climb.getLeftTelescopeVelocity());
+        SmartDashboard.putNumber("right telescope velocity", climb.getRightTelescopeVelocity());
+
         if (Math.abs(climb.getLeftTelescopeVelocity()) > 0.2) {
-             leftClimbTimer.reset();
-             SmartDashboard.putBoolean("left finished", false);
-        }
-        if (leftClimbTimer.get() >= 0.025) {
-            climb.setLeftTelescopePercent(0.0);
-            SmartDashboard.putBoolean("left finished", true);
+            leftClimbTimer.reset();
+            SmartDashboard.putBoolean("left finished", false);
         }
         if (Math.abs(climb.getRightTelescopeVelocity()) > 0.2) {
             rightClimbTimer.reset();
             SmartDashboard.putBoolean("right finished", false);
         }
-        if (rightClimbTimer.get() >= 0.025) {
+
+        if (leftClimbTimer.get() >= 0.05) {
+            climb.setLeftTelescopePercent(0.0);
+            SmartDashboard.putBoolean("left finished", true);
+        }
+        if (rightClimbTimer.get() >= 0.05) {
             climb.setRightTelescopePercent(0.0);
             SmartDashboard.putBoolean("right finished", true);
         }
-        SmartDashboard.putNumber("left timer", leftClimbTimer.get());
         
+
+        SmartDashboard.putNumber("left timer", leftClimbTimer.get());
+        SmartDashboard.putNumber("right timer", rightClimbTimer.get());
+
+        if (leftClimbTimer.get() >= 0.05 && rightClimbTimer.get() >= 0.05) {
+            resetTimer.start();
+        }
+
     }
 
     @Override
     public boolean isFinished() {
 
-        return leftClimbTimer.get() >= 0.025 && rightClimbTimer.get() >= 0.025;
+        return resetTimer.get() >= 0.75;
+        //return leftClimbTimer.get() >= 0.05 && rightClimbTimer.get() >= 0.05;
 
     }
 
     @Override
     public void end(boolean isInterrupted) {
 
+        SmartDashboard.putNumber("DONE TIME!!", System.currentTimeMillis());
+
         climb.setLeftTelescopePercent(0);
         climb.setRightTelescopePercent(0);
-        //TODO: reset encoders
+
         climb.resetLeftTelescopeEncoder();
         climb.resetRightTelescopeEncoder();
 

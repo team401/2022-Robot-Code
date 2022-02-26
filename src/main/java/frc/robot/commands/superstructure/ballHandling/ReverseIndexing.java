@@ -2,14 +2,17 @@ package frc.robot.commands.superstructure.ballHandling;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexingSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 public class ReverseIndexing extends CommandBase {
 
     private final IndexingSubsystem indexingSubsystem;
+    private final IntakeSubsystem intakeSubsystem;
 
-    public ReverseIndexing(IndexingSubsystem index) {
+    public ReverseIndexing(IndexingSubsystem index, IntakeSubsystem intake) {
         
         indexingSubsystem = index;
+        intakeSubsystem = intake;
         
     }
     
@@ -18,6 +21,7 @@ public class ReverseIndexing extends CommandBase {
 
         indexingSubsystem.reverseConveyor();
         indexingSubsystem.reverseIndexWheels();
+        intakeSubsystem.reverseIntakeMotor();
 
     }
 
@@ -26,6 +30,7 @@ public class ReverseIndexing extends CommandBase {
 
         indexingSubsystem.stopConveyor();
         indexingSubsystem.stopIndexWheels();
+        intakeSubsystem.stopIntakeMotor();
 
     }
     
