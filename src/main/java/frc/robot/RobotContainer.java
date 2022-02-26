@@ -92,9 +92,9 @@ public class RobotContainer {
     /**
      * GAMEPAD:
      * 
-     * TODO: X = Climb sequence count++
-     * TODO: Y = Prepare to shoot then shoot when ready
-     * TODO: B = Deploy rotation arms & Intake and Index
+     * X = Climb sequence
+     * TODO: Y = Shoot
+     * B = Deploy rotation arms & Intake and Index
      * A = Nothing
      * 
      * Left Trigger = Nothing
@@ -104,7 +104,7 @@ public class RobotContainer {
      * Right Bumper = Telescope to 5 inches
      * 
      * Start = Calibrate Telescope
-     * TODO: Back = Deploy rotation arms & Reverse Intake and Index
+     * Back = Deploy rotation arms & Reverse Intake and Index
      * 
      * POV Up = Rotation Arm to Straight Up (Default Position)
      * POV Right = Rotation Arm to Climb Position
@@ -173,18 +173,33 @@ public class RobotContainer {
 
 
     // Intake and Index
-    new JoystickButton(gamepad, Button.kB.value)
-      .whenHeld(new Intake(indexingSubsystem, intakeSubsystem));
-
-    //new JoystickButton(gamepad, Button.kBack.value)
-      //.whenHeld(new ReverseIndexing(indexingSubsystem, intakeSubsystem));
+    /*new JoystickButton(gamepad, Button.kB.value)
+      .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.defaultArmPosition, 
+        new TrapezoidProfile.Constraints(10.0, 15.0))
+      .andThen(new HoldPositionRotationArms(rotationArmSubsystem)))
+      .whenHeld(new Intake(indexingSubsystem, intakeSubsystem));*/
+    
+    new JoystickButton(gamepad, Button.kBack.value)
+      .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.defaultArmPosition, 
+        new TrapezoidProfile.Constraints(10.0, 15.0))
+      .andThen(new HoldPositionRotationArms(rotationArmSubsystem)))
+      .whenHeld(new ReverseIndexing(indexingSubsystem, intakeSubsystem));
 
 
     // Shooting
-    //new JoystickButton(gamepad, Button.kA.value)
-     // .whenPressed(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 4000));
+    new JoystickButton(gamepad, Button.kY.value)
+      .whenPressed(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 4000));
 
     new JoystickButton(gamepad, Button.kA.value)
+      .whenHeld(new InstantCommand(
+        () -> shooterSubsystem.runShooterVelocityController(SmartDashboard.getNumber("Speed", 0))));
+      
+    new JoystickButton(gamepad, Button.kB.value)
+      .whenHeld(new InstantCommand(
+        () -> shooterSubsystem.hoodSetDesiredClosedStateRevolutions(SmartDashboard.getNumber("Position", 0))));
+
+    // Climb Sequence
+    new JoystickButton(gamepad, Button.kX.value)
       .whenPressed(new ClimbSequence(telescopeArmSubsystem, rotationArmSubsystem, turretSubsystem));
 
   }
