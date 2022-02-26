@@ -252,7 +252,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public double getFlywheelVelocityRadPerSec() {
 
         return leftShooterMotor.getSelectedSensorVelocity() / 2048 * 2 * Math.PI * 10 
-            * SuperstructureConstants.turretGearReduction;
+            * SuperstructureConstants.shooterReduction;
 
     }
 
