@@ -83,7 +83,13 @@ public class IndexingSubsystem extends SubsystemBase {
 
     public void runIndexWheels() {
 
-        indexMotor.set(SuperstructureConstants.indexPower);
+        indexMotor.set(-SuperstructureConstants.indexPower);
+
+    }
+
+    public void vomitWithIndexWheels() {
+
+        indexMotor.set(2 * SuperstructureConstants.indexPower);
 
     }
 
@@ -95,9 +101,8 @@ public class IndexingSubsystem extends SubsystemBase {
 
     public void reverseIndexWheels() {
 
-        indexMotor.set(-SuperstructureConstants.indexPower);
+        indexMotor.set(SuperstructureConstants.indexPower);
 
     }
 
 }
-
