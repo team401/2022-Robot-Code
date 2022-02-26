@@ -3,13 +3,13 @@ package frc.robot.commands.superstructure.turret.limelight;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.SuperstructureConstants;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class BasicSearch extends CommandBase {
 
     // Subystems
-    private final VisionSubsystem visionSubsystem;
+    private final LimelightSubsystem limelightSubsystem;
     private final TurretSubsystem turretSubsystem;
 
     // Direction of the turret movement; -1 (left) 1 (Positive)
@@ -19,14 +19,14 @@ public class BasicSearch extends CommandBase {
     private boolean isFinished = false;
     
     // Constructor
-    public BasicSearch(VisionSubsystem limelight, TurretSubsystem turret) {
+    public BasicSearch(LimelightSubsystem limelight, TurretSubsystem turret) {
 
         // Set the subsystems
-        visionSubsystem = limelight;
+        limelightSubsystem = limelight;
         turretSubsystem = turret;
 
         // Use the limelight and turret subsystems
-        addRequirements(visionSubsystem, turretSubsystem);
+        addRequirements(limelightSubsystem, turretSubsystem);
 
     }
 
@@ -55,7 +55,7 @@ public class BasicSearch extends CommandBase {
             movingRight = !movingRight;*/
         
         // If the turret is not centered on the target
-        if (!visionSubsystem.hasValidTarget()) {
+        if (!limelightSubsystem.hasValidTarget()) {
 
             //If turret is at or over an extrema position, invert the movement direction
             if (turretSubsystem.getTurretPositionRadians() >= SuperstructureConstants.rightTurretExtremaRadians ||
@@ -70,11 +70,11 @@ public class BasicSearch extends CommandBase {
 
 
         }
-        else if(visionSubsystem.hasValidTarget()) {
+        else if(limelightSubsystem.hasValidTarget()) {
 
             // Finish wrapping and start tracking
             isFinished = true;
-            new Tracking(visionSubsystem, turretSubsystem).schedule(true);
+            new Tracking(limelightSubsystem, turretSubsystem).schedule(true);
 
         }
 

@@ -178,6 +178,7 @@ public class Constants {
         public static final double shooterReduction = 1;
         public static final double shooterMaxSpeed = Units.rotationsPerMinuteToRadiansPerSecond(6200);
         public static final double shooterMaxAcceleration = Units.rotationsPerMinuteToRadiansPerSecond(2000);
+        public static final double shooterVelocityConstantRPM = 4000; //need to change
 
         // converts rpm to integrated units per 100ms               units minute second
         public static final double shooterMotorRPMConversionFactor = 2048.0 / 60 / 10;

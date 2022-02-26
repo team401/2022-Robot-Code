@@ -3,17 +3,20 @@ package frc.robot.commands.climber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 
 public class UpdateTelescopeArms extends CommandBase {
 
     private final ClimbSubsystem climbingSubsystem;
+    private final TurretSubsystem turretSubsystem; // Turret subsystem is just required to interrupt tracking command
     private double position;
 
-    public UpdateTelescopeArms(ClimbSubsystem climber, double desiredPosition) {
+    public UpdateTelescopeArms(ClimbSubsystem climber, TurretSubsystem turret, double desiredPosition) {
         climbingSubsystem = climber;
+        turretSubsystem = turret;
         position = desiredPosition;
 
-        addRequirements(climbingSubsystem);
+        addRequirements(climbingSubsystem, turretSubsystem);
     }
 
     @Override

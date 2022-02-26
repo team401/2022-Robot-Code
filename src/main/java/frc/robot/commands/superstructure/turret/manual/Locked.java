@@ -2,21 +2,21 @@ package frc.robot.commands.superstructure.turret.manual;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
 //maybe inline?
 
 public class Locked extends CommandBase {
 
-    private final VisionSubsystem visionSubsystem;
+    private final LimelightSubsystem limelightSubsystem;
     private final TurretSubsystem turretSubsystem;
 
-    public Locked(VisionSubsystem limelight, TurretSubsystem turret) {
+    public Locked(LimelightSubsystem limelight, TurretSubsystem turret) {
 
-        visionSubsystem = limelight;
+        limelightSubsystem = limelight;
         turretSubsystem = turret;
 
-        addRequirements(visionSubsystem, turretSubsystem);
+        addRequirements(limelightSubsystem, turretSubsystem);
 
     }
 

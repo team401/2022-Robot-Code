@@ -5,7 +5,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
 /**
  *TO DO:
@@ -17,23 +17,23 @@ import frc.robot.subsystems.VisionSubsystem;
 public class ManualTurret extends CommandBase {
 
         //Subsystems
-        private final VisionSubsystem visionSubsystem;
+        private final LimelightSubsystem limelightSubystem;
         private final TurretSubsystem turretSubsystem;
     
         //Button Values
         private BooleanSupplier moveLeft;
         private BooleanSupplier moveRight;
     
-        public ManualTurret(VisionSubsystem limelight, TurretSubsystem turret, 
+        public ManualTurret(LimelightSubsystem limelight, TurretSubsystem turret, 
             BooleanSupplier left, BooleanSupplier right) {
     
-            visionSubsystem = limelight;
+            limelightSubystem = limelight;
             turretSubsystem = turret;
     
             moveLeft = left;
             moveRight = right;
     
-            addRequirements(visionSubsystem, turretSubsystem);
+            addRequirements(limelightSubystem, turretSubsystem);
     
         }
     

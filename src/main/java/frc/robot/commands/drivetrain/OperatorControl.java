@@ -75,7 +75,8 @@ public class OperatorControl extends CommandBase {
         //fwdY = Math.copySign(fwdY * fwdY, fwdY); //technically optional?
 
         double rot = rotation.getAsDouble();
-        rot = deadbandInputs(rot) * Units.degreesToRadians(DriveConstants.teleopTurnRateDegPerSec);
+        // Temporary *0.33 because robot is spinning at 3 revolutions per second instead of 1
+        rot = deadbandInputs(rot) * Units.degreesToRadians(DriveConstants.teleopTurnRateDegPerSec) * 0.33;
         //rot = Math.copySign(rot * rot, rot);
 
         drive.drive(

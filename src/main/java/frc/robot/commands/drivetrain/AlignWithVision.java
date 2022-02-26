@@ -5,7 +5,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
 public class AlignWithVision extends CommandBase {
 
@@ -16,7 +16,7 @@ public class AlignWithVision extends CommandBase {
 
     //the subsystems we need to initialize
     private final DriveSubsystem drive;
-    private final VisionSubsystem limelight;
+    private final LimelightSubsystem limelight;
 
     //our controller to get us to our desired orientation
     private final PIDController rotVisionPIDController = new PIDController(
@@ -35,7 +35,7 @@ public class AlignWithVision extends CommandBase {
     private double tolerance = Units.degreesToRadians(1.5);
 
     //constructor
-    public AlignWithVision(DriveSubsystem subsystem, VisionSubsystem vision){
+    public AlignWithVision(DriveSubsystem subsystem, LimelightSubsystem vision){
 
         //initialize the subsystems
         drive = subsystem;
@@ -66,10 +66,10 @@ public class AlignWithVision extends CommandBase {
         if (limelight.hasValidTarget()){
 
             //is there a noticeable difference greater than our tolerance?
-            if (Math.abs(limelight.gettX()) > tolerance) {
+            if (Math.abs(limelight.getX()) > tolerance) {
 
                 //calculate what to send based on our current reading
-                rotationOut = rotVisionPIDController.calculate(limelight.gettX(), 0.0);
+                rotationOut = rotVisionPIDController.calculate(limelight.getX(), 0.0);
 
             } else {
 
@@ -113,7 +113,7 @@ public class AlignWithVision extends CommandBase {
          * we are only finished if we are currently seeing a valid target, are within tolerance, and 
          * have been seeing a target for the past 500 ms
          */
-        return limelight.hasValidTarget() && (Math.abs(limelight.gettX()) < tolerance && timer.get() >= 0.5);
+        return limelight.hasValidTarget() && (Math.abs(limelight.getX()) < tolerance && timer.get() >= 0.5);
 
     }
 

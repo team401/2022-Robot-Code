@@ -11,7 +11,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
 public class AutoRoutines extends SequentialCommandGroup {
     
@@ -34,7 +34,7 @@ public class AutoRoutines extends SequentialCommandGroup {
         DriveSubsystem drive, 
         IntakeSubsystem intake, 
         IndexingSubsystem indexer, 
-        VisionSubsystem limelight, 
+        LimelightSubsystem limelight, 
         ShooterSubsystem shooter
     ) {
 

@@ -5,10 +5,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class VisionSubsystem extends SubsystemBase {
+public class LimelightSubsystem extends SubsystemBase {
 
     /**
-     * Holds the vision info from the Limelight
+     * Holds the limelight info from the Limelight
      * The information is pulled from a network table, which is updated continuously through the match and
      * can be read from
      */
@@ -18,8 +18,8 @@ public class VisionSubsystem extends SubsystemBase {
     /**
      * Values we read from the Limelight:
      * tV - tells if there is a target or not (0 - none, 1 - seen)
-     * tX - offset in degrees from target center to center of Limelight's vision (horizontally)
-     * tY - offset in degrees from target center to center of Limelight's vision (vertically)
+     * tX - offset in degrees from target center to center of Limelight's limelight (horizontally)
+     * tY - offset in degrees from target center to center of Limelight's limelight (vertically)
      * tA - percentage of the view taken up by the target 
      */
 
@@ -31,7 +31,7 @@ public class VisionSubsystem extends SubsystemBase {
      private double centeredTolerance = Units.degreesToRadians(5);
 
      //Constructor
-     public VisionSubsystem() {
+     public LimelightSubsystem() {
 
         //gets the instance of the limelight from the network tables and gets the pipeline configuration of 0
         table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -61,21 +61,21 @@ public class VisionSubsystem extends SubsystemBase {
      }
     
      //returns in radians since all of our math is done in radians usually
-     public double gettX() {
+     public double getX() {
 
         return Units.degreesToRadians(tx);
 
      }
 
      //returns in radians
-     public double gettY() {
+     public double getY() {
 
         return Units.degreesToRadians(ty);
 
      }
 
      //returns a double representing the area of the target in percent of frame
-     public double gettA() {
+     public double getA() {
 
         return ta;
 
@@ -91,7 +91,7 @@ public class VisionSubsystem extends SubsystemBase {
      //returns whether the turret is locked on within the tolerance 
      public boolean withinTolerance() {
 
-        return Math.abs(gettX()) < centeredTolerance;
+        return Math.abs(getX()) < centeredTolerance;
 
      }
 
