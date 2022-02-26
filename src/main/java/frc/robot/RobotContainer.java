@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.InputDevices;
 import frc.robot.commands.climber.CalibrateTelescope;
+import frc.robot.commands.climber.ClimbSequence;
 import frc.robot.commands.climber.UpdateTelescopeArms;
 import frc.robot.commands.climber.HoldPositionRotationArms;
 import frc.robot.commands.climber.UpdateRotationArm;
@@ -25,14 +26,7 @@ import frc.robot.commands.superstructure.shooting.PrepareToShoot;
 import frc.robot.commands.superstructure.shooting.Shoot;
 import frc.robot.commands.superstructure.turret.limelight.Tracking;
 import frc.robot.commands.superstructure.turret.manual.ManualTurret;
-import frc.robot.subsystems.ClimbSubsystem;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IndexingSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
-import pabeles.concurrency.ConcurrencyOps.NewInstance;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -48,7 +42,8 @@ public class RobotContainer {
 
   //list out all of the subsystems we need in our robot
   private final DriveSubsystem drive = new DriveSubsystem();
-  private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+  private final TelescopeArmSubsystem telescopeArmSubsystem = new TelescopeArmSubsystem();
+  private final RotationArmSubsystem rotationArmSubsystem = new RotationArmSubsystem();
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
@@ -97,24 +92,24 @@ public class RobotContainer {
     /**
      * GAMEPAD:
      * 
-     * X = Climb sequence count++
-     * Y = Prepare to shoot then shoot when ready
-     * B = Deploy rotation arms & Intake and Index
+     * TODO: X = Climb sequence count++
+     * TODO: Y = Prepare to shoot then shoot when ready
+     * TODO: B = Deploy rotation arms & Intake and Index
      * A = Nothing
      * 
      * Left Trigger = Nothing
-     * Right Trigger = Ramp Up
+     * TODO: Right Trigger = Ramp Up
      * 
      * Left Bumper = Telescope to 32 inches
      * Right Bumper = Telescope to 5 inches
      * 
-     * Front = Calibrate Telescope
-     * Back = Deploy rotation arms & Reverse Intake and Index
+     * Start = Calibrate Telescope
+     * TODO: Back = Deploy rotation arms & Reverse Intake and Index
      * 
      * POV Up = Rotation Arm to Straight Up (Default Position)
+     * POV Right = Rotation Arm to Climb Position
      * POV Down = Rotation Arm to Intake Position
      * POV Left = Rotation Arm to Back Position
-     * POV Right = Rotation Arm to Climb Position
      * 
      * 
      * JOYSTICK:
@@ -128,20 +123,25 @@ public class RobotContainer {
 
     
     // Rotation Arms
-    new POVButton(gamepad, 90)
-      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.climbArmPosition, 
+    new POVButton(gamepad, 0)
+      .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.defaultArmPosition, 
         new TrapezoidProfile.Constraints(10.0, 15.0))
-      .andThen(new HoldPositionRotationArms(climbSubsystem)));
+        .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
+
+    new POVButton(gamepad, 90)
+      .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.climbArmPosition, 
+      new TrapezoidProfile.Constraints(10.0, 15.0))
+      .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
 
     new POVButton(gamepad, 180)
-      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.defaultArmPosition, 
+      .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.intakeArmPosition, 
         new TrapezoidProfile.Constraints(10.0, 15.0))
-        .andThen(new HoldPositionRotationArms(climbSubsystem)));
+      .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
 
     new POVButton(gamepad, 270)
-      .whenPressed(new UpdateRotationArm(climbSubsystem, ClimberConstants.backArmPosition,
+      .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.backArmPosition,
         new TrapezoidProfile.Constraints(10.0, 15.0))
-        .andThen(new HoldPositionRotationArms(climbSubsystem)));
+        .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
     
 
     // Field Relative Reset
@@ -150,39 +150,42 @@ public class RobotContainer {
     
 
     // Telescope Arms
-    new JoystickButton(gamepad, Axis.kLeftTrigger.value)
-      .whenHeld(new InstantCommand(() -> climbSubsystem.setLeftTelescopePercent(0.25))
-        .alongWith(new InstantCommand(() -> climbSubsystem.setRightTelescopePercent(0.25))))
-      .whenReleased(new InstantCommand(() -> climbSubsystem.setLeftTelescopePercent(0.0))
-        .alongWith(new InstantCommand(() -> climbSubsystem.setRightTelescopePercent(0.0))));
+    new JoystickButton(gamepad, Button.kLeftBumper.value)//Axis.kLeftTrigger.value)
+      .whenHeld(new InstantCommand(() -> telescopeArmSubsystem.setLeftPercent(0.25))
+        .alongWith(new InstantCommand(() -> telescopeArmSubsystem.setRightPercent(0.25))))
+      .whenReleased(new InstantCommand(() -> telescopeArmSubsystem.setLeftPercent(0.0))
+        .alongWith(new InstantCommand(() -> telescopeArmSubsystem.setRightPercent(0.0))));
 
-    new JoystickButton(gamepad, Axis.kRightTrigger.value)
-      .whenHeld(new InstantCommand(() -> climbSubsystem.setLeftTelescopePercent(-0.25))
-        .alongWith(new InstantCommand(() -> climbSubsystem.setRightTelescopePercent(-0.25))))
-      .whenReleased(new InstantCommand(() -> climbSubsystem.setLeftTelescopePercent(0.0))
-        .alongWith(new InstantCommand(() -> climbSubsystem.setRightTelescopePercent(0.0))));
+    new JoystickButton(gamepad, Button.kRightBumper.value)//Axis.kRightTrigger.value)
+      .whenHeld(new InstantCommand(() -> telescopeArmSubsystem.setLeftPercent(-0.25))
+        .alongWith(new InstantCommand(() -> telescopeArmSubsystem.setRightPercent(-0.25))))
+      .whenReleased(new InstantCommand(() -> telescopeArmSubsystem.setLeftPercent(0.0))
+        .alongWith(new InstantCommand(() -> telescopeArmSubsystem.setRightPercent(0.0))));
 
-    new POVButton(gamepad, Button.kBack.value)
-      .whenPressed(new CalibrateTelescope(climbSubsystem));
+    new JoystickButton(gamepad, Button.kStart.value)
+      .whenPressed(new CalibrateTelescope(telescopeArmSubsystem));
     
-    new JoystickButton(gamepad, Button.kLeftBumper.value)
+    /*new JoystickButton(gamepad, Button.kLeftBumper.value)
       .whenPressed(new UpdateTelescopeArms(climbSubsystem, turretSubsystem, 32.0));
 
     new JoystickButton(gamepad, Button.kRightBumper.value)
-      .whenPressed(new UpdateTelescopeArms(climbSubsystem, turretSubsystem, 5.0));
+      .whenPressed(new UpdateTelescopeArms(climbSubsystem, turretSubsystem, 5.0));*/
 
 
     // Intake and Index
     new JoystickButton(gamepad, Button.kB.value)
       .whenHeld(new Intake(indexingSubsystem, intakeSubsystem));
 
-    new JoystickButton(gamepad, Button.kBack.value)
-      .whenHeld(new ReverseIndexing(indexingSubsystem, intakeSubsystem));
+    //new JoystickButton(gamepad, Button.kBack.value)
+      //.whenHeld(new ReverseIndexing(indexingSubsystem, intakeSubsystem));
 
 
     // Shooting
+    //new JoystickButton(gamepad, Button.kA.value)
+     // .whenPressed(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 4000));
+
     new JoystickButton(gamepad, Button.kA.value)
-      .whenPressed(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 4000));
+      .whenPressed(new ClimbSequence(telescopeArmSubsystem, rotationArmSubsystem, turretSubsystem));
 
   }
 

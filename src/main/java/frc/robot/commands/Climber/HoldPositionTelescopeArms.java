@@ -1,34 +1,34 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.TelescopeArmSubsystem;
 
 public class HoldPositionTelescopeArms extends CommandBase {
     
     private double desiredPositionLeft;
     private double desiredPositionRight;
-    private ClimbSubsystem climber;
+    private TelescopeArmSubsystem telescope;
 
-    public HoldPositionTelescopeArms(ClimbSubsystem climbingSubsystem) {
+    public HoldPositionTelescopeArms(TelescopeArmSubsystem laTele) {
 
-        climber = climbingSubsystem;
+        telescope = laTele;
         
-        addRequirements(climbingSubsystem);
+        addRequirements(laTele);
 
     }
 
     @Override
     public void initialize() {
-        climber.resetTelescopeControllers();
-        desiredPositionLeft = climber.getLeftTelescopeEncoderValue();
-        desiredPositionRight = climber.getRightTelescopeEncoderValue();
+        telescope.resetControllers();
+        desiredPositionLeft = telescope.getLeftEncoderValue();
+        desiredPositionRight = telescope.getRightEncoderValue();
     }
     
     @Override
     public void execute() {
 
-        climber.setLeftDesiredTelescopePosition(desiredPositionLeft);
-        climber.setRightDesiredTelescopePosition(desiredPositionRight);
+        telescope.setLeftDesiredPosition(desiredPositionLeft);
+        telescope.setRightDesiredPosition(desiredPositionRight);
         
     }
 

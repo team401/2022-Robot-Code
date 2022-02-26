@@ -1,34 +1,34 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.RotationArmSubsystem;
 
 public class HoldPositionRotationArms extends CommandBase {
 
     private double desiredPositionLeft;
     private double desiredPositionRight;
-    private ClimbSubsystem climber;
+    private RotationArmSubsystem rotation;
 
-    public HoldPositionRotationArms(ClimbSubsystem climbingSubsystem) {
+    public HoldPositionRotationArms(RotationArmSubsystem climber) {
 
-        climber = climbingSubsystem;
+        rotation = climber;
         
-        addRequirements(climbingSubsystem);
+        addRequirements(rotation);
 
     }
 
     @Override
     public void initialize() {
-        climber.resetRotationControllers();
-        desiredPositionLeft = climber.getLeftRotationEncoderValue();
-        desiredPositionRight = climber.getRightRotationEncoderValue();
+        rotation.resetControllers();
+        desiredPositionLeft = rotation.getLeftEncoderValue();
+        desiredPositionRight = rotation.getRightEncoderValue();
     }
     
     @Override
     public void execute() {
 
-        climber.setLeftDesiredRotationPosition(desiredPositionLeft);
-        climber.setRightDesiredRotationPosition(desiredPositionRight);
+        rotation.setLeftDesiredPosition(desiredPositionLeft);
+        rotation.setRightDesiredPosition(desiredPositionRight);
         
     }
 
