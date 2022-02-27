@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -11,7 +9,6 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -19,7 +16,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.SuperstructureConstants;
 
@@ -36,8 +32,6 @@ public class ShooterSubsystem extends SubsystemBase {
     private final WPI_TalonFX rightShooterMotor = new WPI_TalonFX(CANDevices.rightShooterMotorID); //Falcons
     private final WPI_TalonFX leftShooterMotor = new WPI_TalonFX(CANDevices.leftShooterMotorID);  
 
-    private final MotorControllerGroup shooterMotors = new MotorControllerGroup(leftShooterMotor, rightShooterMotor);
-    
     //775 Pro  
     private final CANSparkMax feederMotor = new CANSparkMax(CANDevices.feederMotorID, MotorType.kBrushless); 
     //Neo550
@@ -72,9 +66,6 @@ public class ShooterSubsystem extends SubsystemBase {
     //zero the turret
     //set tolerance
     public ShooterSubsystem() {
-
-        SmartDashboard.putNumber("hoodkP", hoodkP);
-        SmartDashboard.putNumber("hoodkD", hoodkD);
 
         rightShooterMotor.configFactoryDefault();
         leftShooterMotor.configFactoryDefault();
@@ -132,12 +123,12 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override 
     public void periodic() {
 
-        /*SmartDashboard.putNumber("desired shooter speed", desiredSpeed);
-        SmartDashboard.putNumber("desired hood position", hoodDesired);
-        SmartDashboard.putNumber("current hood position Revolutions", getHoodPositionRevolutions());
+        SmartDashboard.putNumber("hood position revolutions", getHoodPositionRevolutions());
+        SmartDashboard.putNumber("shooter RPM", getFlywheelVelocityRadPerSec());
 
-        hoodController.setP(SmartDashboard.getNumber("hoodkP", 0));
-        hoodController.setD(SmartDashboard.getNumber("hoodkD", 0));*/
+        SmartDashboard.putNumber("speed", 0);
+        SmartDashboard.putNumber("position", 0);
+
 
         if (!(Math.abs(desiredSpeed - getFlywheelVelocityRadPerSec()) < shooterTolerance)) timer.reset();
 

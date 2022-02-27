@@ -73,7 +73,8 @@ public class RotationArmSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         
-        
+        SmartDashboard.putNumber("Left Rotation", getLeftEncoderValue());
+        SmartDashboard.putNumber("Right Rotation", getRightEncoderValue());
 
     }
 

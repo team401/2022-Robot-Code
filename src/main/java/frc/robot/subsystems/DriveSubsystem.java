@@ -8,7 +8,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
@@ -192,8 +191,6 @@ public class DriveSubsystem extends SubsystemBase{
         backLeft.setDesiredStateClosedLoop(moduleStates[2]);
         backRight.setDesiredStateClosedLoop(moduleStates[3]);
 
-        SmartDashboard.putNumber("module states[2]", moduleStates[2].angle.getDegrees());
-
     }
 
     /**
@@ -228,8 +225,6 @@ public class DriveSubsystem extends SubsystemBase{
 
         //ensure that we do not go over the max speed of the robot
         SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.maxDriveSpeed);
-
-        SmartDashboard.putNumber("front left command rot", states[0].angle.getDegrees());
 
         //sets the states of the modules to the desired, commanded ones
         setModuleStates(states);

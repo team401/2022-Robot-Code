@@ -10,12 +10,6 @@ import frc.robot.subsystems.TelescopeArmSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class ClimbSequence extends SequentialCommandGroup {
-    /**
-     * Ground to zeroed telescope 29.5in
-     * 
-     * 1. 
-     * 
-     */
 
     public ClimbSequence(TelescopeArmSubsystem telescope, RotationArmSubsystem rotation, TurretSubsystem turret) {
 

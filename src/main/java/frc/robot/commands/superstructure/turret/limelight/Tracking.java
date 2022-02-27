@@ -1,10 +1,8 @@
 package frc.robot.commands.superstructure.turret.limelight;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -18,9 +16,6 @@ public class Tracking extends CommandBase {
     // Subystems
     private final LimelightSubsystem limelightSubsystem;
     private final TurretSubsystem turretSubsystem;
-
-    //PID we use to calculate the velocity we should give to our turret and gives in volts
-    private final PIDController turretTrackingPIDController = new PIDController(1.2, 0.5, 0);
 
     // Constructor
     public Tracking(LimelightSubsystem limelight, TurretSubsystem turret) {
@@ -44,11 +39,8 @@ public class Tracking extends CommandBase {
     @Override
     public void execute() {
 
-        SmartDashboard.putBoolean("Tracking Running", true);
-
         if (limelightSubsystem.hasValidTarget() && turretSubsystem.isWithinEdges()) {
 
-            SmartDashboard.putNumber("Reached here:", System.currentTimeMillis());
             // Calculates output we should give to the motor controller
             //double output = turretTrackingPIDController.calculate(limelightSubsystem.gettX(), 0); 
 
@@ -57,8 +49,6 @@ public class Tracking extends CommandBase {
 
             // If the error is more than 0.1, set the desired position to be 0.1 closer to target
             if (Math.abs(limelightErrorRadians) >= 0.1) { 
-
-                SmartDashboard.putBoolean("SetDesiredPosition ++ 1", true);
 
                 turretSubsystem.setTurretDesiredClosedState(
                     turretSubsystem.getTurretPositionRadians() + (Math.signum(limelightErrorRadians) * 0.1));
@@ -72,8 +62,6 @@ public class Tracking extends CommandBase {
             }
 
         } else {
-
-            SmartDashboard.putBoolean("Tracking Running", false);
 
             // Stop moving the turret
             turretSubsystem.runTurretPercent(0);

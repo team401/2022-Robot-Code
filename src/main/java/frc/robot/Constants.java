@@ -50,6 +50,7 @@ public class Constants {
         public static final int turretMotorID = 18; // Neo
         public static final int hoodMotorID = 19; // Neo 550
         public static final int feederMotorID = 21; // 775 Pro
+        public static final int turretEncoderID = 30; //CANCoder
 
         //PREP
         //IDs for Intake & Indexing
@@ -162,7 +163,9 @@ public class Constants {
         public static final double turretEdge = Units.degreesToRadians(132.5); //what we designate as the edge of the turrret
         public static final double leftTurretExtremaRadians = Units.degreesToRadians(135);  //angle offset from front center of robot, if intake is front
         public static final double rightTurretExtremaRadians = Units.degreesToRadians(-135); //negative in order to match odometry and unit circle
-        public static final double turretEncoderCountsPerRevolution = 4096;
+        public static final double turretEncoderCountsPerRevolution = 2048;
+        public static final double turretMagEncoderOffsetDegrees = 0;
+        public static final double turretIntegratedEncoderOffsetDegrees = 0;
 
         //**NEED TO CHANGE**
         //Gear reduction/increase in resolution from the gearing on the turret Falcon

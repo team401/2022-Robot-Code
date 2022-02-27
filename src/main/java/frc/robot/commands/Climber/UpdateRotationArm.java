@@ -31,9 +31,6 @@ public class UpdateRotationArm extends CommandBase {
 
         rotation.setLeftDesiredPosition(desiredPositionRadians);
         rotation.setRightDesiredPosition(desiredPositionRadians);
-
-        SmartDashboard.putNumber("left rot", desiredPositionRadians);
-        SmartDashboard.putNumber("right rot", desiredPositionRadians);
         
     }
 

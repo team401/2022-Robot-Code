@@ -22,8 +22,6 @@ public class HoodCalibrate extends CommandBase {
     @Override
     public void initialize() {
 
-        SmartDashboard.putBoolean("hood calibration running ", true);
-
         hoodTimer.reset();
         hoodTimer.start();
 

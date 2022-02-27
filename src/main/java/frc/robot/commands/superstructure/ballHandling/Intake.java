@@ -21,8 +21,6 @@ public class Intake extends CommandBase {
     
     @Override
     public void initialize() {
-        
-        SmartDashboard.putBoolean("Test Running", true);
 
     }
 

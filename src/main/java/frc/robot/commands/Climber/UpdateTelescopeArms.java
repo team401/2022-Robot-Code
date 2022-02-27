@@ -42,8 +42,6 @@ public class UpdateTelescopeArms extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        // TODO: change velocity values
-
         return telescope.atGoal() || !telescope.withinBoundaries();
     }
     

@@ -1,9 +1,15 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
@@ -11,6 +17,7 @@ import frc.robot.Constants.SuperstructureConstants;
 import frc.robot.commands.superstructure.turret.limelight.BasicSearch;
 import frc.robot.commands.superstructure.turret.limelight.Tracking;
 
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
@@ -22,6 +29,10 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 public class TurretSubsystem extends SubsystemBase{
 
     private final WPI_TalonFX turretMotor = new WPI_TalonFX(CANDevices.turretMotorID);
+    private CANCoderConfiguration turretEncoderSettings = new CANCoderConfiguration();
+
+    private final TalonFXConfiguration turretMotorSettings = new TalonFXConfiguration();
+    private final CANCoder turretMagEncoder = new CANCoder(CANDevices.turretEncoderID);
 
     // works for the best in .1 rad increments
     private double kP = 1.2;
@@ -30,26 +41,46 @@ public class TurretSubsystem extends SubsystemBase{
 
     private final PIDController turretController = new PIDController(kP, kI, kD);
 
-    //private double centerOffsetTicks = 0;
-
-    //private boolean shouldBeTracking = false;
-
     public TurretSubsystem() {
+       
+        //Configure Encoder Settings 
+        turretMagEncoder.configFactoryDefault();
 
+            turretEncoderSettings.unitString = "rad";
+            turretEncoderSettings.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
+            turretEncoderSettings.sensorDirection = false;
+
+            turretEncoderSettings.initializationStrategy = 
+                SensorInitializationStrategy.BootToAbsolutePosition;
+
+            turretEncoderSettings.magnetOffsetDegrees = 
+                SuperstructureConstants.turretMagEncoderOffsetDegrees;
+
+        turretMagEncoder.configAllSettings(turretEncoderSettings);
+
+        //Configure Turret Settings
         turretMotor.configFactoryDefault();
-        turretMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+        turretMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
 
-        //turretMotor.configForwardSoftLimitEnable(true);
-        //turretMotor.configReverseSoftLimitEnable(true);
+            turretMotorSettings.initializationStrategy = SensorInitializationStrategy.BootToZero;
+            turretMotorSettings.forwardSoftLimitEnable = true;
+            turretMotorSettings.reverseSoftLimitEnable = true;
+            turretMotorSettings.slot0.kP = kP;
+            turretMotorSettings.slot0.kI = kI;
+            turretMotorSettings.slot0.kD = kD;
 
+        turretMotor.configAllSettings(turretMotorSettings);
+
+        //Set Turret Integrated Encoder to Aboslute Encoder Position
+        turretMotor.setSelectedSensorPosition(convertTurretDegreesToTicks(
+            turretMagEncoder.getAbsolutePosition()));
     }
 
     @Override
     public void periodic() {
 
         SmartDashboard.putNumber("Turret Position Radians", getTurretPositionRadians());
-        SmartDashboard.putNumber("Turret Position Ticks", getEncoderPositionTicks());
-        //SmartDashboard.putBoolean("isWithinEdges", isWithinEdges());    
+        SmartDashboard.putNumber("Turret Position Ticks", getEncoderPositionTicks());    
     }
 
     public static double convertTurretTicksToRadians(double ticks) {
@@ -59,6 +90,11 @@ public class TurretSubsystem extends SubsystemBase{
 
     public static double convertTurretRadiansToTicks(double radians) {
         return radians / (2 * Math.PI) * SuperstructureConstants.turretEncoderCountsPerRevolution
+                * SuperstructureConstants.turretGearReduction;
+    } 
+
+    public static double convertTurretDegreesToTicks(double degrees) {
+        return degrees / 360 * SuperstructureConstants.turretEncoderCountsPerRevolution
                 * SuperstructureConstants.turretGearReduction;
     } 
 
@@ -80,12 +116,6 @@ public class TurretSubsystem extends SubsystemBase{
                 * (2 * Math.PI) * 10 /  SuperstructureConstants.turretGearReduction;
 
     }
-
-    /*public double getTurretPositionPulseWidth() {
-        
-        return turretMotor.getSensorCollection().getPulseWidthPosition();
-
-    }*/
 
     public void runTurretPercent(double percent) {
 
@@ -126,25 +156,5 @@ public class TurretSubsystem extends SubsystemBase{
         //turretMotor.configReverseSoftLimitThreshold(convertTurretRadiansToTicks(SuperstructureConstants.leftTurretExtremaRadians));
 
     }
-
-    /*public void startTracking(LimelightSubsystem limelight, TurretSubsystem turret) {
-
-        isTracking(true);
-
-        new BasicSearch(limelight, turret).schedule();;
-        
-    }
-
-    public void isTracking(boolean shouldbe) {
-
-        shouldBeTracking = shouldbe;
-
-    }
-
-    public boolean shouldBeTracking() { 
-
-        return shouldBeTracking;
-
-    }*/
 
 }

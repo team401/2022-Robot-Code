@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.SuperstructureConstants;
@@ -33,16 +32,13 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        //for testing use (to see if the current limit works :))
-        SmartDashboard.putNumber("intake motor measured current", intakeMotor.getSupplyCurrent());
+        
 
     }
 
     //runs the motor in percent mode based on our constants
     public void runIntakeMotor() {
 
-        SmartDashboard.putNumber("Intake Percent", SuperstructureConstants.intakingPower);
-        SmartDashboard.putNumber("Intake Time", System.currentTimeMillis());
         intakeMotor.set(ControlMode.PercentOutput, SuperstructureConstants.intakingPower);
 
     }

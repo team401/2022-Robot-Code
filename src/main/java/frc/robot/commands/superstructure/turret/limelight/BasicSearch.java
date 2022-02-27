@@ -48,11 +48,6 @@ public class BasicSearch extends CommandBase {
 
     @Override
     public void execute() {
-
-        // Change directions if we reach an edge
-        /*if ((turretSubsystem.getTurretPositionRadians() > SuperstructureConstants.turretEdge && movingRight) || 
-            (turretSubsystem.getTurretPositionRadians() < -SuperstructureConstants.turretEdge && !movingRight))
-            movingRight = !movingRight;*/
         
         // If the turret is not centered on the target
         if (!limelightSubsystem.hasValidTarget()) {

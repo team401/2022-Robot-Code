@@ -30,13 +30,14 @@ public class PrepareToShoot extends CommandBase {
     @Override
     public void execute() {
 
-        currentLimelightVerticalOffset = limelightSubsystem.getY();
+        if (limelightSubsystem.hasValidTarget()) {
+            currentLimelightVerticalOffset = limelightSubsystem.getY();
 
-        desiredHoodPosition = 0; //regression goes here 
+            desiredHoodPosition = 0; //regression goes here 
 
-
-        shooterSubsystem.hoodSetDesiredClosedStateRevolutions(desiredHoodPosition);
-        shooterSubsystem.runShooterVelocityController(desiredSpeed);
+            shooterSubsystem.hoodSetDesiredClosedStateRevolutions(desiredHoodPosition);
+            shooterSubsystem.runShooterVelocityController(desiredSpeed);
+        }
 
     }
 
