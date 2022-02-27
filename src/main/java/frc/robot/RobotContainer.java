@@ -13,6 +13,7 @@ import frc.robot.commands.climber.HoldPositionRotationArms;
 import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.climber.UpdateTelescopeArms;
 import frc.robot.commands.drivetrain.OperatorControl;
+import frc.robot.commands.superstructure.ballHandling.ReverseIndexing;
 import frc.robot.commands.superstructure.shooting.PrepareToShoot;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -175,29 +176,34 @@ public class RobotContainer {
       .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.defaultArmPosition, 
         new TrapezoidProfile.Constraints(10.0, 15.0))
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)))
-      .whenHeld(new Intake(indexingSubsystem, intakeSubsystem));
+      .whenHeld(new Intake(indexingSubsystem, intakeSubsystem));*/
     
     new JoystickButton(gamepad, Button.kBack.value)
       .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.defaultArmPosition, 
         new TrapezoidProfile.Constraints(10.0, 15.0))
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)))
-      .whenHeld(new ReverseIndexing(indexingSubsystem, intakeSubsystem));*/
+      .whenHeld(new ReverseIndexing(indexingSubsystem, intakeSubsystem));
+
 
     // Shooting
-    /*new JoystickButton(gamepad, Button.kY.value)
+    new JoystickButton(gamepad, Button.kY.value)
       .whenPressed(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 4000));
 
     new JoystickButton(gamepad, Button.kA.value)
       .whenHeld(new InstantCommand(
-        () -> shooterSubsystem.runShooterVelocityController(SmartDashboard.getNumber("speed", 0))));
-
+        () -> shooterSubsystem.runShooterVelocityController(SmartDashboard.getNumber("Speed", 0))));
+      
     new JoystickButton(gamepad, Button.kB.value)
       .whenHeld(new InstantCommand(
-        () -> shooterSubsystem.hoodSetDesiredClosedStateRevolutions(SmartDashboard.getNumber("position", 0))));
+        () -> shooterSubsystem.hoodSetDesiredClosedStateRevolutions(SmartDashboard.getNumber("Position", 0))));
 
     // Climb Sequence
     new JoystickButton(gamepad, Button.kX.value)
-      .whenPressed(new ClimbSequence(telescopeArmSubsystem, rotationArmSubsystem, turretSubsystem));*/
+      .whenPressed(new ClimbSequence(telescopeArmSubsystem, rotationArmSubsystem, turretSubsystem));
+
+    // Climb Sequence
+    new JoystickButton(gamepad, Button.kX.value)
+      .whenPressed(new ClimbSequence(telescopeArmSubsystem, rotationArmSubsystem, turretSubsystem));
     
   }
 
