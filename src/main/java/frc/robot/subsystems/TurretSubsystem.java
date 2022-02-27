@@ -20,13 +20,14 @@ import frc.robot.commands.superstructure.turret.limelight.Tracking;
 import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 
 /**
  * This link was a helpful example:
  * https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/Java%20General/MagEncoder_Absolute/src/main/java/frc/robot/Robot.java
  */
 
-public class TurretSubsystem extends SubsystemBase{
+public class TurretSubsystem extends SubsystemBase {
 
     private final WPI_TalonFX turretMotor = new WPI_TalonFX(CANDevices.turretMotorID);
     private CANCoderConfiguration turretEncoderSettings = new CANCoderConfiguration();
@@ -39,26 +40,19 @@ public class TurretSubsystem extends SubsystemBase{
     private double kI = 0.5;
     private double kD = 0;
 
-    private final PIDController turretController = new PIDController(kP, kI, kD);
-
     public TurretSubsystem() {
-       
-        //Configure Encoder Settings 
+
+        // Configure Encoder Settings
         turretMagEncoder.configFactoryDefault();
 
-            turretEncoderSettings.unitString = "rad";
             turretEncoderSettings.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
             turretEncoderSettings.sensorDirection = false;
-
-            turretEncoderSettings.initializationStrategy = 
-                SensorInitializationStrategy.BootToAbsolutePosition;
-
-            turretEncoderSettings.magnetOffsetDegrees = 
-                SuperstructureConstants.turretMagEncoderOffsetDegrees;
+            turretEncoderSettings.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+            turretEncoderSettings.magnetOffsetDegrees = SuperstructureConstants.turretMagEncoderOffsetDegrees;
 
         turretMagEncoder.configAllSettings(turretEncoderSettings);
 
-        //Configure Turret Settings
+        // Configure Turret Settings
         turretMotor.configFactoryDefault();
         turretMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
 
@@ -71,37 +65,44 @@ public class TurretSubsystem extends SubsystemBase{
 
         turretMotor.configAllSettings(turretMotorSettings);
 
-        //Set Turret Integrated Encoder to Aboslute Encoder Position
+        // Set Turret Integrated Encoder to Aboslute Encoder Position
         turretMotor.setSelectedSensorPosition(convertTurretDegreesToTicks(
-            turretMagEncoder.getAbsolutePosition()));
+                    turretMagEncoder.getAbsolutePosition()));
+
+        turretMotor.configForwardSoftLimitThreshold(
+                convertTurretRadiansToTicks(SuperstructureConstants.rightTurretExtremaRadians));
+        turretMotor.configReverseSoftLimitThreshold(
+                convertTurretRadiansToTicks(SuperstructureConstants.leftTurretExtremaRadians));
     }
 
     @Override
     public void periodic() {
 
         SmartDashboard.putNumber("Turret Position Radians", getTurretPositionRadians());
-        SmartDashboard.putNumber("Turret Position Ticks", getEncoderPositionTicks());    
+        SmartDashboard.putNumber("Turret Position Ticks", getEncoderPositionTicks());
     }
 
+    //Unit Conversions
     public static double convertTurretTicksToRadians(double ticks) {
-        return ticks / SuperstructureConstants.turretEncoderCountsPerRevolution 
+        return ticks / SuperstructureConstants.turretEncoderCountsPerRevolution
                 / SuperstructureConstants.turretGearReduction * (2 * Math.PI);
-    } 
+    }
 
     public static double convertTurretRadiansToTicks(double radians) {
         return radians / (2 * Math.PI) * SuperstructureConstants.turretEncoderCountsPerRevolution
                 * SuperstructureConstants.turretGearReduction;
-    } 
+    }
 
     public static double convertTurretDegreesToTicks(double degrees) {
         return degrees / 360 * SuperstructureConstants.turretEncoderCountsPerRevolution
                 * SuperstructureConstants.turretGearReduction;
-    } 
+    }
 
+    //Get Turret Values
     public double getTurretPositionRadians() {
 
-        return getEncoderPositionTicks() / SuperstructureConstants.turretEncoderCountsPerRevolution 
-                / SuperstructureConstants.turretGearReduction * (2*Math.PI);
+        return getEncoderPositionTicks() / SuperstructureConstants.turretEncoderCountsPerRevolution
+                / SuperstructureConstants.turretGearReduction * (2 * Math.PI);
 
     }
 
@@ -113,14 +114,15 @@ public class TurretSubsystem extends SubsystemBase{
     public double getTurretVelocityRadPerSec() {
 
         return turretMotor.getSelectedSensorVelocity() / SuperstructureConstants.turretEncoderCountsPerRevolution
-                * (2 * Math.PI) * 10 /  SuperstructureConstants.turretGearReduction;
+                * (2 * Math.PI) * 10 / SuperstructureConstants.turretGearReduction;
 
     }
 
+    //Run Turret
     public void runTurretPercent(double percent) {
 
         turretMotor.set(ControlMode.PercentOutput, percent);
-        
+
     }
 
     public void runTurretVoltage(double volts) {
@@ -131,29 +133,14 @@ public class TurretSubsystem extends SubsystemBase{
 
     public void setTurretDesiredClosedState(double desiredPositionRad) {
 
-        double output = turretController.calculate(getTurretPositionRadians(), desiredPositionRad);
-        runTurretPercent(output);
+        double output = convertTurretRadiansToTicks(desiredPositionRad);
+        turretMotor.set(TalonFXControlMode.Position, output);
 
     }
 
     public boolean isWithinEdges() {
 
         return Math.abs(getTurretPositionRadians()) < SuperstructureConstants.rightTurretExtremaRadians;
-
-    }
-
-    public void setTurretEncoderRightSoftLimit(double positionTicks) {
-
-        turretMotor.setSelectedSensorPosition(positionTicks);
-
-    }
-
-    public void setTurretEncoderRightExtrema() {
-
-        turretMotor.setSelectedSensorPosition(convertTurretRadiansToTicks(SuperstructureConstants.rightTurretExtremaRadians));
-
-        //turretMotor.configForwardSoftLimitThreshold(convertTurretRadiansToTicks(SuperstructureConstants.rightTurretExtremaRadians));
-        //turretMotor.configReverseSoftLimitThreshold(convertTurretRadiansToTicks(SuperstructureConstants.leftTurretExtremaRadians));
 
     }
 
