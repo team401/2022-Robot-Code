@@ -25,7 +25,7 @@ public class HoodCalibrate extends CommandBase {
         hoodTimer.reset();
         hoodTimer.start();
 
-        shooterSubsystem.runHoodPercent(-0.1);
+        shooterSubsystem.runHoodPercent(-0.2);
 
     }
 

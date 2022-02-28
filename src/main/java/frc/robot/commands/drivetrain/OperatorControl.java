@@ -25,7 +25,7 @@ public class OperatorControl extends CommandBase {
     private final boolean isFieldRelative;
 
     //tolerance for deadbanding inputs
-    private final double toleranceDeadband = 0.05;
+    private final double toleranceDeadband = 0.075;
 
     /**
      * Constructor that takes in the subsytem, the three double suppliers of the values we want to 

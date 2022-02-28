@@ -18,6 +18,11 @@ import frc.robot.Constants.SuperstructureConstants;
 
 public class RotationArmSubsystem extends SubsystemBase {
 
+    public enum Mode {
+        Climbing,
+        Intaking
+    }
+
     private final WPI_TalonSRX leftMotor = new WPI_TalonSRX(CANDevices.leftRotationMotorID);
     private final WPI_TalonSRX rightMotor = new WPI_TalonSRX(CANDevices.rightRotationMotorID);
 
@@ -33,10 +38,10 @@ public class RotationArmSubsystem extends SubsystemBase {
     private double rightMaxAccel = 15.0;
 
     //PID Controllers
-    private final ProfiledPIDController leftController = new ProfiledPIDController(4.0, 0, 0.1, 
+    private final ProfiledPIDController leftController = new ProfiledPIDController(3.5, 0, 0.1, 
             new TrapezoidProfile.Constraints(leftMaxVel, leftMaxAccel));
 
-    private final ProfiledPIDController rightController = new ProfiledPIDController(4.0, 0, 0.1, 
+    private final ProfiledPIDController rightController = new ProfiledPIDController(3.5, 0, 0.1, 
             new TrapezoidProfile.Constraints(rightMaxVel, rightMaxAccel));
 
     //controllers is internal, look at 2021 code ;0;0 
@@ -91,7 +96,7 @@ public class RotationArmSubsystem extends SubsystemBase {
         return rightEncoder.getDistance() + ClimberConstants.rightRotationOffset;
     }
 
-    public void changePIDConstraints(Constraints constraints){
+    public void setPIDConstraints(Constraints constraints){
         leftController.setConstraints(constraints);
         rightController.setConstraints(constraints);
     }

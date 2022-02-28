@@ -45,14 +45,12 @@ public class Constants {
         public static final int backLeftRotationEncoderID = 12;
         public static final int backRightRotationEncoderID = 13;
 
-        //PREP
         //IDs for turret 
         public static final int turretMotorID = 18; // Neo
         public static final int hoodMotorID = 19; // Neo 550
-        public static final int feederMotorID = 21; // 775 Pro
+        public static final int kickerMotorID = 21; // 775 Pro
         public static final int turretEncoderID = 30; //CANCoder
 
-        //PREP
         //IDs for Intake & Indexing
         public static final int intakeMotorID = 22; // Talon SRX
         public static final int conveyorMotorID = 23; // 775 pro
@@ -214,7 +212,7 @@ public class Constants {
         public static final double maxAccelerationRightRotation = 1.5;
 
         //power constants
-        public static final double conveyorPower = 0.4;
+        public static final double conveyorPower = 0.7;
         public static final double jogFowardPower = 0.3;
 
         public static final double indexPower = 0.3;
@@ -239,23 +237,24 @@ public class Constants {
         public static final double rotationEncoderConversionFactor = (2 * Math.PI) * 4096 / rotationArmGearRation;
 
         // TODO: Update values
-        public static final double defaultArmPosition = 0;
         public static final double intakeArmPosition = 0.75;
         public static final double climbArmPosition = 0.35;
-        public static final double backArmPosition = -0.08;
+        public static final double defaultArmPosition = -0.1;
 
         // measured offsets
-        public static final double leftRotationOffset = -1.445 + 0.0996;
+        public static final double leftRotationOffset = -1.3545;
         public static final double rightRotationOffset = 1.01;
 
         // TODO: Update values
-        public static final double leftTelescopeMaxHeight = 0;
-        public static final double rightTelescopeMaxHeight = 0;
+        public static final double leftTelescopeMaxHeight = 35;
+        public static final double rightTelescopeMaxHeight = 35;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
 
         public static final double maxHeight = 67.5 - 29.29;
+
+        public static final double climberSequencePauseSeconds = 2;
 
     }
 

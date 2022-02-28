@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.ClimberConstants;
@@ -25,13 +26,13 @@ public class TelescopeArmSubsystem extends SubsystemBase {
     private double rightMaxAccel = 5.0;
 
     //PID Controllers
-    private final ProfiledPIDController leftController = new ProfiledPIDController(1.0, 0.0, 0.0,
+    private final ProfiledPIDController leftController = new ProfiledPIDController(1.5, 0.0, 0.0,
             new TrapezoidProfile.Constraints(leftMaxVel, leftMaxAccel));
-    private final ProfiledPIDController rightController = new ProfiledPIDController(1.0, 0.0, 0.0,
+    private final ProfiledPIDController rightController = new ProfiledPIDController(1.5, 0.0, 0.0,
             new TrapezoidProfile.Constraints(rightMaxVel, rightMaxAccel));
 
     //controllers is internal, look at 2021 code ;0;0 
-    private double tolerance = 1.0 / 8.0; //in inches
+    private double tolerance = 0.5; //in inches
 
     // goal
     private double leftGoal = 0.0;
@@ -56,7 +57,8 @@ public class TelescopeArmSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        
+        SmartDashboard.putNumber("Left Telescope", getLeftEncoderValue());
+        SmartDashboard.putNumber("Right Telescope", getRightEncoderValue());
     
     }
 

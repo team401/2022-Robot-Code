@@ -13,6 +13,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,7 +21,7 @@ import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.SuperstructureConstants;
 
 /** Notes:
- * Feeder is only going to be run at a certain percent or backwards (is a Neo 550)
+ * Kibkc is only going to be run at a certain percent or backwards (is a Neo 550)
  * Turret is going to be controlled with position with an integrated PID controller (NEO)
  * Hood is going to be controlled with position with WPILib PID controller (Neo 550)
  * Shooter motors are going to be made into a controller group (2 Falcons, WPILib PID contoller for velocity)
@@ -33,13 +34,13 @@ public class ShooterSubsystem extends SubsystemBase {
     private final WPI_TalonFX leftShooterMotor = new WPI_TalonFX(CANDevices.leftShooterMotorID);  
 
     //775 Pro  
-    private final CANSparkMax feederMotor = new CANSparkMax(CANDevices.feederMotorID, MotorType.kBrushless); 
+    private final CANSparkMax kickerMotor = new CANSparkMax(CANDevices.kickerMotorID, MotorType.kBrushless); 
     //Neo550
     private final CANSparkMax hoodMotor = new CANSparkMax(CANDevices.hoodMotorID, MotorType.kBrushless); 
 
     //Encoders
     private final RelativeEncoder hoodEncoder = hoodMotor.getEncoder();
-    private final RelativeEncoder feederEncoder = feederMotor.getEncoder();
+    private final RelativeEncoder kickerEncoder = kickerMotor.getEncoder();
 
     //PID Controllers 
     private final ProfiledPIDController shooterController = new ProfiledPIDController(0.005, 0.005, 0, 
@@ -60,12 +61,16 @@ public class ShooterSubsystem extends SubsystemBase {
     private double desiredSpeed;
     private double hoodDesired;
 
+    private final XboxController gamepad;
+
     private Timer timer = new Timer();
     
     //TODO
     //zero the turret
     //set tolerance
-    public ShooterSubsystem() {
+    public ShooterSubsystem(XboxController pad) {
+
+        gamepad = pad;
 
         rightShooterMotor.configFactoryDefault();
         leftShooterMotor.configFactoryDefault();
@@ -86,7 +91,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         rightShooterMotor.setInverted(true);
         hoodMotor.setInverted(true);
-        feederMotor.setInverted(true);
+        kickerMotor.setInverted(false);
 
         rightShooterMotor.follow(leftShooterMotor);
 
@@ -118,6 +123,8 @@ public class ShooterSubsystem extends SubsystemBase {
         timer.start();
         timer.reset();
 
+        SmartDashboard.putNumber("Gamepad Trigger Value", gamepad.getRightTriggerAxis());//(gamepad.getRightTriggerAxis() < 0.1 ? 0 : 1));
+
     }
 
     @Override 
@@ -135,24 +142,24 @@ public class ShooterSubsystem extends SubsystemBase {
     }    
 
     /**
-     * FEEDER METHODS
+     * Kicker METHODS
      */
 
-    public void runFeederPercent(double percent) {
+    public void runKickerPercent(double percent) {
 
-        feederMotor.set(percent);
-
-    }
-
-    public void reverseFeederPercent(double percent) {
-
-        feederMotor.set(-percent);
+        kickerMotor.set(percent);
 
     }
 
-    public void stopFeeder() {
+    public void reverseKickerPercent(double percent) {
 
-        feederMotor.set(0);
+        kickerMotor.set(-percent);
+
+    }
+
+    public void stopKicker() {
+
+        kickerMotor.set(0);
 
     }
 
@@ -250,8 +257,8 @@ public class ShooterSubsystem extends SubsystemBase {
     //runs at percent
     public void runShooterPercent(double percent) {
 
-        //shooterMotors.set(percent);
         leftShooterMotor.set(percent);
+        kickerMotor.set(1);
 
     }
 
@@ -259,35 +266,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
         double output = desiredRPM * SuperstructureConstants.shooterMotorRPMConversionFactor;
         leftShooterMotor.set(TalonFXControlMode.Velocity, output);
+        kickerMotor.set(-1);
         SmartDashboard.putNumber("Shooter output", output);
-
-    }
-
-    public void runShooterKicker(double desiredRPM) {
-
-        runShooterVelocityController(desiredRPM);
-        runFeederPercent(0.75);
-
-    }
-
-    public void stopShooterKicker() {
-
-        leftShooterMotor.set(TalonFXControlMode.Velocity, 0);
-        runFeederPercent(0.75);
 
     }
 
     //stops shooter
     public void stopShooter() {
 
-        //shooterMotors.set(0);
         leftShooterMotor.set(0);
-
-    }
-
-    public boolean atGoal() {
-
-        return timer.get() >= 0.25;
+        kickerMotor.set(0);
 
     }
 

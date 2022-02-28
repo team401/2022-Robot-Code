@@ -30,8 +30,8 @@ public class CalibrateTelescope extends CommandBase {
         rightTimer.start();
         resetTimer.stop();
 
-        telescope.setLeftPercent(-0.25);
-        telescope.setRightPercent(-0.25);
+        telescope.setLeftPercent(-0.4);
+        telescope.setRightPercent(-0.4);
 
     }
 
