@@ -39,7 +39,7 @@ public class AutoTrajectories {
     public static Trajectory LeftBlue = 
         TrajectoryGenerator.generateTrajectory(
             List.of(
-                new Pose2d(Units.inchesToMeters(253), Units.inchesToMeters(189), new Rotation2d(0))
+                new Pose2d(Units.inchesToMeters(253), Units.inchesToMeters(189), new Rotation2d(180))
             ), 
             config
     );

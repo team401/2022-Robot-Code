@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LimelightSubsystem extends SubsystemBase {
@@ -50,6 +51,9 @@ public class LimelightSubsystem extends SubsystemBase {
         tx = table.getEntry("tx").getDouble(0.0);
         ty = table.getEntry("ty").getDouble(0.0);
         ta = table.getEntry("ta").getDouble(0.0);
+
+        //Output to SmartDashboard
+        SmartDashboard.putNumber("tY (Vertical Error)", ty);
 
      }
 

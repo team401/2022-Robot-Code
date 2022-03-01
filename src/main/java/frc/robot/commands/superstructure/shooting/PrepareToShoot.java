@@ -20,10 +20,11 @@ public class PrepareToShoot extends CommandBase {
 
         defaultRPM = defaultSpeedRPM;
 
-        SmartDashboard.putNumber("Hood Revolution", 0);
+        SmartDashboard.putNumber("Hood Positions Revolutions", 0);
         SmartDashboard.putNumber("RPM", 0);
+        
 
-        //addRequirements(shooter);
+        addRequirements(shooter, limelight);
 
     }
 
@@ -32,6 +33,7 @@ public class PrepareToShoot extends CommandBase {
 
         SmartDashboard.getNumber("Hood Revolution", 0);
         SmartDashboard.getNumber("RPM", 0);
+
 
         if (limelightSubsystem.hasValidTarget()) {
             double limelightVerticalOffset = limelightSubsystem.getY();

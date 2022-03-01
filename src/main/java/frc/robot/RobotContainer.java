@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.time.Instant;
+
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -21,7 +23,9 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.RotationArmSubsystem.Mode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -202,23 +206,33 @@ public class RobotContainer {
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
 
 
-    // Shooting
-    new JoystickButton(gamepad, Button.kRightBumper.value)
-      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 4000));
+    // Shooting Manual Settings 
+    /*new JoystickButton(gamepad, Button.kRightBumper.value)
+      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 4000));*/
 
     new JoystickButton(gamepad, Button.kY.value)
-      .whenPressed(new InstantCommand(() -> indexingSubsystem.runConveyor())
-      .alongWith(new InstantCommand(() -> indexingSubsystem.runIndexWheels())))
-      .whenReleased(new InstantCommand(() -> indexingSubsystem.stopConveyor())
-      .alongWith(new InstantCommand(() -> indexingSubsystem.stopIndexWheels())));
+      .whenPressed(
+         new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new InstantCommand(() -> indexingSubsystem.runConveyor()), 
+                    new InstantCommand(() -> indexingSubsystem.runIndexWheels())),
+                    
+                new ParallelCommandGroup(
+                    new InstantCommand(() -> SmartDashboard.putNumber("tY when shooting", limelightSubsystem.getY()))),
+                    new InstantCommand(() -> SmartDashboard.putNumber("tA when Shooting", limelightSubsystem.getA()))))
 
-    /*new JoystickButton(gamepad, Button.kA.value)
+      .whenReleased(
+        new ParallelCommandGroup(
+                new InstantCommand(() -> indexingSubsystem.stopConveyor()), 
+                new InstantCommand(() -> indexingSubsystem.runIndexWheels())));
+
+    new JoystickButton(gamepad, Button.kA.value)
       .whenHeld(new InstantCommand(
         () -> shooterSubsystem.runShooterVelocityController(SmartDashboard.getNumber("Speed", 0))));
       
     new JoystickButton(gamepad, Button.kB.value)
       .whenHeld(new InstantCommand(
-        () -> shooterSubsystem.hoodSetDesiredClosedStateRevolutions(SmartDashboard.getNumber("Position", 0))));*/
+        () -> shooterSubsystem.hoodSetDesiredClosedStateRevolutions(SmartDashboard.getNumber("Position", 0))));
 
 
     // Climb Sequence
