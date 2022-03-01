@@ -16,7 +16,7 @@ public class UpdateRotationArm extends CommandBase {
 
         rotation = climb;
         if (mode == Mode.Climbing) {
-            rotation.setPIDConstraints(new TrapezoidProfile.Constraints(1, 1));
+            rotation.setPIDConstraints(new TrapezoidProfile.Constraints(.5, .5));
         }
         else if (mode == Mode.Intaking) {
             rotation.setPIDConstraints(new TrapezoidProfile.Constraints(10.0, 15.0));

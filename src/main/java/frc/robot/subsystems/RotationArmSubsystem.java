@@ -50,7 +50,7 @@ public class RotationArmSubsystem extends SubsystemBase {
     private double goalLeftPosition = 0;
     private double goalRightPosition = 0;
 
-    private double tolerance = Units.degreesToRadians(1);
+    private double tolerance = Units.degreesToRadians(1.5);
 
     // Boundaries
     // TODO: Change values

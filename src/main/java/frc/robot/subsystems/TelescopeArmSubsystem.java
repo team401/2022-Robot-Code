@@ -32,7 +32,7 @@ public class TelescopeArmSubsystem extends SubsystemBase {
             new TrapezoidProfile.Constraints(rightMaxVel, rightMaxAccel));
 
     //controllers is internal, look at 2021 code ;0;0 
-    private double tolerance = 0.5; //in inches
+    private double tolerance = 0.4; //in inches
 
     // goal
     private double leftGoal = 0.0;

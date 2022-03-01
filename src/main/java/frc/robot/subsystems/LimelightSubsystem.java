@@ -4,6 +4,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LimelightConstants;
 
 public class LimelightSubsystem extends SubsystemBase {
 
@@ -93,6 +94,11 @@ public class LimelightSubsystem extends SubsystemBase {
 
         return Math.abs(getX()) < centeredTolerance;
 
+     }
+
+     public double calculateDistance(double angle, double height) {
+
+      return height / Math.sin( LimelightConstants.angle + Units.degreesToRadians(angle)) + LimelightConstants.distanceOffset;
      }
 
 }
