@@ -38,11 +38,11 @@ public class ClimbSequence extends SequentialCommandGroup {
                 .raceWith(new HoldPositionRotationArms(rotation)),
 
             // Rotate the arms to hit the traversal bar while holding the telescope
-            new UpdateRotationArm(rotation, 0.52, Mode.Climbing)
+            new UpdateRotationArm(rotation, 0.50, Mode.Climbing)
                 .raceWith(new HoldPositionTelescopeArms(telescope)),
 
             // Hook onto the traversal bar and pull up enough to get off the previous bar while holding the rotation arms
-            new UpdateTelescopeArms(telescope, 0)
+            new UpdateTelescopeArms(telescope, 5)
                 .raceWith(new HoldPositionRotationArms(rotation)),
 
             // Move rotation arm back to clear the bar

@@ -258,4 +258,16 @@ public class Constants {
 
     }
 
+    public static final class LimelightConstants {
+
+        // TODO: CHANGE VALUES MUCH YES
+        public static final double heightFromGround = 18.8125;
+        public static final double angle = Units.degreesToRadians(40);
+
+        public static final double goalHeight = 104.5;
+
+        public static final double distanceOffset = 0;
+
+    }
+
 }
