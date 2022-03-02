@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoTrajectories;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.superstructure.shooting.PrepareToShoot;
-//import frc.robot.commands.superstructure.shooting.Shoot;
+import frc.robot.commands.superstructure.shooting.Shoot;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -58,8 +58,8 @@ public class AutoRoutines extends SequentialCommandGroup {
 
                         addCommands(
                             new SequentialCommandGroup(
-                                new PrepareToShoot(shooter, limelight, Units.rotationsPerMinuteToRadiansPerSecond(4100))
-                                //new Shoot(shooter, indexer)
+                                new PrepareToShoot(shooter, limelight, Units.rotationsPerMinuteToRadiansPerSecond(4100)),
+                                new Shoot(indexer)
                             ),
                             new FollowTrajectory(drive, AutoTrajectories.LeftBlue)
                         );
@@ -71,9 +71,10 @@ public class AutoRoutines extends SequentialCommandGroup {
                         drive.resetPose(AutoTrajectories.LeftRed.getInitialPose());
 
                         addCommands(
-                            /*new ParallelCommandGroup(
-                                new Shoot(shooter, indexer)
-                            ),*/
+                            new SequentialCommandGroup(
+                                new PrepareToShoot(shooter, limelight, Units.rotationsPerMinuteToRadiansPerSecond(4100)),
+                                new Shoot(indexer)
+                            ),
                             new FollowTrajectory(drive, AutoTrajectories.LeftRed)
                         );
 
@@ -90,8 +91,8 @@ public class AutoRoutines extends SequentialCommandGroup {
                         drive.resetPose(AutoTrajectories.RightBlue.getInitialPose());
                         addCommands(
                             new SequentialCommandGroup(
-                                new PrepareToShoot(shooter, limelight, Units.rotationsPerMinuteToRadiansPerSecond(4100))
-                                //new Shoot(shooter, indexer)
+                                new PrepareToShoot(shooter, limelight, Units.rotationsPerMinuteToRadiansPerSecond(4100)),
+                                new Shoot(indexer)
                             ),
                             new FollowTrajectory(drive, AutoTrajectories.RightBlue)
                         );
@@ -103,8 +104,8 @@ public class AutoRoutines extends SequentialCommandGroup {
                         drive.resetPose(AutoTrajectories.RightRed.getInitialPose());
                             addCommands(
                                 new SequentialCommandGroup(
-                                    new PrepareToShoot(shooter, limelight, Units.rotationsPerMinuteToRadiansPerSecond(4100))
-                                    //new Shoot(shooter, indexer)
+                                    new PrepareToShoot(shooter, limelight, Units.rotationsPerMinuteToRadiansPerSecond(4100)),
+                                    new Shoot(indexer)
                                 ),
                                 new FollowTrajectory(drive, AutoTrajectories.RightRed)
                             );
