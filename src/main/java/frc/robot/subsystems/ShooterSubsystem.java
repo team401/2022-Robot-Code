@@ -85,9 +85,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
         // Terminal, Constant, Timeout
         leftShooterMotor.config_kF(0, 1023.0/21650, 10);
-        leftShooterMotor.config_kP(0, 10, 10);
-        leftShooterMotor.config_kP(0, 0, 10);
-        leftShooterMotor.config_kP(0, 0, 10);
+        leftShooterMotor.config_kP(0, 0.1, 10);
+        leftShooterMotor.config_kI(0, 0, 10);
+        leftShooterMotor.config_kD(0, 0, 10);
 
         rightShooterMotor.setInverted(true);
         hoodMotor.setInverted(true);
@@ -123,7 +123,8 @@ public class ShooterSubsystem extends SubsystemBase {
         timer.start();
         timer.reset();
 
-        SmartDashboard.putNumber("Gamepad Trigger Value", gamepad.getRightTriggerAxis());//(gamepad.getRightTriggerAxis() < 0.1 ? 0 : 1));
+        SmartDashboard.putNumber("Hood Setpoint", 0);
+        SmartDashboard.putNumber("Shooter RPM Setpoint", 0);
 
     }
 
@@ -131,13 +132,18 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
 
         SmartDashboard.putNumber("hood position revolutions", getHoodPositionRevolutions());
-        SmartDashboard.putNumber("shooter RPM", getFlywheelVelocityRadPerSec());
+        SmartDashboard.putNumber("shooter RPM", Units.radiansPerSecondToRotationsPerMinute(getFlywheelVelocityRadPerSec()));
 
         SmartDashboard.putNumber("speed", 0);
         SmartDashboard.putNumber("position", 0);
 
-
         if (!(Math.abs(desiredSpeed - getFlywheelVelocityRadPerSec()) < shooterTolerance)) timer.reset();
+
+        double hoodSet = SmartDashboard.getNumber("Hood Setpoint", 0);
+        double shooterSet = SmartDashboard.getNumber("Shooter RPM Setpoint", 0);
+        hoodSetDesiredClosedStateRevolutions(hoodSet >= 5 ? 5 : hoodSet);
+        if (shooterSet != 0)
+            runShooterVelocityController(shooterSet >= 6000 ? 6000 : shooterSet);
 
     }    
 
