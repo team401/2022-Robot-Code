@@ -51,6 +51,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final SparkMaxPIDController hoodController = hoodMotor.getPIDController(); //can use integrated REV
 
+    private final double desiredRPM = 0;
+
     //**NEED TO CHANGE**
     //PID Values for Hood
     private double hoodkP = 0.1;
@@ -61,16 +63,9 @@ public class ShooterSubsystem extends SubsystemBase {
     private double desiredSpeed;
     private double hoodDesired;
 
-    private final XboxController gamepad;
-
     private Timer timer = new Timer();
     
-    //TODO
-    //zero the turret
-    //set tolerance
-    public ShooterSubsystem(XboxController pad) {
-
-        gamepad = pad;
+    public ShooterSubsystem() {
 
         rightShooterMotor.configFactoryDefault();
         leftShooterMotor.configFactoryDefault();
@@ -126,6 +121,8 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Hood Setpoint", 0);
         SmartDashboard.putNumber("Shooter RPM Setpoint", 0);
 
+        // 2400 RPM 1 Hood
+
     }
 
     @Override 
@@ -142,8 +139,7 @@ public class ShooterSubsystem extends SubsystemBase {
         double hoodSet = SmartDashboard.getNumber("Hood Setpoint", 0);
         double shooterSet = SmartDashboard.getNumber("Shooter RPM Setpoint", 0);
         hoodSetDesiredClosedStateRevolutions(hoodSet >= 5 ? 5 : hoodSet);
-        if (shooterSet != 0)
-            runShooterVelocityController(shooterSet >= 6000 ? 6000 : shooterSet);
+        runShooterVelocityController(shooterSet >= 6000 ? 6000 : shooterSet);
 
     }    
 
@@ -272,8 +268,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
         double output = desiredRPM * SuperstructureConstants.shooterMotorRPMConversionFactor;
         leftShooterMotor.set(TalonFXControlMode.Velocity, output);
-        kickerMotor.set(-1);
-        SmartDashboard.putNumber("Shooter output", output);
+        if (desiredRPM != 0)
+            kickerMotor.set(-1);
+        else
+            kickerMotor.set(0);
 
     }
 

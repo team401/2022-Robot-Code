@@ -41,7 +41,7 @@ public class RobotContainer {
   private final RotationArmSubsystem rotationArmSubsystem = new RotationArmSubsystem();
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final LimelightSubsystem limelightSubsystem = new LimelightSubsystem();
-  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem(gamepad);
+  private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final IndexingSubsystem indexingSubsystem = new IndexingSubsystem();
 
