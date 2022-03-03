@@ -11,14 +11,14 @@ public class PrepareToShoot extends CommandBase {
     private final ShooterSubsystem shooterSubsystem;
     private final LimelightSubsystem limelightSubsystem;
 
-    private double defaultRPM;
+    private double desiredRPM;
 
-    public PrepareToShoot(ShooterSubsystem shooter, LimelightSubsystem limelight, double defaultSpeedRPM) {
+    public PrepareToShoot(ShooterSubsystem shooter, LimelightSubsystem limelight, double desiredSpeedRPM) {
 
         shooterSubsystem = shooter;
         limelightSubsystem = limelight;
 
-        defaultRPM = defaultSpeedRPM;
+        desiredRPM = desiredSpeedRPM;
 
         SmartDashboard.putNumber("Hood Positions Revolutions", 0);
         SmartDashboard.putNumber("RPM", 0);
@@ -34,8 +34,11 @@ public class PrepareToShoot extends CommandBase {
         SmartDashboard.getNumber("Hood Revolution", 0);
         SmartDashboard.getNumber("RPM", 0);
 
+        shooterSubsystem.runShooterVelocityController(desiredRPM);
+        shooterSubsystem.hoodSetDesiredClosedStateRevolutions(1);
 
-        if (limelightSubsystem.hasValidTarget()) {
+
+        /*if (limelightSubsystem.hasValidTarget()) {
             double limelightVerticalOffset = limelightSubsystem.getY();
 
             double desiredHoodPosition = 0; //regression goes here 
@@ -47,7 +50,7 @@ public class PrepareToShoot extends CommandBase {
 
             shooterSubsystem.runShooterVelocityController(defaultRPM);
 
-        }
+        }*/
 
     }
 

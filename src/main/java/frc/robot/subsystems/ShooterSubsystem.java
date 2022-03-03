@@ -136,10 +136,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
         if (!(Math.abs(desiredSpeed - getFlywheelVelocityRadPerSec()) < shooterTolerance)) timer.reset();
 
-        double hoodSet = SmartDashboard.getNumber("Hood Setpoint", 0);
+        /*double hoodSet = SmartDashboard.getNumber("Hood Setpoint", 0);
         double shooterSet = SmartDashboard.getNumber("Shooter RPM Setpoint", 0);
         hoodSetDesiredClosedStateRevolutions(hoodSet >= 5 ? 5 : hoodSet);
-        runShooterVelocityController(shooterSet >= 6000 ? 6000 : shooterSet);
+        runShooterVelocityController(shooterSet >= 6000 ? 6000 : shooterSet);*/
 
     }    
 

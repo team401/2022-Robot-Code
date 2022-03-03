@@ -110,7 +110,7 @@ public class RobotContainer {
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
 
     new JoystickButton(gamepad, Button.kRightBumper.value)
-      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 4000));
+      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 2400));
     
     new JoystickButton(gamepad, Button.kA.value)
       .whenHeld(new Shoot(indexingSubsystem));
