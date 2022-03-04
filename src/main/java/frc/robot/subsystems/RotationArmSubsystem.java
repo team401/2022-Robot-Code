@@ -116,7 +116,6 @@ public class RotationArmSubsystem extends SubsystemBase {
         goalLeftPosition = desiredRadians;
         double output = leftController.calculate(getLeftEncoderValue(), desiredRadians);
         leftMotor.set(ControlMode.PercentOutput, output);
-        SmartDashboard.putNumber("Left Rotation Output", output);
 
     }
 
@@ -125,7 +124,6 @@ public class RotationArmSubsystem extends SubsystemBase {
         goalRightPosition = desiredRadians;
         double output = rightController.calculate(getRightEncoderValue(), desiredRadians);
         rightMotor.set(ControlMode.PercentOutput, output);
-        SmartDashboard.putNumber("Right Rotation Output", output);
 
     }
 

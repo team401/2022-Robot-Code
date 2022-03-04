@@ -106,13 +106,7 @@ public class RobotContainer {
         Mode.Intaking)
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
 
-    /*new JoystickButton(gamepad, Button.kY.value)
-      .whenPressed(new InstantCommand(() -> rotationArmSubsystem.setRightPercent(0.35))
-      .alongWith(new InstantCommand(() -> rotationArmSubsystem.setLeftPercent(0.35))))
-      .whenReleased(new InstantCommand(() -> rotationArmSubsystem.setRightPercent(0))
-      .alongWith(new InstantCommand(() -> rotationArmSubsystem.setLeftPercent(0))));*/
-
-    new JoystickButton(gamepad, Button.kX.value)
+    new JoystickButton(gamepad, Button.kLeftBumper.value)
       .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.intakeArmPosition, 
         Mode.Intaking)
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)))
@@ -122,7 +116,10 @@ public class RobotContainer {
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
 
     new JoystickButton(gamepad, Button.kRightBumper.value)
-      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 2400));//shooterSubsystem.getDesiredShooterRPM()));
+      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 2400, 1));
+
+    new JoystickButton(gamepad, Button.kStart.value)
+      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, shooterSubsystem.getDesiredShooterRPM(), shooterSubsystem.getDesiredHoodPosition()));
     
     new JoystickButton(gamepad, Button.kA.value)
       .whenHeld(new Shoot(indexingSubsystem));
@@ -131,9 +128,9 @@ public class RobotContainer {
       .whenPressed(new CalibrateTelescope(telescopeArmSubsystem)
       .alongWith(new HoodCalibrate(shooterSubsystem)));
 
-    new JoystickButton(gamepad, Button.kStart.value)
+    /*new JoystickButton(gamepad, Button.kStart.value)
       .whenPressed(new ClimbSequence(telescopeArmSubsystem, rotationArmSubsystem)
-      .alongWith(new RunCommand(() -> turretSubsystem.runTurretPercent(0), turretSubsystem)));
+      .alongWith(new RunCommand(() -> turretSubsystem.runTurretPercent(0), turretSubsystem)));*/
     
   }
 

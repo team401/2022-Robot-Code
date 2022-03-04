@@ -32,8 +32,6 @@ public class HoodCalibrate extends CommandBase {
     @Override
     public void execute() {
 
-        SmartDashboard.putNumber("Hood Velocity", shooterSubsystem.getHoodVelocity());
-
         if (Math.abs(shooterSubsystem.getHoodVelocity()) > 0.01) {
 
             hoodTimer.reset();

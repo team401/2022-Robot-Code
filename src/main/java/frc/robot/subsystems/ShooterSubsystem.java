@@ -52,6 +52,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private final SparkMaxPIDController hoodController = hoodMotor.getPIDController(); //can use integrated REV
 
     private double desiredRPM = 0;
+    private double desiredHood = 0;
 
     //**NEED TO CHANGE**
     //PID Values for Hood
@@ -120,21 +121,16 @@ public class ShooterSubsystem extends SubsystemBase {
         timer.start();
         timer.reset();
 
-        //SmartDashboard.putNumber("Hood Setpoint", 0);
-        SmartDashboard.putNumber("Shooter RPM Setpoint", 2400);
-
-        // 2400 RPM 1 Hood
+        SmartDashboard.putNumber("Shooter RPM Setpoint", 1000);
+        SmartDashboard.putNumber("Hood Setpoint", 3);
 
     }
 
     @Override 
     public void periodic() {
 
-        SmartDashboard.putNumber("hood position revolutions", getHoodPositionRevolutions());
-        SmartDashboard.putNumber("shooter RPM", Units.radiansPerSecondToRotationsPerMinute(getFlywheelVelocityRadPerSec()));
-
-        SmartDashboard.putNumber("speed", 0);
-        SmartDashboard.putNumber("position", 0);
+        SmartDashboard.putNumber("Hood Position", getHoodPositionRevolutions());
+        SmartDashboard.putNumber("Shooter RPM", Units.radiansPerSecondToRotationsPerMinute(getFlywheelVelocityRadPerSec()));
 
         if (!(Math.abs(desiredSpeed - getFlywheelVelocityRadPerSec()) < shooterTolerance)) timer.reset();
 
@@ -143,7 +139,8 @@ public class ShooterSubsystem extends SubsystemBase {
         hoodSetDesiredClosedStateRevolutions(hoodSet >= 5 ? 5 : hoodSet);
         runShooterVelocityController(shooterSet >= 6000 ? 6000 : shooterSet);*/
 
-        desiredRPM = SmartDashboard.getNumber("Shooter RPM Setpoint", 0);
+        desiredRPM = SmartDashboard.getNumber("Shooter RPM Setpoint", 1000);
+        desiredHood = SmartDashboard.getNumber("Hood Setpoint", 3);
 
     }    
 
@@ -289,6 +286,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double getDesiredShooterRPM() {
         return desiredRPM;
+    }
+
+    public double getDesiredHoodPosition() {
+        return desiredHood;
     }
 
 }

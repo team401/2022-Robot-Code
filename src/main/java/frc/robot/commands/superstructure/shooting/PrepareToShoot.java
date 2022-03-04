@@ -12,17 +12,15 @@ public class PrepareToShoot extends CommandBase {
     private final LimelightSubsystem limelightSubsystem;
 
     private double desiredRPM;
+    private double desiredHood;
 
-    public PrepareToShoot(ShooterSubsystem shooter, LimelightSubsystem limelight, double desiredSpeedRPM) {
+    public PrepareToShoot(ShooterSubsystem shooter, LimelightSubsystem limelight, double desiredSpeedRPM, double desiredHoodPosition) {
 
         shooterSubsystem = shooter;
         limelightSubsystem = limelight;
 
         desiredRPM = desiredSpeedRPM;
-
-        SmartDashboard.putNumber("Hood Positions Revolutions", 0);
-        SmartDashboard.putNumber("RPM", 0);
-        
+        desiredHood = desiredHoodPosition;
 
         addRequirements(shooter, limelight);
 
@@ -31,11 +29,8 @@ public class PrepareToShoot extends CommandBase {
     @Override
     public void execute() {
 
-        SmartDashboard.getNumber("Hood Revolution", 0);
-        SmartDashboard.getNumber("RPM", 0);
-
         shooterSubsystem.runShooterVelocityController(desiredRPM);
-        shooterSubsystem.hoodSetDesiredClosedStateRevolutions(1);
+        shooterSubsystem.hoodSetDesiredClosedStateRevolutions(desiredHood);
 
 
         /*if (limelightSubsystem.hasValidTarget()) {
