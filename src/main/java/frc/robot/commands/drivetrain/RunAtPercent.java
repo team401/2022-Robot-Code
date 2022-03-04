@@ -22,10 +22,10 @@ public class RunAtPercent extends CommandBase {
     public void execute() {
 
         //runs both the drive motors and rotation motors
-        drive.runTestatPercentSpin(0.2);
-        drive.runTestatPercent(0.2);
-
+        //drive.runTestatPercentSpin(0.2);
+        drive.runTestatPercent(0.4);
     }
+    
     
     @Override
     public void end(boolean in) {

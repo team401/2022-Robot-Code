@@ -8,6 +8,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
@@ -102,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase{
         odometry.update(getHeading(), getModuleStates());
 
         //puts the absolute value of the CanCoder
-       /* SmartDashboard.putNumber("frontLeft Position", 
+       SmartDashboard.putNumber("frontLeft Position", 
             frontLeft.getCanCoderAngle().getDegrees());
         SmartDashboard.putNumber("frontRight Position", 
             frontRight.getCanCoderAngle().getDegrees());
@@ -114,7 +116,7 @@ public class DriveSubsystem extends SubsystemBase{
         //some useful prints that will be added to SmartDashboard for premptive debugging
         SmartDashboard.putNumber("Heading", getHeading().getDegrees());
         SmartDashboard.putNumber("Odometry x", odometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Odometry y", odometry.getPoseMeters().getY());*/
+        SmartDashboard.putNumber("Odometry y", odometry.getPoseMeters().getY());
         
 
     }

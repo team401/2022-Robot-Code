@@ -15,12 +15,12 @@ public class UpdateRotationArm extends CommandBase {
     public UpdateRotationArm(RotationArmSubsystem climb, double desired, Mode mode) {
 
         rotation = climb;
-        if (mode == Mode.Climbing) {
+        /*if (mode == Mode.Climbing) {
             rotation.setPIDConstraints(new TrapezoidProfile.Constraints(.5, .5));
         }
         else if (mode == Mode.Intaking) {
             rotation.setPIDConstraints(new TrapezoidProfile.Constraints(10.0, 15.0));
-        }
+        }*/
         desiredPositionRadians = desired;
 
         addRequirements(rotation);

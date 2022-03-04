@@ -53,10 +53,5 @@ public class PrepareToShoot extends CommandBase {
         }*/
 
     }
-
-    @Override
-    public void end(boolean isInterrupted) {
-        shooterSubsystem.stopShooter();
-    }
     
 }

@@ -127,7 +127,7 @@ public class Constants {
         public static final double maxDriveSpeed = Units.feetToMeters(10.0); //meters per a second
         public static final double maxRotationSpeed = 1.0; //radians per second
         public static final double maxRotationAcceleration = 1.0; //radians per second per second
-        public static final double teleopTurnRateDegPerSec = 360.0; //degrees per second
+        public static final double teleopTurnRateDegPerSec = 360; //degrees per second
         
         /*
         creating the kinematics object, which will take in the movements we want in terms of dx, dy, and
@@ -242,7 +242,7 @@ public class Constants {
         public static final double defaultArmPosition = -0.1;
 
         // measured offsets
-        public static final double leftRotationOffset = -1.3545;
+        public static final double leftRotationOffset = -1.18;
         public static final double rightRotationOffset = 1.01;
 
         // TODO: Update values

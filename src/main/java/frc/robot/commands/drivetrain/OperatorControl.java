@@ -67,16 +67,16 @@ public class OperatorControl extends CommandBase {
          */
 
         double fwdX = forwardX.getAsDouble();
-        fwdX = deadbandInputs(fwdX) * DriveConstants.maxDriveSpeed * 0.33;
+        fwdX = deadbandInputs(fwdX) * DriveConstants.maxDriveSpeed / 2;
         //fwdX = Math.copySign(fwdX * fwdX, fwdX); //technically optional?
 
         double fwdY = forwardY.getAsDouble();        
-        fwdY = deadbandInputs(fwdY) * Units.feetToMeters(DriveConstants.maxDriveSpeed) * 0.33;
+        fwdY = deadbandInputs(fwdY) * Units.feetToMeters(DriveConstants.maxDriveSpeed) / 2;
         //fwdY = Math.copySign(fwdY * fwdY, fwdY); //technically optional?
 
         double rot = rotation.getAsDouble();
         // Temporary *0.33 because robot is spinning at 3 revolutions per second instead of 1
-        rot = deadbandInputs(rot) * Units.degreesToRadians(DriveConstants.teleopTurnRateDegPerSec) * 0.33;
+        rot = deadbandInputs(rot) * Units.degreesToRadians(DriveConstants.teleopTurnRateDegPerSec) / 3;
         //rot = Math.copySign(rot * rot, rot);
 
         drive.drive(

@@ -34,57 +34,11 @@ public class AutoTrajectories {
         )
         .setKinematics(DriveConstants.kinematics);
 
-    
-    //when looking from the the y-axis (blue driver station), it is the leftmost blue pentagon
-    //need to figure out how much to go backwards
-    public static Trajectory LeftBlue = 
+    public static Trajectory autoTrajectory = 
         TrajectoryGenerator.generateTrajectory(
             List.of(
-                //new Pose2d(Units.inchesToMeters(253), Units.inchesToMeters(189), new Rotation2d(180))
-                new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(180)),
-                new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(-40), new Rotation2d(180))
-            ), 
-            config
-    );
-
-    //when looking from the the y-axis (blue driver station), it is the rightmost blue pentagon
-    //need to figure out how much to go backwards
-    public static Trajectory RightBlue = 
-        TrajectoryGenerator.generateTrajectory(
-            List.of(
-                //new Pose2d(Units.inchesToMeters(296.698), Units.inchesToMeters(90.876), new Rotation2d(180)),
-                new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(180)),
-                new Pose2d(Units.inchesToMeters(-40), Units.inchesToMeters(0), new Rotation2d(180))
-            ), 
-            config
-    );
-
-    /*
-    when looking from the the y-axis (blue driver station), it is the lefttmost right pentagon 
-    (behind strucutre)
-    need to figure out how much to go backwards
-    */
-    public static Trajectory LeftRed =
-        TrajectoryGenerator.generateTrajectory(
-            List.of(
-                //new Pose2d(Units.inchesToMeters(351.302), Units.inchesToMeters(233.124), new Rotation2d(0)),
-                new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(180)),
-                new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(-40), new Rotation2d(180)) 
-            ), 
-            config
-    );
-
-    /*
-    when looking from the the y-axis (blue driver station), it is the righttmost right pentagon 
-    (behind strucutre)
-    need to figure out how much to go backwards
-    */
-    public static Trajectory RightRed =
-        TrajectoryGenerator.generateTrajectory(
-            List.of(
-                //new Pose2d(Units.inchesToMeters(395.124), Units.inchesToMeters(134.698), new Rotation2d(0))
-                new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(180)),
-                new Pose2d(Units.inchesToMeters(-40), Units.inchesToMeters(0), new Rotation2d(180))
+                new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(0)),
+                new Pose2d(Units.inchesToMeters(-55), Units.inchesToMeters(0), new Rotation2d(0))
             ), 
             config
     );

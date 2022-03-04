@@ -7,12 +7,14 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.InputDevices;
+import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.commands.climber.CalibrateTelescope;
 import frc.robot.commands.climber.ClimbSequence;
 import frc.robot.commands.climber.DefaultRotationArm;
 import frc.robot.commands.climber.HoldPositionRotationArms;
 import frc.robot.commands.climber.UpdateRotationArm;
 import frc.robot.commands.climber.UpdateTelescopeArms;
+import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.OperatorControl;
 import frc.robot.commands.superstructure.ballHandling.Intake;
 import frc.robot.commands.superstructure.ballHandling.ReverseIndexing;
@@ -57,7 +59,11 @@ public class RobotContainer {
       )
     );
 
-    rotationArmSubsystem.setDefaultCommand(new DefaultRotationArm(rotationArmSubsystem));
+    shooterSubsystem.setDefaultCommand(
+      new RunCommand(() -> shooterSubsystem.runShooterPercent(0), shooterSubsystem)
+    );
+
+    //rotationArmSubsystem.setDefaultCommand(new DefaultRotationArm(rotationArmSubsystem));
 
     //shooterSubsystem.setDefaultCommand(new Tracking(limelightSubsystem, turretSubsystem));
 
@@ -100,6 +106,12 @@ public class RobotContainer {
         Mode.Intaking)
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
 
+    /*new JoystickButton(gamepad, Button.kY.value)
+      .whenPressed(new InstantCommand(() -> rotationArmSubsystem.setRightPercent(0.35))
+      .alongWith(new InstantCommand(() -> rotationArmSubsystem.setLeftPercent(0.35))))
+      .whenReleased(new InstantCommand(() -> rotationArmSubsystem.setRightPercent(0))
+      .alongWith(new InstantCommand(() -> rotationArmSubsystem.setLeftPercent(0))));*/
+
     new JoystickButton(gamepad, Button.kX.value)
       .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.intakeArmPosition, 
         Mode.Intaking)
@@ -110,7 +122,7 @@ public class RobotContainer {
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
 
     new JoystickButton(gamepad, Button.kRightBumper.value)
-      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 2400));
+      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 2400));//shooterSubsystem.getDesiredShooterRPM()));
     
     new JoystickButton(gamepad, Button.kA.value)
       .whenHeld(new Shoot(indexingSubsystem));
@@ -127,8 +139,10 @@ public class RobotContainer {
 
   // Prepares the robot for autonomous and sends the command we should use
   public Command getAutonomousCommand() {
+
+    drive.resetIMU();
    
-    return null;
+    return new AutoRoutines(drive, intakeSubsystem, indexingSubsystem, limelightSubsystem, shooterSubsystem);
 
   }
 }

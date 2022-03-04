@@ -38,18 +38,16 @@ public class SwerveModule extends SubsystemBase {
         //initializing motors
         driveMotor = new WPI_TalonFX(driveMotorID);
         rotationMotor = new WPI_TalonFX(rotationMotorID);
-
+        canCoder = new CANCoder(cancoderID);
+        
+        
         //resets the rotation motor to the default settings
         rotationMotor.configFactoryDefault();
-
+        canCoder.configFactoryDefault();
+        
         //initializing CANCoder  to be from 0 to 360 and set up Offset Rotation2d for the rotation motor
-        canCoder = new CANCoder(cancoderID);
         canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360); //maybe don't need this line?
         offset = new Rotation2d(measuredOffsetRadians);
-
-        //resets rotation motor and cancoder to default settings
-        rotationMotor.configFactoryDefault();
-        canCoder.configFactoryDefault();
 
         //setting idle modes of the two motors
         driveMotor.setNeutralMode(NeutralMode.Brake);
