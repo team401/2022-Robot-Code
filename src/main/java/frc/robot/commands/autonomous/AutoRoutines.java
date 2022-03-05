@@ -9,6 +9,7 @@ import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.RunAtPercent;
 import frc.robot.commands.superstructure.shooting.PrepareToShoot;
 import frc.robot.commands.superstructure.shooting.Shoot;
+import frc.robot.commands.superstructure.shooting.HoodCalibrate;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IndexingSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -28,7 +29,8 @@ public class AutoRoutines extends SequentialCommandGroup {
         drive.resetPose(AutoTrajectories.autoTrajectory.getInitialPose());
 
         addCommands(
-            new PrepareToShoot(shooter, limelight, 2400).withTimeout(3),
+            new HoodCalibrate(shooter).withTimeout(2),
+            new PrepareToShoot(shooter, limelight, 2400, 1).withTimeout(3),
             new Shoot(indexer).withTimeout(3),
             new RunAtPercent(drive).withTimeout(2.5)
         );
