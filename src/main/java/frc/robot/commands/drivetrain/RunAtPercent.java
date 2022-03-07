@@ -24,6 +24,7 @@ public class RunAtPercent extends CommandBase {
         //runs both the drive motors and rotation motors
         //drive.runTestatPercentSpin(0.2);
         drive.runTestatPercent(0.4);
+        drive.runTestatPercentSpin(0.0);
     }
     
     

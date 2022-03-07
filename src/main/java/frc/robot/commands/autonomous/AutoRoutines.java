@@ -5,6 +5,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoTrajectories;
+import frc.robot.commands.drivetrain.DriveControl;
 import frc.robot.commands.drivetrain.FollowTrajectory;
 import frc.robot.commands.drivetrain.RunAtPercent;
 import frc.robot.commands.superstructure.shooting.PrepareToShoot;
@@ -31,8 +32,9 @@ public class AutoRoutines extends SequentialCommandGroup {
         addCommands(
             new HoodCalibrate(shooter).withTimeout(2),
             new PrepareToShoot(shooter, limelight, 2400, 1).withTimeout(3),
-            new Shoot(indexer).withTimeout(3),
-            new RunAtPercent(drive).withTimeout(2.5)
+            new Shoot(indexer).withTimeout(3)
+            //new RunAtPercent(drive).withTimeout(2.5)  
+            //new DriveControl(drive).withTimeout(1)
         );
 
     }

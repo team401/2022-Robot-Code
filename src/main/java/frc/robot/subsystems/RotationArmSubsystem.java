@@ -10,6 +10,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANDevices;
@@ -32,10 +33,10 @@ public class RotationArmSubsystem extends SubsystemBase {
     private final Encoder quadEncoder = new Encoder(4, 5);
 
     //PID Controller Constraints 
-    private double leftMaxVel = 10.0;
-    private double leftMaxAccel = 15.0;
-    private double rightMaxVel = 10.0;
-    private double rightMaxAccel = 15.0;
+    private double leftMaxVel = 10.0 / 2;
+    private double leftMaxAccel = 15.0 / 2.5;
+    private double rightMaxVel = 10.0 / 2;
+    private double rightMaxAccel = 15.0 / 2.5;
 
     //PID Controllers
     private final ProfiledPIDController leftController = new ProfiledPIDController(3.5, 0, 0.1, 
@@ -52,9 +53,11 @@ public class RotationArmSubsystem extends SubsystemBase {
 
     private double tolerance = Units.degreesToRadians(1.5);
 
+    private boolean killed = false;
+
     // Boundaries
     // TODO: Change values
-    private double frontBoundary = Units.degreesToRadians(55.0);
+    private double frontBoundary = Units.degreesToRadians(58.0);
     private double backBoundary = -Units.degreesToRadians(15.0);
 
     public RotationArmSubsystem() {
@@ -71,7 +74,7 @@ public class RotationArmSubsystem extends SubsystemBase {
         rightEncoder.setDistancePerRotation(2 * Math.PI);
 
         leftMotor.setInverted(false);
-        rightMotor.setInverted(false);
+        rightMotor.setInverted(true);
 
     }
 
@@ -115,7 +118,10 @@ public class RotationArmSubsystem extends SubsystemBase {
 
         goalLeftPosition = desiredRadians;
         double output = leftController.calculate(getLeftEncoderValue(), desiredRadians);
-        leftMotor.set(ControlMode.PercentOutput, output);
+        if (!killed)
+            leftMotor.set(ControlMode.PercentOutput, output);
+        else
+            leftMotor.set(ControlMode.PercentOutput, 0);
 
     }
 
@@ -123,7 +129,10 @@ public class RotationArmSubsystem extends SubsystemBase {
 
         goalRightPosition = desiredRadians;
         double output = rightController.calculate(getRightEncoderValue(), desiredRadians);
-        rightMotor.set(ControlMode.PercentOutput, output);
+        if (!killed)
+            rightMotor.set(ControlMode.PercentOutput, output);
+        else
+            rightMotor.set(ControlMode.PercentOutput, 0);
 
     }
 
@@ -142,6 +151,14 @@ public class RotationArmSubsystem extends SubsystemBase {
     public void resetControllers() {
         leftController.reset(getLeftEncoderValue());
         rightController.reset(getRightEncoderValue());
+    }
+
+    public void kill() {
+       rightMotor.setSafetyEnabled(true);
+       leftMotor.setSafetyEnabled(true);
+       leftMotor.stopMotor();
+       rightMotor.stopMotor();
+       killed = true;
     }
 
 }

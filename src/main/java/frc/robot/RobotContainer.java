@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.time.Instant;
+
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -106,9 +108,10 @@ public class RobotContainer {
         Mode.Intaking)
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)));
 
-    new JoystickButton(gamepad, Button.kLeftBumper.value)
+    new JoystickButton(gamepad, Button.kB.value)
       .whenPressed(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.intakeArmPosition, 
         Mode.Intaking)
+
       .andThen(new HoldPositionRotationArms(rotationArmSubsystem)))
       .whenHeld(new ReverseIndexing(indexingSubsystem, intakeSubsystem))
       .whenReleased(new UpdateRotationArm(rotationArmSubsystem, ClimberConstants.defaultArmPosition, 
@@ -118,8 +121,11 @@ public class RobotContainer {
     new JoystickButton(gamepad, Button.kRightBumper.value)
       .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, 2400, 1));
 
+    new JoystickButton(gamepad, Button.kLeftBumper.value)
+      .whenPressed(new InstantCommand(() -> rotationArmSubsystem.kill()));
+
     new JoystickButton(gamepad, Button.kStart.value)
-      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, shooterSubsystem.getDesiredShooterRPM(), shooterSubsystem.getDesiredHoodPosition()));
+      .whenHeld(new PrepareToShoot(shooterSubsystem, limelightSubsystem, SmartDashboard.getNumber("Shooter RPM Setpoint", 1000), SmartDashboard.getNumber("Hood Setpoint", 3)));
     
     new JoystickButton(gamepad, Button.kA.value)
       .whenHeld(new Shoot(indexingSubsystem));
@@ -132,6 +138,7 @@ public class RobotContainer {
       .whenPressed(new ClimbSequence(telescopeArmSubsystem, rotationArmSubsystem)
       .alongWith(new RunCommand(() -> turretSubsystem.runTurretPercent(0), turretSubsystem)));*/
     
+      
   }
 
   // Prepares the robot for autonomous and sends the command we should use

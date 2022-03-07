@@ -65,6 +65,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private double hoodDesired;
 
     private Timer timer = new Timer();
+
     
     public ShooterSubsystem() {
 
@@ -129,8 +130,8 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override 
     public void periodic() {
 
-        SmartDashboard.putNumber("Hood Position", getHoodPositionRevolutions());
-        SmartDashboard.putNumber("Shooter RPM", Units.radiansPerSecondToRotationsPerMinute(getFlywheelVelocityRadPerSec()));
+        //SmartDashboard.putNumber("Hood Position", getHoodPositionRevolutions());
+        //SmartDashboard.putNumber("Shooter RPM", Units.radiansPerSecondToRotationsPerMinute(getFlywheelVelocityRadPerSec()));
 
         if (!(Math.abs(desiredSpeed - getFlywheelVelocityRadPerSec()) < shooterTolerance)) timer.reset();
 
@@ -139,8 +140,8 @@ public class ShooterSubsystem extends SubsystemBase {
         hoodSetDesiredClosedStateRevolutions(hoodSet >= 5 ? 5 : hoodSet);
         runShooterVelocityController(shooterSet >= 6000 ? 6000 : shooterSet);*/
 
-        desiredRPM = SmartDashboard.getNumber("Shooter RPM Setpoint", 1000);
-        desiredHood = SmartDashboard.getNumber("Hood Setpoint", 3);
+        //desiredRPM = SmartDashboard.getNumber("Shooter RPM Setpoint", 1000);
+        //desiredHood = SmartDashboard.getNumber("Hood Setpoint", 3);
 
     }    
 
