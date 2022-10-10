@@ -224,8 +224,9 @@ public class RobotContainer {
         new Trigger(() -> (gamepad.getLeftTriggerAxis() > 0.3))
                 .whenActive(new InstantCommand(() -> rotationArms.home(), rotationArms));
 
-            new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
-                .whenActive(new InstantCommand(() -> telescopes.home(), telescopes));
+        // Telescope Home
+        new JoystickButton(gamepad, Button.kBack.value)
+            .whenActive(new InstantCommand(() -> telescopes.home(), telescopes));
         
         // Kill Turret
         new JoystickButton(leftStick, 9)
