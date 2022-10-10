@@ -183,12 +183,12 @@ public class RobotContainer {
                 .whenReleased(rotationArms.moveToStow());
         
         // Reverse Intake
-        new JoystickButton(gamepad, Button.kBack.value)
-                .whenPressed(rotationArms.moveToIntake()
+        new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
+                .whenActive(rotationArms.moveToIntake()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(-0.5))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
-                .whenReleased(rotationArms.moveToStow()
+                .whenInactive(rotationArms.moveToStow()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
