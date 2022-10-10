@@ -139,8 +139,8 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
 
-        // photonvision.local:5800 
-        // intake cam http://wpilibpi.local:1181/stream.mjpg
+        // intake cam http://10.4.1.217:1181
+        // intake cam video http://10.4.1.217:1181/stream.mjpg
 
         /*CLIMBING BUTTONS*/ 
 
@@ -223,6 +223,9 @@ public class RobotContainer {
         // Rotation Home
         new Trigger(() -> (gamepad.getLeftTriggerAxis() > 0.3))
                 .whenActive(new InstantCommand(() -> rotationArms.home(), rotationArms));
+
+            new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
+                .whenActive(new InstantCommand(() -> telescopes.home(), telescopes));
         
         // Kill Turret
         new JoystickButton(leftStick, 9)

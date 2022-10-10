@@ -48,7 +48,7 @@ public class Shooter extends SubsystemBase {
     private final double flywheelToleranceRadPerS = Units.rotationsPerMinuteToRadiansPerSecond(150);
     private final double hoodToleranceRad = Units.rotationsToRadians(0.25);
     
-    private double rpmOffset = 0;
+    private double rpmOffset = 60;
     
     private static boolean atGoal = false;
     

@@ -209,6 +209,9 @@ public class Telescopes extends SubsystemBase {
         SmartDashboard.putNumber("Left Pos M", leftEncoderPositionM);
         SmartDashboard.putNumber("Desired Right Pos M", desiredPositionM);
 
+        SmartDashboard.putNumber("Left Draw", leftMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Right Draw", rightMotor.getOutputCurrent());
+
     }
 
     public void setLeftEncoder(double positionM) {
@@ -290,6 +293,13 @@ public class Telescopes extends SubsystemBase {
 
     public void setAtGoalOverride(boolean override) {
         atGoalOverride = override;
+    }
+
+    public void home() {
+        leftHomed = false;
+        rightHomed = false;
+        leftHomeTimer.reset();
+        rightHomeTimer.reset();
     }
 
     // Commands
