@@ -9,6 +9,8 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.RobotState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
@@ -20,18 +22,20 @@ public class ShootWhileMoving extends CommandBase {
   private final DoubleSupplier yPercent;
   private final DoubleSupplier omegaPercent;
   private final boolean fieldRelative;
+  private final XboxController gamepad;
 
   private final AxisProcessor xProcessor = new AxisProcessor(false);
   private final AxisProcessor yProcessor = new AxisProcessor(false);
   private final AxisProcessor omegaProcessor = new AxisProcessor(true);
 
   /** Creates a new DriveWithJoysticks. */
-  public ShootWhileMoving(Drive drive, DoubleSupplier xPercent, DoubleSupplier yPercent, DoubleSupplier omegaPercent, boolean fieldRelative) {
+  public ShootWhileMoving(Drive drive, DoubleSupplier xPercent, DoubleSupplier yPercent, DoubleSupplier omegaPercent, boolean fieldRelative, XboxController gamepad) {
     this.drive = drive;
     this.xPercent = xPercent;
     this.yPercent = yPercent;
     this.omegaPercent = omegaPercent;
     this.fieldRelative = fieldRelative;
+    this.gamepad = gamepad;
 
     addRequirements(drive);
   }
@@ -43,6 +47,8 @@ public class ShootWhileMoving extends CommandBase {
     yProcessor.reset(yPercent.getAsDouble());
     omegaProcessor.reset(omegaPercent.getAsDouble());
     RobotState.getInstance().setLookAhead(true);
+    gamepad.setRumble(RumbleType.kLeftRumble, 1);
+    gamepad.setRumble(RumbleType.kRightRumble, 1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -64,6 +70,8 @@ public class ShootWhileMoving extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     RobotState.getInstance().setLookAhead(false);
+    gamepad.setRumble(RumbleType.kLeftRumble, 0);
+    gamepad.setRumble(RumbleType.kRightRumble, 0);
   }
 
   // Returns true when the command should end.

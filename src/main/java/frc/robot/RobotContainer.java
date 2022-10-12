@@ -258,7 +258,8 @@ public class RobotContainer {
                         () -> -leftStick.getRawAxis(1),
                         () -> -leftStick.getRawAxis(0),
                         () -> -rightStick.getRawAxis(0),
-                        true
+                        true,
+                        gamepad
                 ));
 
         // Rotation Arm Overrides
