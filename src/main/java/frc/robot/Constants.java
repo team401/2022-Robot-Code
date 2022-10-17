@@ -307,7 +307,7 @@ public final class Constants {
         public static final double heightPixels = 720;
         public static final Rotation2d fovHorizontal = Rotation2d.fromDegrees(59.6);
         public static final Rotation2d fovVertical = Rotation2d.fromDegrees(49.7);
-        public static final double cameraHeightM = Units.inchesToMeters(26.517);
+        public static final double cameraHeightM = Units.inchesToMeters(32.767);
         public static final Pose2d turretToCamera = GeomUtil.inchesToMeters(new Pose2d(6.461, 0.0, new Rotation2d()));
 
         public static final TunableNumber targetingLookaheadS = new TunableNumber("Targeting/LookaheadS");
