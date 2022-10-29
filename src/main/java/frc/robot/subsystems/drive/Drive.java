@@ -141,6 +141,10 @@ public class Drive extends SubsystemBase {
         goalModuleStates = states;
     }
 
+    public double getModuleDistances() {
+        return (Math.abs(modules[0].drivePositionRad) + Math.abs(modules[1].drivePositionRad) + Math.abs(modules[2].drivePositionRad) + Math.abs(modules[3].drivePositionRad)) / 4.0;
+    }
+
     /**
      * Sets the raw voltages of the module drive motors. Heading is still set from
      * the angles set in

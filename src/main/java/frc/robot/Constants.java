@@ -86,7 +86,7 @@ public final class Constants {
         public static final double maxSpeedWhileShootingMPerS = Units.feetToMeters(10.0);
         public static final double maxAngularSpeedRadPerS = 2 * Math.PI;
 
-        public static final double wheelRadiusM = Units.inchesToMeters(3.9028) / 2.0;
+        public static final double wheelRadiusM = Units.inchesToMeters(1.99868);
 
         // Measured on 3/9/22 with machinist's square
         // TODO verify these with 1x1 and clamping
@@ -159,7 +159,7 @@ public final class Constants {
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
         public static final double intakePositionRad = Units.degreesToRadians(25);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
-        public static final double rotationLatchRad = Units.degreesToRadians(17);
+        public static final double rotationLatchRad = Units.degreesToRadians(12);
 
         // measured offsets
         public static final double leftRotationOffset = 0.246;
@@ -172,19 +172,19 @@ public final class Constants {
 
         public static final double telescopeOffsetM = 0.13;
 
-        public static final double telescopeMaxPositionM = 1.01;
+        public static final double telescopeMaxPositionM = 0.87;
         public static final double telescopeDefaultPositionM = 0.08;
         public static final double telescopeHomePositionM = 0.05;
-        public static final double telescopePullPositionM = 0;
+        public static final double telescopePullPositionM = 0.02;
         public static final double telescopePopAboveRungM = 0.2;
         public static final double telescopeLatchM = 1.0;
         public static final double telescopeRotationSafePositionM = 0.47;
         public static final double telescopeSwingPositionM = 0.55;
         
-        public static final double telescopeGoalToleranceM = 0.05;
+        public static final double telescopeGoalToleranceM = 0.01;
         
-        public static final double telescopeCruiseVelocityM = 0.5;
-        public static final double telescopeAccelerationM = telescopeCruiseVelocityM * 4;
+        public static final double telescopeCruiseVelocityM = 0.8;
+        public static final double telescopeAccelerationM = 2;
         
         public static final double climberSequencePauseSeconds = 2;
 
@@ -192,7 +192,7 @@ public final class Constants {
         //Tunable PD Numbers
         public static TunableNumber rotationArmKp = new TunableNumber("RotationArm/Kp");
         public static TunableNumber rotationArmKd = new TunableNumber("RotationArm/Kd");
-        public static double telescopeArmKp = 30.0;
+        public static double telescopeArmKp = 200.0;
         public static double telescopeArmKd = 0.1;
 
         public static final double telescopeHomingThresholdMPerS = 0.05;
@@ -225,7 +225,7 @@ public final class Constants {
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> flywheelLookup = new InterpolatingTreeMap<>();
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> hoodLookup = new InterpolatingTreeMap<>();
 
-        public static final SimpleMotorFeedforward flywheelModel = new SimpleMotorFeedforward(0.0539, 0.0190538);
+        public static final SimpleMotorFeedforward flywheelModel = new SimpleMotorFeedforward(0.72858, 0.018862);
         
         public static final double hoodMinRad = 0.27;
         public static final double hoodMaxRad = 0.63;
@@ -248,18 +248,22 @@ public final class Constants {
             hoodDesired.setDefault(hoodMinRad);
 
             // Constraints: shooter should not go below 0 RPM (lol) or above ~3000 RPM
-            flywheelLookup.put(new InterpolatingDouble(1.8), new InterpolatingDouble(2050.0));
-            flywheelLookup.put(new InterpolatingDouble(2.2), new InterpolatingDouble(2125.0));
-            flywheelLookup.put(new InterpolatingDouble(2.8), new InterpolatingDouble(2125.0));
-            flywheelLookup.put(new InterpolatingDouble(3.2), new InterpolatingDouble(2250.0));
-            flywheelLookup.put(new InterpolatingDouble(3.6), new InterpolatingDouble(2400.0));
+            flywheelLookup.put(new InterpolatingDouble(1.6), new InterpolatingDouble(1550.0));
+            flywheelLookup.put(new InterpolatingDouble(2.17), new InterpolatingDouble(1550.0));
+            flywheelLookup.put(new InterpolatingDouble(3.1), new InterpolatingDouble(1700.0));
+            flywheelLookup.put(new InterpolatingDouble(3.9), new InterpolatingDouble(1850.0));
+            flywheelLookup.put(new InterpolatingDouble(4.9), new InterpolatingDouble(2100.0));
+            flywheelLookup.put(new InterpolatingDouble(5.18), new InterpolatingDouble(2200.0));
+            flywheelLookup.put(new InterpolatingDouble(6.05), new InterpolatingDouble(2325.0));
             
             // Constraints: hood should not go below 0.27 or above 0.63
-            hoodLookup.put(new InterpolatingDouble(1.8), new InterpolatingDouble(0.4));
-            hoodLookup.put(new InterpolatingDouble(2.2), new InterpolatingDouble(0.5));
-            hoodLookup.put(new InterpolatingDouble(2.8), new InterpolatingDouble(0.63));
-            hoodLookup.put(new InterpolatingDouble(3.2), new InterpolatingDouble(0.63));
-            hoodLookup.put(new InterpolatingDouble(3.6), new InterpolatingDouble(0.63));
+            hoodLookup.put(new InterpolatingDouble(1.6), new InterpolatingDouble(0.3));
+            hoodLookup.put(new InterpolatingDouble(2.17), new InterpolatingDouble(0.45));
+            hoodLookup.put(new InterpolatingDouble(3.1), new InterpolatingDouble(0.55));
+            hoodLookup.put(new InterpolatingDouble(3.9), new InterpolatingDouble(0.6));
+            hoodLookup.put(new InterpolatingDouble(4.9), new InterpolatingDouble(0.63));
+            hoodLookup.put(new InterpolatingDouble(5.18), new InterpolatingDouble(0.63));
+            hoodLookup.put(new InterpolatingDouble(6.05), new InterpolatingDouble(0.63));
             
         }
 
@@ -279,10 +283,10 @@ public final class Constants {
 
         public static final Pose2d vehicleToTurretFixed = GeomUtil.inchesToMeters(new Pose2d(-5.25, 0.0, Rotation2d.fromDegrees(180)));
 
-        public static final double turretEncoderOffsetRad = -1.0631419667728104+0.059825250727540004+0.15;//-0.23344302303378667;
+        public static final double turretEncoderOffsetRad = -1.552987819518292;
 
-        public static final double turretLimitLower = -Math.PI / 2.0;
-        public static final double turretLimitUpper = Math.PI / 2.0;
+        public static final double turretLimitLower = -Math.PI;
+        public static final double turretLimitUpper = Math.PI;
 
 
         public static final TunableNumber velocityKp = new TunableNumber("Turret/VelKp");

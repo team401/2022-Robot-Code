@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +64,8 @@ public class Vision extends SubsystemBase {
 
     private double distanceToTargetIn = 0.0;
 
+    private final Timer targetTimer = new Timer();
+
     public Vision() {
 
         latencyEntry.addListener(event -> {
@@ -99,7 +103,7 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
 
-        long m_Start = System.currentTimeMillis();
+        SmartDashboard.putBoolean("Visible Target", !targetTimer.hasElapsed(0.3));
 
         tx = getSimpleAngle();
 
@@ -150,6 +154,10 @@ public class Vision extends SubsystemBase {
                 cameraToTargetTranslations, circleFitPrecision);
 
         distanceToTargetIn = Units.metersToInches(cameraToTargetTranslation.getNorm());
+
+        SmartDashboard.putBoolean("Visible Target", true);
+        targetTimer.reset();
+        targetTimer.start();
 
         // Inform RobotState of our observations
         RobotState.getInstance().recordVisionObservations(lastCaptureTimestamp - constantLatency, cameraToTargetTranslation);

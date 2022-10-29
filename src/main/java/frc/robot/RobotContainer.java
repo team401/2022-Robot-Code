@@ -8,6 +8,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -25,6 +26,7 @@ import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.commands.autonomous.AutoRoutines.Paths;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.drive.DriveWithJoysticks;
+import frc.robot.commands.drive.MeasureWheelRadius;
 import frc.robot.commands.drive.ShootWhileMoving;
 import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.shooter.Shoot;
@@ -82,8 +84,8 @@ public class RobotContainer {
 
         configureButtonBindings();
 
-        //SmartDashboard.putNumber("Shooter Desired", 0);
-        //SmartDashboard.putNumber("Hood Desired", 0);
+        SmartDashboard.putNumber("Shooter Desired", 0);
+        SmartDashboard.putNumber("Hood Desired", 0);
     }
 
     private void configureAutoPaths() {

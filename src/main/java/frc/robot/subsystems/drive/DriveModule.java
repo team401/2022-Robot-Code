@@ -53,7 +53,8 @@ public class DriveModule {
         setFramePeriods(driveMotor, true);
         setFramePeriods(rotationMotor, false);
 
-        driveMotor.setNeutralMode(NeutralMode.Brake);
+        // TODO: change back to break mode
+        driveMotor.setNeutralMode(NeutralMode.Coast);
         rotationMotor.setNeutralMode(NeutralMode.Brake);
 
         driveMotor.setInverted(true);

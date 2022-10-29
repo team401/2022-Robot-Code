@@ -50,18 +50,14 @@ public class LEDManager extends SubsystemBase {
         for (int i = 0; i < buffer.getLength(); i++)
             buffer.setRGB(i, 0, 0, 0);
 
-        /*if (DriverStation.isEnabled())
-            if (!climbing)
-                updateStrips();
-            else
-                climb();
-        else
-            rainbow();*/
-
-        if (climbing && DriverStation.isEnabled())
+        if (climbing) {
             climb();
-        else
+        }
+        else {
             rainbow();
+            if (DriverStation.isEnabled())
+                updateStrips();
+        }
         
         led.setData(buffer);
 
@@ -104,34 +100,7 @@ public class LEDManager extends SubsystemBase {
 
     private void updateStrip(AddressableLEDBuffer buffer, int offset) {
 
-        /**
-         * locked and revved - white
-         * two correct balls - green
-         * one correct balls - yellow
-         * has incorrect ball - red
-         * error - random
-         */
-
-        //int topBall = BallType.toByte(Tower.getTopBall());
-        //int bottomBall = BallType.toByte(Tower.getBottomBall());
         boolean readyToShoot = Math.abs(Vision.getTX()) < 5 && Shooter.atGoalStatic();
-        int alliance = DriverStation.getAlliance() == Alliance.Blue ? 1 : 2;
-
-        /*Color color = Color.kBlack;
-
-        if (readyToShoot) 
-            color = Color.kWhite;
-        else if (topBall == bottomBall && topBall == alliance)  
-            color = Color.kGreen;
-        else if (topBall == alliance) 
-            color = Color.kYellow;
-        else if ((topBall != 0 && topBall != alliance) || (bottomBall != 0 && bottomBall != alliance))
-            color = Color.kRed;
-        else if (error)
-            color = new Color((int)(Math.random()*256), (int)(Math.random()*256), (int)(Math.random()*256));
-
-        for (int i = offset; i < offset+3; i++)
-            buffer.setLED(i, color);*/
 
         if (readyToShoot) {
             for (int i = offset; i < offset+3; i++)

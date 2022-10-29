@@ -49,6 +49,7 @@ public class Turret extends SubsystemBase {
     public double current;
 
     private PIDController positionController = new PIDController(TurretConstants.positionKp.get(), 0, TurretConstants.positionKd.get());
+    private PIDController velocityController = new PIDController(TurretConstants.velocityKp.get(), 0, TurretConstants.velocityKd.get());
     private Rotation2d goalPosition = new Rotation2d();
     private double velocityGoal = 0;
 
@@ -121,16 +122,6 @@ public class Turret extends SubsystemBase {
             setNeutralMode(NeutralMode.Brake);
         }
         
-        // Update gains if they have changed
-        if (TurretConstants.positionKp.hasChanged() || TurretConstants.positionKd.hasChanged()) {
-            positionController.setP(TurretConstants.positionKp.get());
-            positionController.setD(TurretConstants.positionKd.get());
-        }
-        
-        if (TurretConstants.velocityKp.hasChanged() || TurretConstants.velocityKd.hasChanged()) {
-            setVelocityPD(TurretConstants.velocityKp.get(), TurretConstants.velocityKd.get());
-        }
-        
         double turretRotation = positionRad + encoderOffset;
 
         if (absolutePositionRad != lastUpdateValue) {
@@ -148,7 +139,7 @@ public class Turret extends SubsystemBase {
         double output = positionController.calculate(turretRotation, zeroOverride ? 0 : goalPosition.getRadians());
         // Only add feed velocity if we are not at our hard stops
         if (goalPosition.getRadians() > TurretConstants.turretLimitLower && goalPosition.getRadians() < TurretConstants.turretLimitUpper) {
-            output += TurretConstants.turretModel.calculate(velocityGoal);
+            output += TurretConstants.turretModel.calculate(velocityGoal) + velocityController.calculate(velocityRadPerS, velocityGoal);
         }
         if (setupCycleCount > TurretConstants.setupCycleCount && !killed)
             setVoltage(output);
@@ -156,6 +147,9 @@ public class Turret extends SubsystemBase {
             setVoltage(0);
 
         RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), velocityRadPerS);
+        SmartDashboard.putNumber("Turret Position", turretRotation);
+        SmartDashboard.putNumber("Turret Desired Velocity", velocityGoal);
+        SmartDashboard.putNumber("Turret Velocity", velocityRadPerS);
     }
 
     public void resetEncoder() {
@@ -169,11 +163,6 @@ public class Turret extends SubsystemBase {
     public void setVelocitySetpoint(double velocityRadPerS, double ffVolts) {
         double velocityTicksPer100ms = velocityRadPerS / 10.0 / 2.0 / Math.PI * TurretConstants.turretGearRatio;
         turretMotor.set(ControlMode.Velocity, velocityTicksPer100ms, DemandType.ArbitraryFeedForward, ffVolts / 12);
-    }
-
-    public void setVelocityPD(double p, double d) {
-        turretMotor.config_kP(0, p, 1000);
-        turretMotor.config_kD(0, d, 1000);
     }
 
     public double getCurrent() {

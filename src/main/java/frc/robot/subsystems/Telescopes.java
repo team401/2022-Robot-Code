@@ -87,6 +87,8 @@ public class Telescopes extends SubsystemBase {
         
         leftEncoder.setPositionConversionFactor(ClimberConstants.telescopeConversionFactor);
         rightEncoder.setPositionConversionFactor(ClimberConstants.telescopeConversionFactor);
+        leftEncoder.setVelocityConversionFactor(ClimberConstants.telescopeConversionFactor);
+        rightEncoder.setVelocityConversionFactor(ClimberConstants.telescopeConversionFactor);
 
         leftLidar.setRangingMode(TimeOfFlight.RangingMode.Short, 24);
         rightLidar.setRangingMode(TimeOfFlight.RangingMode.Short, 24);
@@ -168,6 +170,7 @@ public class Telescopes extends SubsystemBase {
                 }
             }
 
+            
             // Right
             if (isRightLidarValid()) {
                 double output = rightController.calculate(rightLidarPositionM, desiredPositionM);
@@ -211,6 +214,9 @@ public class Telescopes extends SubsystemBase {
 
         SmartDashboard.putNumber("Left Draw", leftMotor.getOutputCurrent());
         SmartDashboard.putNumber("Right Draw", rightMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Left vel", leftVelocityMPerS);
+        SmartDashboard.putNumber("Right vel", rightVelocityMPerS);
+
 
     }
 
