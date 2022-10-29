@@ -117,9 +117,8 @@ public class Vision extends SubsystemBase {
         // no targets
         int targetCount = ledsState ? cornerX.length / 4 : 0;
 
-        // TODO: PUT BACK IN PLACE
         // Stop if we don't have enough targets
-        //if (targetCount < minTargetCount) return;
+        if (targetCount < minTargetCount) return;
 
         List<Translation2d> cameraToTargetTranslations = new ArrayList<>();
         for (int targetIndex = 0; targetIndex < targetCount; targetIndex++) {

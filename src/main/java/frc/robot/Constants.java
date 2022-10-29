@@ -295,7 +295,7 @@ public final class Constants {
         public static final TunableNumber positionKd = new TunableNumber("Turret/PosKd");
 
         static {
-            velocityKp.setDefault(0);
+            velocityKp.setDefault(0.75);
             velocityKd.setDefault(0);
             positionKp.setDefault(45);
             positionKd.setDefault(0.2);
