@@ -12,6 +12,7 @@ import frc.robot.RobotState;
 import frc.robot.commands.drive.PathPlannerTrajectoryCommand;
 import frc.robot.commands.drive.QuickTurn;
 import frc.robot.commands.intake.Intake;
+import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.turret.ForceSetPosition;
@@ -83,18 +84,6 @@ public class AutoRoutines extends SequentialCommandGroup {
             );
         }
 
-        if (pathPlan == Paths.FourBallLeft) {
-            sequentialCommands.addCommands(
-                new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[1], false)
-                        .andThen(new WaitCommand(1))),
-
-                new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[2], false),
-                rotationArms.moveToStow(),
-                new Shoot(tower, shooter).withTimeout(1.5)
-            );
-        }
-
         addCommands(
             new PrepareToShoot(shooter, tower)
                 .raceWith(sequentialCommands)
@@ -104,13 +93,9 @@ public class AutoRoutines extends SequentialCommandGroup {
             addCommands(
                 new Intake(tower, intake, rotationArms)
                     .raceWith(new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[1], false)),
-                rotationArms.moveToStow(),
-                new InstantCommand(() -> turret.setZeroOverride(true)),
-                new InstantCommand(() -> shooter.setSetpoint(0.63, Units.rotationsPerMinuteToRadiansPerSecond(1500))),
-                new WaitCommand(1),
-                new Shoot(tower, shooter).withTimeout(3),
-                new InstantCommand(() -> turret.setZeroOverride(false)),
-                new InstantCommand(() -> shooter.stopShooter())
+                new ReverseIntake(tower, intake)
+                    .raceWith(new WaitCommand(5)),
+                rotationArms.moveToStow()
             );
         }
         
