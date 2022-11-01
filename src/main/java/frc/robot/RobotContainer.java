@@ -119,20 +119,23 @@ public class RobotContainer {
         autoChooser.addOption("Troll Left", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
 
+        autoChooser.addOption("Nothing", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.Nothing));
+
         // Four Ball Left
-        fourBallLeftPath = new PathPlannerTrajectory[3]; 
+        /*fourBallLeftPath = new PathPlannerTrajectory[3]; 
         fourBallLeftPath[0] = PathPlanner.loadPath("Left 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         fourBallLeftPath[1] = PathPlanner.loadPath("Left 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         fourBallLeftPath[2] = PathPlanner.loadPath("Left 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         autoChooser.addOption("Four Ball Left", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fourBallLeftPath, Paths.FourBallLeft));
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fourBallLeftPath, Paths.FourBallLeft));*/
 
-        //autoChooser.setDefaultOption("-Five Ball Right-", 
-              //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
+        autoChooser.setDefaultOption("-Five Ball Right-", 
+              new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
         //autoChooser.setDefaultOption("-Troll Left-", 
                 //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
-        autoChooser.setDefaultOption("-Two Ball-", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
+        //autoChooser.setDefaultOption("-Two Ball-", 
+                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
 
         // Send path options to driver station
         SmartDashboard.putData("Auto Mode", autoChooser);

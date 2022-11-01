@@ -173,7 +173,7 @@ public final class Constants {
         public static final double telescopeOffsetM = 0.13;
 
         public static final double telescopeMaxPositionM = 0.87;
-        public static final double telescopeDefaultPositionM = 0.08;
+        public static final double telescopeDefaultPositionM = 0.05;
         public static final double telescopeHomePositionM = 0.05;
         public static final double telescopePullPositionM = 0.02;
         public static final double telescopePopAboveRungM = 0.2;

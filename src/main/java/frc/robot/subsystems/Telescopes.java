@@ -55,7 +55,7 @@ public class Telescopes extends SubsystemBase {
 
     private final double deltaTime = 0.02; // 20ms between each cycle
 
-    private double desiredPositionM = 0; // position the telescopes attempt to reach in periodic
+    private double desiredPositionM = ClimberConstants.telescopeDefaultPositionM; // position the telescopes attempt to reach in periodic
 
     private boolean motorOverride = false; // true = periodic doesn't set motor voltage/percent
     private boolean atGoalOverride = false; // true = atGoal() always returns true

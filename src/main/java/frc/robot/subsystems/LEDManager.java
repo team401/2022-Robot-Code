@@ -54,7 +54,11 @@ public class LEDManager extends SubsystemBase {
             climb();
         }
         else {
-            rainbow();
+            if (DriverStation.isTeleop() || DriverStation.isDisabled())
+                rainbow();
+            else
+                charge();
+            
             if (DriverStation.isEnabled())
                 updateStrips();
         }
@@ -114,12 +118,29 @@ public class LEDManager extends SubsystemBase {
             int hue = (rainbowFirstPixelHue + 90 + (i * 180 / ledArmCount)) % 180;
             buffer.setHSV(i, hue, 255, 128);
         }
-        rainbowFirstPixelHue += 3;
+        
+        if (DriverStation.isEnabled())
+            rainbowFirstPixelHue += 3;
         rainbowFirstPixelHue %= 180;
 
         for (int i = 0; i < buffer.getLength(); i++) {
             Color color = buffer.getLED(i);
             buffer.setRGB(i, (int)(color.red*50), (int)(color.green*50), (int)(color.blue*50));
+        }
+    }
+
+    private void charge() {
+        int ledNum = (int)((15-DriverStation.getMatchTime()) / 15 * (ledArmCount+1))+1;
+        int r = DriverStation.getAlliance() == DriverStation.Alliance.Red ? 255 : 0;
+        int b = DriverStation.getAlliance() == DriverStation.Alliance.Blue ? 255 : 0;
+        for (int i = 0; i < ledNum && i < ledArmCount; i++) {
+            buffer.setRGB(i, r, 0, b);
+        }
+        if (ledNum == ledArmCount+1)
+        {
+            for (int i = ledArmCount; i < ledCountPerSide; i++) {
+                buffer.setRGB(i, r, 0, b);
+            }
         }
     }
 

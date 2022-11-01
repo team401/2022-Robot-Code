@@ -30,10 +30,14 @@ public class AutoRoutines extends SequentialCommandGroup {
     public enum Paths {
         TwoBall, 
         ThreeBallRight, FiveBallRight,
-        TrollLeft, FourBallLeft
+        TrollLeft, FourBallLeft,
+        Nothing
     }
 
     public AutoRoutines(Drive drive, RotationArms rotationArms, Shooter shooter, Turret turret, Tower tower, IntakeWheels intake, IntakeVision intakeVision, Vision vision, PathPlannerTrajectory[] path, Paths pathPlan) {
+
+        if (pathPlan == Paths.Nothing)
+            return;
         
         SequentialCommandGroup sequentialCommands = new SequentialCommandGroup(
             new InstantCommand(() -> vision.turnOnLeds()),
