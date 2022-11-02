@@ -103,7 +103,7 @@ public class Tower extends SubsystemBase {
         prevTopBannerState = topBannerState;
         prevColorDetected = color;
 
-        RobotState.getInstance().setCurrentBall(ballTop);
+        //RobotState.getInstance().setCurrentBall(ballTop);
 
     }
 

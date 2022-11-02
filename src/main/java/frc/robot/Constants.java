@@ -271,7 +271,7 @@ public final class Constants {
 
     public static final class BallConstants {
         public static final TunableNumber intakePower = new TunableNumber("Intake/IntakePower");
-        public static final double towerPower = 0.5;
+        public static final double towerPower = 0.8;
 
         static {
                 intakePower.setDefault(1.0);
