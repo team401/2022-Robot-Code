@@ -46,22 +46,22 @@ public final class Constants {
         public static final int backRightRotationEncoderID = 13;
 
         public static final int leftRotationMotorID = 14;
-        public static final int rightRotationMotorID = 15;
-        public static final int leftTelescopingMotorID = 16;
-        public static final int rightTelescopingMotorID = 17;
+        public static final int rightRotationMotorID = 15;//
+        public static final int leftTelescopingMotorID = 16;//
+        public static final int rightTelescopingMotorID = 17;//
 
         public static final int turretMotorID = 18;
-        public static final int hoodMotorID = 19;
+        public static final int hoodMotorID = 19;//
         public static final int turretEncoderID = 30;
 
         public static final int pigeonIMU = 20;
 
-        public static final int leftLidar = 21;
-        public static final int rightLidar = 22;
+        public static final int leftLidar = 99;
+        public static final int rightLidar = 98;
 
         public static final int intakeMotorID = 22;
-        public static final int conveyorMotorID = 23;
-        public static final int indexMotorID = 24;
+        public static final int conveyorMotorID = 23;//
+        public static final int indexMotorID = 24;//
 
     }
 
@@ -271,7 +271,7 @@ public final class Constants {
 
     public static final class BallConstants {
         public static final TunableNumber intakePower = new TunableNumber("Intake/IntakePower");
-        public static final double towerPower = 0.8;
+        public static final double towerPower = 1.0;
 
         static {
                 intakePower.setDefault(1.0);
