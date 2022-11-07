@@ -17,7 +17,7 @@ public class LEDManager extends SubsystemBase {
     private final int ledArmCount = 22;
     private final int ledCountPerSide = 34;
 
-    private final Color allianceColor;
+    private Color allianceColor = Color.kBlack;
 
     private boolean climbing = false;
 
@@ -38,12 +38,16 @@ public class LEDManager extends SubsystemBase {
         led.setLength(buffer.getLength());
         led.setData(buffer);
         led.start();
-        allianceColor = DriverStation.getAlliance() == DriverStation.Alliance.Red ? Color.kRed : Color.kBlue;
         climbLeds = new boolean[ledArmCount];
     }
 
     @Override
     public void periodic() {
+
+        if (allianceColor == Color.kBlack)
+        {
+            allianceColor = DriverStation.getAlliance() == DriverStation.Alliance.Red ? Color.kRed : Color.kBlue;
+        }
 
         // Clear the leds
         for (int i = 0; i < buffer.getLength(); i++)

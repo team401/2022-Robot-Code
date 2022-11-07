@@ -5,16 +5,23 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.commands.turret.TurretClimbPosition;
 import frc.robot.subsystems.RotationArms;
 import frc.robot.subsystems.Telescopes;
+import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Vision;
 
 public class ClimbSequence extends SequentialCommandGroup {
 
-    public ClimbSequence(Telescopes telescopes, RotationArms rotationArms, XboxController gamepad) {
+    public ClimbSequence(Telescopes telescopes, RotationArms rotationArms, Turret turret, Vision vision, XboxController gamepad) {
 
-        addRequirements(telescopes, rotationArms);
+        addRequirements(telescopes, rotationArms, turret, vision);
 
-        addCommands(            
+        addCommands(
+
+            new TurretClimbPosition(turret, vision)
+            .raceWith(new SequentialCommandGroup(
+
             // TO MID BAR
             // Pull up to mid bar
             rotationArms.moveToStow(),
@@ -84,6 +91,8 @@ public class ClimbSequence extends SequentialCommandGroup {
             // Pull up to traversal bar
             telescopes.moveToPull(),
             telescopes.waitForMove()
+
+            ))
 
         );
     }

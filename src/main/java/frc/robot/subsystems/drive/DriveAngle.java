@@ -8,11 +8,16 @@ import frc.robot.Constants.CANDevices;
 
 public class DriveAngle {
 
-    private final Pigeon2 pigeon = new Pigeon2(CANDevices.pigeonIMU, Constants.canivoreName);
+    private final Pigeon2 pigeon;
 
     private double degOffset = 0;
 
-    public double headingRad;
+    public double headingRad = 0;
+
+    public DriveAngle() {
+        pigeon = new Pigeon2(CANDevices.pigeonIMU, Constants.canivoreName);
+        updateHeading();
+    }
 
     public void updateHeading() {
         headingRad = Units.degreesToRadians(pigeon.getYaw() - degOffset);
