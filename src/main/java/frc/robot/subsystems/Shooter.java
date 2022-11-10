@@ -86,8 +86,8 @@ public class Shooter extends SubsystemBase {
 
         hoodEncoder = hoodMotor.getEncoder();
 
-        SmartDashboard.putNumber("Hood Desired", 0.27);
-        SmartDashboard.putNumber("Shooter Desired", 0);
+        SmartDashboard.putNumber("DesiredHoodPosition(0.27-0.63)", 0.63);
+        SmartDashboard.putNumber("MaxShooterRPM", 2000);
     }
 
     @Override

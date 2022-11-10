@@ -293,12 +293,16 @@ public final class Constants {
         public static final TunableNumber velocityKd = new TunableNumber("Turret/VelKd");
         public static final TunableNumber positionKp = new TunableNumber("Turret/PosKp");
         public static final TunableNumber positionKd = new TunableNumber("Turret/PosKd");
+        public static final TunableNumber positionWrapKp = new TunableNumber("Turret/PosKp");
+        public static final TunableNumber positionWrapKd = new TunableNumber("Turret/PosKd");
 
         static {
-            velocityKp.setDefault(0.75);
+            velocityKp.setDefault(0);//0.75
             velocityKd.setDefault(0);
-            positionKp.setDefault(45);
+            positionKp.setDefault(20);
             positionKd.setDefault(0.2);
+            positionWrapKp.setDefault(200);
+            positionWrapKd.setDefault(0.2);
         }
 
         public static final SimpleMotorFeedforward turretModel = new SimpleMotorFeedforward(0.204, 2.20697674);

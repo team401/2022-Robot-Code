@@ -49,6 +49,7 @@ public class Turret extends SubsystemBase {
     public double current;
 
     private PIDController positionController = new PIDController(TurretConstants.positionKp.get(), 0, TurretConstants.positionKd.get());
+    private PIDController positionWrapController = new PIDController(TurretConstants.positionWrapKp.get(), 0, TurretConstants.positionWrapKd.get());
     private PIDController velocityController = new PIDController(TurretConstants.velocityKp.get(), 0, TurretConstants.velocityKd.get());
     private Rotation2d goalPosition = new Rotation2d();
     private double velocityGoal = 0;
@@ -137,6 +138,8 @@ public class Turret extends SubsystemBase {
         
         //PID control - equivalent of our old setdesiredpositionclosedloop methods continuously
         double output = positionController.calculate(turretRotation, zeroOverride ? 0 : goalPosition.getRadians());
+        if (Math.abs(turretRotation-goalPosition.getRadians()) > Math.PI)
+            output = positionWrapController.calculate(turretRotation, zeroOverride ? 0 : goalPosition.getRadians());
         // Only add feed velocity if we are not at our hard stops
         if (goalPosition.getRadians() > TurretConstants.turretLimitLower && goalPosition.getRadians() < TurretConstants.turretLimitUpper) {
             output += TurretConstants.turretModel.calculate(velocityGoal) + velocityController.calculate(velocityRadPerS, velocityGoal);

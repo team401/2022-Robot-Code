@@ -88,8 +88,8 @@ public class LEDManager extends SubsystemBase {
             buffer.setHSV(i, hue, 255, 128);
         }
         
-        if (dynamic)
-            rainbowFirstPixelHue += 3;
+        //if (dynamic)
+        rainbowFirstPixelHue += 3;
         rainbowFirstPixelHue %= 180;
 
         for (int i = 0; i < buffer.getLength(); i++) {

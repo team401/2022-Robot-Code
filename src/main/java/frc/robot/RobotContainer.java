@@ -28,8 +28,10 @@ import frc.robot.commands.intake.Intake;
 import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.drive.MeasureWheelRadius;
 import frc.robot.commands.drive.ShootWhileMoving;
+import frc.robot.commands.shooter.DemoShoot;
 import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.shooter.Shoot;
+import frc.robot.commands.turret.DemoStick;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.IntakeVision;
@@ -78,14 +80,15 @@ public class RobotContainer {
           () -> -rightStick.getRawAxis(0),
           true
         ));
-        turret.setDefaultCommand(new Tracking(vision, turret));
+        //turret.setDefaultCommand(new Tracking(vision, turret));
+        turret.setDefaultCommand(new DemoStick(vision, turret, () -> gamepad.getRawAxis(0), () -> gamepad.getRawAxis(1)));
+
+        shooter.setDefaultCommand(new DemoShoot(shooter, tower, () -> gamepad.getRightTriggerAxis()));
 
         configureAutoPaths();
 
         configureButtonBindings();
 
-        SmartDashboard.putNumber("Shooter Desired", 0);
-        SmartDashboard.putNumber("Hood Desired", 0);
     }
 
     private void configureAutoPaths() {
@@ -150,28 +153,16 @@ public class RobotContainer {
         /*CLIMBING BUTTONS*/ 
 
         // Telescope Up/Down
-        new POVButton(gamepad, 0)
+        /*new POVButton(gamepad, 0)
                 .whileHeld(new InstantCommand(() -> telescopes.jogUp()));
         new POVButton(gamepad, 180)
-                .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
-
-        /*new POVButton(gamepad, 0)
-                .whenPressed(new InstantCommand(() -> telescopes.setRightVolts(4))
-                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(4))))
-                .whenReleased(new InstantCommand(() -> telescopes.setRightVolts(0))
-                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(0))));
-        
-        new POVButton(gamepad, 180)
-                .whenPressed(new InstantCommand(() -> telescopes.setRightVolts(-4))
-                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(-4))))
-                .whenReleased(new InstantCommand(() -> telescopes.setRightVolts(0))
-                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(0))));*/
+                .whileHeld(new InstantCommand(() -> telescopes.jogDown()));*/
         
         // Climb Sequence
-        new JoystickButton(gamepad, Button.kX.value)                    
+        /*new JoystickButton(gamepad, Button.kX.value)                    
                 .whenPressed(new InstantCommand(() -> ledManager.setClimb(true)))
                 .whenHeld(new ClimbSequence(telescopes, rotationArms, turret, vision, gamepad))
-                .whenReleased(new InstantCommand(() -> ledManager.setClimb(false)));
+                .whenReleased(new InstantCommand(() -> ledManager.setClimb(false)));*/
 
         /*INTAKE BUTTONS*/ 
 
@@ -186,52 +177,36 @@ public class RobotContainer {
                 .whenPressed(rotationArms.moveToIntake())
                 .whenHeld(new Intake(tower, intakeWheels, rotationArms))
                 .whenReleased(rotationArms.moveToStow());
-        
+
         // Reverse Intake
-        new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
-                .whenActive(rotationArms.moveToIntake()
+        new JoystickButton(gamepad, Button.kBack.value)
+                .whenPressed(rotationArms.moveToIntake()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(-0.5))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
-                .whenInactive(rotationArms.moveToStow()
+                .whenReleased(rotationArms.moveToStow()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
         
-        /*SHOOTING BUTTONS*/ 
-        
-        // Prepare to shoot
-        new JoystickButton(gamepad, Button.kRightBumper.value)
-                .whenHeld(new PrepareToShoot(shooter, tower));
-                        
+        /*SHOOTING BUTTONS*/       
         // Shoot
         new JoystickButton(gamepad, Button.kY.value)
                 .whenHeld(new Shoot(tower, shooter));
-
-        // Shooter RPM Offset (Makes minor adjustments during a game)
-        new JoystickButton(leftStick, 3)
-                .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(-10)));
-        new JoystickButton(leftStick, 4)
-                .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(10)));
 
         /*OTHERS*/
 
         // Reset Gyro
         new JoystickButton(rightStick, 2)
                 .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
-
-        // Center Turret
-        new JoystickButton(gamepad, Button.kA.value)
-                .whenPressed(new InstantCommand(() -> turret.setZeroOverride(true)))
-                .whenReleased(new InstantCommand(() -> turret.setZeroOverride(false)));
                 
         // Rotation Home
-        new Trigger(() -> (gamepad.getLeftTriggerAxis() > 0.3))
+        /*new Trigger(() -> (gamepad.getLeftTriggerAxis() > 0.3))
                 .whenActive(new InstantCommand(() -> rotationArms.home(), rotationArms));
 
         // Telescope Home
         new JoystickButton(gamepad, Button.kBack.value)
-            .whenActive(new InstantCommand(() -> telescopes.home(), telescopes));
+            .whenActive(new InstantCommand(() -> telescopes.home(), telescopes));*/
         
         // Kill Turret
         new JoystickButton(leftStick, 9)
@@ -240,61 +215,6 @@ public class RobotContainer {
         // Revive Turret
         new JoystickButton(leftStick, 10)
                 .whileHeld(new InstantCommand(() -> turret.unkill()));
-
-        // Stop Climb Sequence
-        new JoystickButton(leftStick, 8)
-                .whenPressed(new InstantCommand(() -> telescopes.stop(), telescopes)
-                        .alongWith(new InstantCommand(() -> rotationArms.stop(), rotationArms)));
-
-        // Robot Relative Drive
-        new JoystickButton(leftStick, Joystick.ButtonType.kTrigger.value)
-                .whenHeld(new DriveWithJoysticks(
-                        drive,
-                        () -> -leftStick.getRawAxis(1),
-                        () -> -leftStick.getRawAxis(0),
-                        () -> -rightStick.getRawAxis(0),
-                        false
-                ));
-
-        // Shoot While Moving
-        new JoystickButton(rightStick, Joystick.ButtonType.kTrigger.value)
-                .whenHeld(new ShootWhileMoving(
-                        drive,
-                        () -> -leftStick.getRawAxis(1),
-                        () -> -leftStick.getRawAxis(0),
-                        () -> -rightStick.getRawAxis(0),
-                        true,
-                        gamepad
-                ));
-
-        // Rotation Arm Overrides
-        new JoystickButton(rightStick, 7)
-                .whenPressed(new InstantCommand(() -> rotationArms.overrideLeftPercent(0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.overrideLeftPercent(0), rotationArms));
-        
-        new JoystickButton(rightStick, 8)
-                .whenPressed(new InstantCommand(() -> rotationArms.overrideLeftPercent(-0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.overrideLeftPercent(0), rotationArms));
-
-        new JoystickButton(rightStick, 6)
-                .whenPressed(new InstantCommand(() -> rotationArms.overrideRightPercent(0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.overrideRightPercent(0), rotationArms));
-
-        new JoystickButton(rightStick, 9)
-                .whenPressed(new InstantCommand(() -> rotationArms.overrideRightPercent(-0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.overrideRightPercent(0), rotationArms));
-
-        new JoystickButton(rightStick, 10)
-                .whenPressed(new InstantCommand(() -> rotationArms.setZero()));
-
-        // Climbing Overrides
-        new JoystickButton(leftStick, 7)
-                .whenPressed(new InstantCommand(() -> rotationArms.setGoalOverride(true))
-                .andThen(new InstantCommand(() -> rotationArms.setGoalOverride(false))));
-
-        new JoystickButton(leftStick, 6)
-                .whenPressed(new InstantCommand(() -> telescopes.setAtGoalOverride(true))
-                .andThen(new InstantCommand(() -> telescopes.setAtGoalOverride(false))));
         
     }
 
