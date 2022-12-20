@@ -9,6 +9,9 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.util.GeomUtil;
+import frc.robot.RobotState;
 import frc.robot.subsystems.Turret;
 
 public class DemoStick extends CommandBase {
@@ -19,6 +22,8 @@ public class DemoStick extends CommandBase {
     private final DoubleSupplier yS;
 
     private final LinearFilter filter = LinearFilter.singlePoleIIR(0.05, 0.02);
+
+    private double goal = 0;
 
     public DemoStick(Vision vision, Turret turret, DoubleSupplier x, DoubleSupplier y) {
         this.vision = vision;
@@ -51,9 +56,10 @@ public class DemoStick extends CommandBase {
                 rot -= Math.PI;
             rot += Math.PI / 2;
             rot = filter.calculate(rot);
-            turret.setPositionGoal(new Rotation2d(rot), 0);
-            SmartDashboard.putNumber("DemoRot", Units.radiansToDegrees(rot));
+            goal = rot;
+            //SmartDashboard.putNumber("DemoRot", Units.radiansToDegrees(rot));
         }
+        turret.setPositionGoal(new Rotation2d(goal - RobotState.getInstance().getLatestFieldToVehicle().getRotation().getRadians()), 0);
         
     }
 
