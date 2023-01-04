@@ -58,26 +58,37 @@ public class RobotContainer {
     private final Joystick leftStick = new Joystick(0);
     private final Joystick rightStick = new Joystick(1);
     private final XboxController gamepad = new XboxController(2);
-    
+
     // Auto trajectories
     private PathPlannerTrajectory[] twoBallPath;
     private PathPlannerTrajectory[] threeBallRightPath;
     private PathPlannerTrajectory[] fiveBallRightPath;
     private PathPlannerTrajectory[] trollLeftPath;
-    private PathPlannerTrajectory[] fourBallLeftPath;
 
     SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+
+    private final JoystickButton A = new JoystickButton(gamepad, Button.kA.value);
+    private final JoystickButton B = new JoystickButton(gamepad, Button.kB.value);
+    private final JoystickButton X = new JoystickButton(gamepad, Button.kX.value);
+    private final JoystickButton Y = new JoystickButton(gamepad, Button.kY.value);
+
+    private final JoystickButton leftBumper = new JoystickButton(gamepad, Button.kLeftBumper.value);
+    private final JoystickButton rightBumper = new JoystickButton(gamepad, Button.kRightBumper.value);
+
+    private final JoystickButton back = new JoystickButton(gamepad, Button.kBack.value);
+
+    private final Trigger leftTrigger = new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3));
+    private final Trigger rightTrigger = new Trigger(() -> (gamepad.getLeftTriggerAxis() > 0.3));
 
     public RobotContainer() {
 
         // set default commands
         drive.setDefaultCommand(new DriveWithJoysticks(
-          drive,
-          () -> -leftStick.getRawAxis(1),
-          () -> -leftStick.getRawAxis(0),
-          () -> -rightStick.getRawAxis(0),
-          true
-        ));
+                drive,
+                () -> -leftStick.getRawAxis(1),
+                () -> -leftStick.getRawAxis(0),
+                () -> -rightStick.getRawAxis(0),
+                true));
         turret.setDefaultCommand(new Tracking(vision, turret));
 
         configureAutoPaths();
@@ -92,50 +103,76 @@ public class RobotContainer {
 
         // Two Ball
         twoBallPath = new PathPlannerTrajectory[1];
-        twoBallPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        autoChooser.addOption("Two Ball", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
+        twoBallPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        autoChooser.addOption("Two Ball",
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision,
+                        twoBallPath, Paths.TwoBall));
 
         // Three Ball Right
         threeBallRightPath = new PathPlannerTrajectory[2];
-        threeBallRightPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        threeBallRightPath[1] = PathPlanner.loadPath("Right 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        autoChooser.addOption("Three Ball Right", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, threeBallRightPath, Paths.ThreeBallRight));
-        
+        threeBallRightPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        threeBallRightPath[1] = PathPlanner.loadPath("Right 2", AutoConstants.kMaxVelocityMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        autoChooser.addOption("Three Ball Right",
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision,
+                        threeBallRightPath, Paths.ThreeBallRight));
+
         // Five Ball Right
         fiveBallRightPath = new PathPlannerTrajectory[4];
-        fiveBallRightPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        fiveBallRightPath[1] = PathPlanner.loadPath("Right 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        fiveBallRightPath[2] = PathPlanner.loadPath("Right 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        fiveBallRightPath[3] = PathPlanner.loadPath("Right 4", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        autoChooser.addOption("Five Ball Right", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
-        
+        fiveBallRightPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fiveBallRightPath[1] = PathPlanner.loadPath("Right 2", AutoConstants.kMaxVelocityMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fiveBallRightPath[2] = PathPlanner.loadPath("Right 3", AutoConstants.kMaxVelocityMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fiveBallRightPath[3] = PathPlanner.loadPath("Right 4", AutoConstants.kMaxVelocityMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        autoChooser.addOption("Five Ball Right",
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision,
+                        fiveBallRightPath, Paths.FiveBallRight));
+
         // Troll Left
         trollLeftPath = new PathPlannerTrajectory[2];
-        trollLeftPath[0] = PathPlanner.loadPath("Left 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        trollLeftPath[1] = PathPlanner.loadPath("Left 4", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        autoChooser.addOption("Troll Left", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
+        trollLeftPath[0] = PathPlanner.loadPath("Left 1", AutoConstants.kMaxVelocityMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        trollLeftPath[1] = PathPlanner.loadPath("Left 4", AutoConstants.kMaxVelocityMetersPerSecond,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        autoChooser.addOption("Troll Left",
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision,
+                        trollLeftPath, Paths.TrollLeft));
 
-        autoChooser.addOption("Nothing", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.Nothing));
+        autoChooser.addOption("Nothing",
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision,
+                        trollLeftPath, Paths.Nothing));
 
         // Four Ball Left
-        /*fourBallLeftPath = new PathPlannerTrajectory[3]; 
-        fourBallLeftPath[0] = PathPlanner.loadPath("Left 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        fourBallLeftPath[1] = PathPlanner.loadPath("Left 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        fourBallLeftPath[2] = PathPlanner.loadPath("Left 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        autoChooser.addOption("Four Ball Left", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fourBallLeftPath, Paths.FourBallLeft));*/
+        /*
+         * fourBallLeftPath = new PathPlannerTrajectory[3];
+         * fourBallLeftPath[0] = PathPlanner.loadPath("Left 1",
+         * AutoConstants.kMaxVelocityMetersPerSecond,
+         * AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+         * fourBallLeftPath[1] = PathPlanner.loadPath("Left 2",
+         * AutoConstants.kMaxVelocityMetersPerSecond,
+         * AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+         * fourBallLeftPath[2] = PathPlanner.loadPath("Left 3",
+         * AutoConstants.kMaxVelocityMetersPerSecond,
+         * AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+         * autoChooser.addOption("Four Ball Left",
+         * new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels,
+         * intakeVision, vision, fourBallLeftPath, Paths.FourBallLeft));
+         */
 
-        autoChooser.setDefaultOption("-Five Ball Right-", 
-              new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
-        //autoChooser.setDefaultOption("-Troll Left-", 
-                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
-        //autoChooser.setDefaultOption("-Two Ball-", 
-                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
+        autoChooser.setDefaultOption("-Five Ball Right-",
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision,
+                        fiveBallRightPath, Paths.FiveBallRight));
+        // autoChooser.setDefaultOption("-Troll Left-",
+        // new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels,
+        // intakeVision, vision, trollLeftPath, Paths.TrollLeft));
+        // autoChooser.setDefaultOption("-Two Ball-",
+        // new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels,
+        // intakeVision, vision, twoBallPath, Paths.TwoBall));
 
         // Send path options to driver station
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -147,99 +184,97 @@ public class RobotContainer {
         // intake cam http://10.4.1.217:1181
         // intake cam video http://10.4.1.217:1181/stream.mjpg
 
-        /*CLIMBING BUTTONS*/ 
+        /* CLIMBING BUTTONS */
 
         // Telescope Up/Down
         new POVButton(gamepad, 0)
-                .whileHeld(new InstantCommand(() -> telescopes.jogUp()));
+                .whileHeld(telescopes::jogUp);
         new POVButton(gamepad, 180)
-                .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
+                .whileHeld(telescopes::jogDown);
 
-        /*new POVButton(gamepad, 0)
-                .whenPressed(new InstantCommand(() -> telescopes.setRightVolts(4))
-                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(4))))
-                .whenReleased(new InstantCommand(() -> telescopes.setRightVolts(0))
-                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(0))));
-        
-        new POVButton(gamepad, 180)
-                .whenPressed(new InstantCommand(() -> telescopes.setRightVolts(-4))
-                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(-4))))
-                .whenReleased(new InstantCommand(() -> telescopes.setRightVolts(0))
-                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(0))));*/
-        
+        /*
+         * new POVButton(gamepad, 0)
+         * .whenPressed(new InstantCommand(() -> telescopes.setRightVolts(4))
+         * .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(4))))
+         * .whenReleased(new InstantCommand(() -> telescopes.setRightVolts(0))
+         * .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(0))));
+         * 
+         * new POVButton(gamepad, 180)
+         * .whenPressed(new InstantCommand(() -> telescopes.setRightVolts(-4))
+         * .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(-4))))
+         * .whenReleased(new InstantCommand(() -> telescopes.setRightVolts(0))
+         * .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(0))));
+         */
+
         // Climb Sequence
-        new JoystickButton(gamepad, Button.kX.value)                    
-                .whenPressed(new InstantCommand(() -> ledManager.setClimb(true)))
+        X
+                .whenPressed(() -> ledManager.setClimb(true))
                 .whenHeld(new ClimbSequence(telescopes, rotationArms, turret, vision, gamepad))
-                .whenReleased(new InstantCommand(() -> ledManager.setClimb(false)));
+                .whenReleased(() -> ledManager.setClimb(false));
 
-        /*INTAKE BUTTONS*/ 
+        /* INTAKE BUTTONS */
 
         // Rotation Arms Intake/Stow (Without running ball tower)
         new POVButton(gamepad, 90)
                 .whenPressed(rotationArms.moveToIntake());
         new POVButton(gamepad, 270)
                 .whenPressed(rotationArms.moveToStow());
-                
+
         // Intake
-        new JoystickButton(gamepad, Button.kB.value)
-                .whenPressed(rotationArms.moveToIntake())
+        B.whenPressed(rotationArms.moveToIntake())
                 .whenHeld(new Intake(tower, intakeWheels, rotationArms))
                 .whenReleased(rotationArms.moveToStow());
-        
+
         // Reverse Intake
-        new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
+        rightTrigger
                 .whenActive(rotationArms.moveToIntake()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(-0.5))
-                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
-                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
+                                .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
+                                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
                 .whenInactive(rotationArms.moveToStow()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
-                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
-                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
-        
-        /*SHOOTING BUTTONS*/ 
-        
+                                .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
+                                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
+
+        /* SHOOTING BUTTONS */
+
         // Prepare to shoot
-        new JoystickButton(gamepad, Button.kRightBumper.value)
+        rightBumper
                 .whenHeld(new PrepareToShoot(shooter, tower));
-                        
+
         // Shoot
-        new JoystickButton(gamepad, Button.kY.value)
+        Y
                 .whenHeld(new Shoot(tower, shooter));
 
         // Shooter RPM Offset (Makes minor adjustments during a game)
         new JoystickButton(leftStick, 3)
-                .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(-10)));
+                .whenPressed(() -> shooter.incrementRPMOffset(-10));
         new JoystickButton(leftStick, 4)
-                .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(10)));
+                .whenPressed(() -> shooter.incrementRPMOffset(10));
 
-        /*OTHERS*/
+        /* OTHERS */
 
         // Reset Gyro
         new JoystickButton(rightStick, 2)
-                .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
+                .whenPressed(() -> RobotState.getInstance().forceRobotPose(new Pose2d()));
 
         // Center Turret
-        new JoystickButton(gamepad, Button.kA.value)
-                .whenPressed(new InstantCommand(() -> turret.setZeroOverride(true)))
-                .whenReleased(new InstantCommand(() -> turret.setZeroOverride(false)));
-                
+        A.whenPressed(() -> turret.setZeroOverride(true))
+                .whenReleased(() -> turret.setZeroOverride(false));
+
         // Rotation Home
-        new Trigger(() -> (gamepad.getLeftTriggerAxis() > 0.3))
-                .whenActive(new InstantCommand(() -> rotationArms.home(), rotationArms));
+        leftTrigger.whenActive(rotationArms::home, rotationArms);
 
         // Telescope Home
-        new JoystickButton(gamepad, Button.kBack.value)
-            .whenActive(new InstantCommand(() -> telescopes.home(), telescopes));
-        
+        back.whenActive(telescopes::home, telescopes);
+
         // Kill Turret
         new JoystickButton(leftStick, 9)
-                .whenPressed(new InstantCommand(() -> turret.kill()));
+                .whenPressed(turret::kill);
 
         // Revive Turret
         new JoystickButton(leftStick, 10)
-                .whileHeld(new InstantCommand(() -> turret.unkill()));
+                .whileHeld(turret::unkill);
 
         // Stop Climb Sequence
         new JoystickButton(leftStick, 8)
@@ -253,8 +288,7 @@ public class RobotContainer {
                         () -> -leftStick.getRawAxis(1),
                         () -> -leftStick.getRawAxis(0),
                         () -> -rightStick.getRawAxis(0),
-                        false
-                ));
+                        false));
 
         // Shoot While Moving
         new JoystickButton(rightStick, Joystick.ButtonType.kTrigger.value)
@@ -264,38 +298,37 @@ public class RobotContainer {
                         () -> -leftStick.getRawAxis(0),
                         () -> -rightStick.getRawAxis(0),
                         true,
-                        gamepad
-                ));
+                        gamepad));
 
         // Rotation Arm Overrides
         new JoystickButton(rightStick, 7)
-                .whenPressed(new InstantCommand(() -> rotationArms.overrideLeftPercent(0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.overrideLeftPercent(0), rotationArms));
-        
+                .whenPressed(() -> rotationArms.overrideLeftPercent(0.25), rotationArms)
+                .whenReleased(() -> rotationArms.overrideLeftPercent(0), rotationArms);
+
         new JoystickButton(rightStick, 8)
-                .whenPressed(new InstantCommand(() -> rotationArms.overrideLeftPercent(-0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.overrideLeftPercent(0), rotationArms));
+                .whenPressed(() -> rotationArms.overrideLeftPercent(-0.25), rotationArms)
+                .whenReleased(() -> rotationArms.overrideLeftPercent(0), rotationArms);
 
         new JoystickButton(rightStick, 6)
-                .whenPressed(new InstantCommand(() -> rotationArms.overrideRightPercent(0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.overrideRightPercent(0), rotationArms));
+                .whenPressed(() -> rotationArms.overrideRightPercent(0.25), rotationArms)
+                .whenReleased(() -> rotationArms.overrideRightPercent(0), rotationArms);
 
         new JoystickButton(rightStick, 9)
-                .whenPressed(new InstantCommand(() -> rotationArms.overrideRightPercent(-0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.overrideRightPercent(0), rotationArms));
+                .whenPressed(() -> rotationArms.overrideRightPercent(-0.25), rotationArms)
+                .whenReleased(() -> rotationArms.overrideRightPercent(0), rotationArms);
 
         new JoystickButton(rightStick, 10)
-                .whenPressed(new InstantCommand(() -> rotationArms.setZero()));
+                .whenPressed(() -> rotationArms.setZero());
 
         // Climbing Overrides
         new JoystickButton(leftStick, 7)
                 .whenPressed(new InstantCommand(() -> rotationArms.setGoalOverride(true))
-                .andThen(new InstantCommand(() -> rotationArms.setGoalOverride(false))));
+                        .andThen(() -> rotationArms.setGoalOverride(false)));
 
         new JoystickButton(leftStick, 6)
                 .whenPressed(new InstantCommand(() -> telescopes.setAtGoalOverride(true))
-                .andThen(new InstantCommand(() -> telescopes.setAtGoalOverride(false))));
-        
+                        .andThen(() -> telescopes.setAtGoalOverride(false)));
+
     }
 
     public Command getAutonomousCommand() {
